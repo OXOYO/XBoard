@@ -11,6 +11,7 @@
     "core-js": "^2.6.5",
     "moment": "^2.24.0",
     "register-service-worker": "^1.6.2",
+    "signature_pad": "^3.0.0-beta.3",
     "vue": "^2.6.10",
     "vue-router": "^3.0.3",
     "vuex": "^3.0.1"

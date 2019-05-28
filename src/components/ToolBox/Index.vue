@@ -13,7 +13,7 @@
 </style>
 
 <template>
-  <div class="tool-box">
+  <div class="tool-box" @contextmenu.stop.prevent>
     <slot></slot>
   </div>
 </template>

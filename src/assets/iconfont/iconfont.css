@@ -1,0 +1,33 @@
+@font-face {font-family: "iconfont";
+  src: url('iconfont.eot?t=1559037516039'); /* IE9 */
+  src: url('iconfont.eot?t=1559037516039#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAAN0AAsAAAAAB3gAAAMoAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDMgqCGIIFATYCJAMUCwwABCAFhG0HRxuQBsguIScbXqTbBSdY3dC6xWvjhKYBqE8hHv5/f3z7vHsfvpyGSFCCmtKEOE6gVp/mPknuUBRC5MQ4G4AEJ2cjwmpzX2i7Dlampf1/SL/8UP+ttcxzy8KmZAFBPXJ2Z/84l7Jw1WQEcBfccNVzgxMp0ijARBKLaNVrKLS10dPf+fzfO/0tS2Bee1YOcwyuT50A44AC2xOjhNICKVFuGLugJd4m0Go4EeBi82UW+mTmokBszOsW9GUSsszKjVBV7MziAjTFyeKO88Hn45dp0VAoE3PlytVHXdj9uu77jjT4f0AeRTmdD2wfCVMBZGJTZWCjWFSYCqxV/V3cfKBVo1B8Xfft7Bv1+/7/R1OZodBq/eFRSLIgKlCiHcxXzHxd5xAKvp0lJL4PEDLfd6ie5aYStKLGUmA1xB3rpUJSiJGk3JQdu92Hn4/ON35rPnDpxlO09jj9fDEPaOvVJ8eraGmh06zc5KSQz+R03tNKcqPA9tZV3lz24eVUvzwduHF66Ob14KxwSvO3DP2/enZqMY3/iaFzhQG+mVQ/XqgP++GqO8Fx3mziOl+8+NB5aboxh/aZG4q8AfN47lw6XSr9/x09+vTpKyz1ZpqzKL4Y/fYvt7iKjocewH/T9SSgfNLVJOSXLid66XQxEf/IdxxbBqOjypu2DN73TXDC+H+yYYrXatRZ+f6VHXuypjadZVa6HYXSXBoJzB2pXnXHW4/0ekxjGcCl0BhIUKgN8yWNpoSMzJmKUpsZqDTmodUUlv1t+jTERG7BZFOA0G2DQqf7SLo9MTLnFaVB36h0R0KrVUE+sc34WIcyNKgl1MXEHeY7nqtstwyE7WnSV3aL0+qAlycOTRrlElm+fEIu8RRrmtd6viUKM+w5aAb3kW17WGOvRx2Zzon461JppupJ00nPgQGLMNIiSBdKuIPyOjwu5Q0WA4X3pxHtiq2FG2hV8TzCQmZ0JCch68A4MbidaLfySNM1bV6LUFAG8ziQGUwjNpsH1aqn9ZAOMS03IOdbJ7X6Zboappc3Oe94CFqZ55dRRIocZVTylvStJGtpt2Ps5NlrQ6c+Xsq7BAA=') format('woff2'),
+  url('iconfont.woff?t=1559037516039') format('woff'),
+  url('iconfont.ttf?t=1559037516039') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+  url('iconfont.svg?t=1559037516039#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-text:before {
+  content: "\e878";
+}
+
+.icon-pencil:before {
+  content: "\e669";
+}
+
+.icon-eraser:before {
+  content: "\e78d";
+}
+
+.icon-line:before {
+  content: "\e815";
+}
+

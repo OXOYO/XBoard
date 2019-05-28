@@ -56,7 +56,7 @@
     name: 'ToolItem',
     props: {
       label: String,
-      value: String,
+      // value: String,
       content: Array
     },
     data () {

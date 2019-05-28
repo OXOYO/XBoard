@@ -56,41 +56,43 @@
 </style>
 
 <template>
-  <div class="board" :style="boardStyle">
-    <transition name="x-fade">
-      <div class="header" v-show="status.header">
+  <div class="board" :style="boardStyle" @click="handleBoardClick">
+    <div class="header" v-show="status.header" @mousedown="handleBoardHeaderMouseDown" @contextmenu.stop.prevent>
       <ToolBox style="margin: 0 auto;">
-        <ToolItem :value="currentTheme">
-          <template v-slot:label>
-            <div class="theme-label" :style="{ background: currentTheme }"></div>
-          </template>
-          <template v-slot:content>
-            <div
-              v-for="(item, index) in themes.filter(target => target.enable)"
-              :key="index"
-              class="theme-item"
-              @click="handleThemeClick(item)"
-              :style="{ background: item.color }"
-            >
-            </div>
-          </template>
-        </ToolItem>
+        <template v-for="(item, index) in tools.filter(item => item.enable)">
+          <!--<ToolItem :key="index" :label="item.label"></ToolItem>-->
+          <ToolItem :key="index" :value="item">
+            <template v-slot:label>
+              <span class="icon iconfont" :class="[item.icon ? 'icon-' + item.icon : '']"></span>
+            </template>
+          </ToolItem>
+        </template>
       </ToolBox>
     </div>
-    </transition>
-    <div class="body" @dblclick="handleDbClick"></div>
+    <div
+      class="body"
+      @dblclick="handleBoardBodyDbClick"
+      @contextmenu.stop.prevent="handleBoardBodyRightClick($event)"
+    >
+      <SignaturePad :options="padOptions"></SignaturePad>
+      <ContextMenu></ContextMenu>
+    </div>
   </div>
 </template>
 
 <script>
   import ToolBox from '../components/ToolBox/Index'
   import ToolItem from '../components/ToolBox/ToolItem'
+  import SignaturePad from '../components/SignaturePad/Index'
+  import ContextMenu from '../components/ContextMenu/Index'
 
   export default {
     name: 'Board',
     components: {
       ToolBox,
-      ToolItem
+      ToolItem,
+      SignaturePad,
+      ContextMenu
     },
     data () {
       return {
@@ -107,7 +109,41 @@
             color: '#357F5F',
             enable: true
           }
-        ]
+        ],
+        tools: [
+          {
+            name: 'pencil',
+            label: 'Pencil',
+            icon: 'pencil',
+            enable: true
+          },
+          {
+            name: 'line',
+            label: 'Line',
+            icon: 'line',
+            enable: true
+          },
+          {
+            name: 'text',
+            label: 'Text',
+            icon: 'text',
+            enable: true
+          },
+          {
+            name: 'eraser',
+            label: 'Eraser',
+            icon: 'eraser',
+            enable: true
+          },
+          {
+            name: 'color',
+            label: 'Color',
+            icon: 'color',
+            enable: true
+          }
+        ],
+        // 画板配置
+        padOptions: {}
       }
     },
     computed: {
@@ -122,9 +158,28 @@
         this.currentTheme = item.color
         console.log('handleThemeClick', item)
       },
-      handleDbClick () {
+      handleBoardClick () {
+        // 广播事件
+        this.$X.utils.bus.$emit('platform/contextMenu/hide')
+      },
+      handleBoardHeaderMouseDown () {
+        // 广播事件
+        this.$X.utils.bus.$emit('platform/contextMenu/hide')
+      },
+      handleBoardBodyDbClick () {
         let _t = this
         _t.switchStatus()
+      },
+      handleBoardBodyRightClick: function (event) {
+        let _t = this
+        let xVal = parseInt(event.clientX)
+        let yVal = parseInt(event.clientY)
+        let options = {
+          x: xVal,
+          y: yVal
+        }
+        // 广播事件
+        _t.$X.utils.bus.$emit('platform/contextMenu/show', options)
       },
       // 切换状态
       switchStatus (val, key) {
