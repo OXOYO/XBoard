@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
+    "js-cookie": "^2.2.0",
     "moment": "^2.24.0",
     "mousetrap": "^1.6.3",
     "register-service-worker": "^1.6.2",

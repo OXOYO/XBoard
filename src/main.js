@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import moment from 'moment'
+import * as Cookies from 'js-cookie'
 
 import App from './App.vue'
 import i18n from './i18n'
@@ -25,7 +26,8 @@ Vue.prototype.$X = {
   isDev,
   utils,
   config,
-  moment
+  moment,
+  Cookies
 }
 
 // i18n实例
