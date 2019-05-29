@@ -14,6 +14,7 @@
     "register-service-worker": "^1.6.2",
     "signature_pad": "^3.0.0-beta.3",
     "vue": "^2.6.10",
+    "vue-i18n": "^8.11.2",
     "vue-router": "^3.0.3",
     "vue-swatches": "^1.0.3",
     "vuex": "^3.0.1"

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import moment from 'moment'
 
 import App from './App.vue'
+import i18n from './i18n'
 import router from './router'
 import store from './store'
 import './registerServiceWorker'
@@ -27,10 +28,14 @@ Vue.prototype.$X = {
   moment
 }
 
+// i18n实例
+const i18nInstance = i18n(Vue)
+
 // 注册全局组件
 Vue.use(components)
 
 new Vue({
+  i18n: i18nInstance,
   router,
   store,
   render: h => h(App)
