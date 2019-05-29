@@ -7,6 +7,7 @@ import store from './store'
 import './registerServiceWorker'
 
 import utils from './global/utils'
+import components from './global/components'
 import config from './config'
 
 import './assets/styles/main.less'
@@ -25,6 +26,9 @@ Vue.prototype.$X = {
   config,
   moment
 }
+
+// 注册全局组件
+Vue.use(components)
 
 new Vue({
   router,

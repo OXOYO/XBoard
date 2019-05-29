@@ -73,6 +73,12 @@
       }
     },
     methods: {
+      setOption (key, val) {
+        let _t = this
+        if (_t.signaturePad && key) {
+          _t.signaturePad[key] = val
+        }
+      },
       resizeCanvas () {
         let _t = this
         const canvas = _t.$refs.padCanvas

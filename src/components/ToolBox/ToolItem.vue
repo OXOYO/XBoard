@@ -9,45 +9,27 @@
     position: relative;
     width: 30px;
     height: 30px;
-    padding: 10px;
+    line-height: 30px;
+    /*padding: 10px;*/
     vertical-align: middle;
+    opacity: .3;
 
-    .label {
-      height: 40px;
+    &:hover {
+      opacity: 1;
+    }
+    &.active {
+      opacity: 1;
     }
 
-    .content {
-      position: absolute;
-      top: 41px;
-      display: flex;
-      padding: 5px;
-      background: #fff;
-      box-shadow: 0 0 5px 2px rgba(0, 0, 0, .1);
+    .label {
 
-      .content-item {
-        flex: 1 1 auto;
-        padding: 5px;
-        margin: 5px;
-      }
     }
   }
 </style>
 
 <template>
-  <div class="tool-item" @mouseover="handleOver" @mouseout="handleOut">
+  <div :class="{ 'tool-item': true, 'active': active }">
     <slot name="label" class="label">{{ label }}</slot>
-    <div class="content" v-show="visible">
-      <slot name="content">
-        <div
-          v-for="(val, index) in content"
-          :key="index"
-          class="content-item"
-          @click="handleClick(val)"
-        >
-          {{ val }}
-        </div>
-      </slot>
-    </div>
   </div>
 </template>
 
@@ -56,8 +38,7 @@
     name: 'ToolItem',
     props: {
       label: String,
-      // value: String,
-      content: Array
+      active: Boolean
     },
     data () {
       return {

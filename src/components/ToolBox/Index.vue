@@ -9,6 +9,7 @@
     box-shadow: 0 0 5px 2px rgba(0, 0, 0, .1);
     padding: 5px;
     background: #fff;
+    cursor: default;
   }
 </style>
 

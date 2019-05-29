@@ -1,10 +1,10 @@
 @font-face {font-family: "iconfont";
-  src: url('iconfont.eot?t=1559037516039'); /* IE9 */
-  src: url('iconfont.eot?t=1559037516039#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAAN0AAsAAAAAB3gAAAMoAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDMgqCGIIFATYCJAMUCwwABCAFhG0HRxuQBsguIScbXqTbBSdY3dC6xWvjhKYBqE8hHv5/f3z7vHsfvpyGSFCCmtKEOE6gVp/mPknuUBRC5MQ4G4AEJ2cjwmpzX2i7Dlampf1/SL/8UP+ttcxzy8KmZAFBPXJ2Z/84l7Jw1WQEcBfccNVzgxMp0ijARBKLaNVrKLS10dPf+fzfO/0tS2Bee1YOcwyuT50A44AC2xOjhNICKVFuGLugJd4m0Go4EeBi82UW+mTmokBszOsW9GUSsszKjVBV7MziAjTFyeKO88Hn45dp0VAoE3PlytVHXdj9uu77jjT4f0AeRTmdD2wfCVMBZGJTZWCjWFSYCqxV/V3cfKBVo1B8Xfft7Bv1+/7/R1OZodBq/eFRSLIgKlCiHcxXzHxd5xAKvp0lJL4PEDLfd6ie5aYStKLGUmA1xB3rpUJSiJGk3JQdu92Hn4/ON35rPnDpxlO09jj9fDEPaOvVJ8eraGmh06zc5KSQz+R03tNKcqPA9tZV3lz24eVUvzwduHF66Ob14KxwSvO3DP2/enZqMY3/iaFzhQG+mVQ/XqgP++GqO8Fx3mziOl+8+NB5aboxh/aZG4q8AfN47lw6XSr9/x09+vTpKyz1ZpqzKL4Y/fYvt7iKjocewH/T9SSgfNLVJOSXLid66XQxEf/IdxxbBqOjypu2DN73TXDC+H+yYYrXatRZ+f6VHXuypjadZVa6HYXSXBoJzB2pXnXHW4/0ekxjGcCl0BhIUKgN8yWNpoSMzJmKUpsZqDTmodUUlv1t+jTERG7BZFOA0G2DQqf7SLo9MTLnFaVB36h0R0KrVUE+sc34WIcyNKgl1MXEHeY7nqtstwyE7WnSV3aL0+qAlycOTRrlElm+fEIu8RRrmtd6viUKM+w5aAb3kW17WGOvRx2Zzon461JppupJ00nPgQGLMNIiSBdKuIPyOjwu5Q0WA4X3pxHtiq2FG2hV8TzCQmZ0JCch68A4MbidaLfySNM1bV6LUFAG8ziQGUwjNpsH1aqn9ZAOMS03IOdbJ7X6Zboappc3Oe94CFqZ55dRRIocZVTylvStJGtpt2Ps5NlrQ6c+Xsq7BAA=') format('woff2'),
-  url('iconfont.woff?t=1559037516039') format('woff'),
-  url('iconfont.ttf?t=1559037516039') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
-  url('iconfont.svg?t=1559037516039#iconfont') format('svg'); /* iOS 4.1- */
+  src: url('iconfont.eot?t=1559121130458'); /* IE9 */
+  src: url('iconfont.eot?t=1559121130458#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('data:application/x-font-woff2;charset=utf-8;base64,d09GMgABAAAAAAToAAsAAAAAChQAAASZAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCECgqGHIUxATYCJAMkCxQABCAFhG0HbRvKCCMRJnxRSfbPw9hYeXjmpTK7EmemFQlEHlgWjsyP2vCnDXWfg4h05qzuJJ+lB6QqzGW4AoAKCSsikh2uUisAptba3oue/KOJSBOTJLaC2ibwQ0xOwLPtowkP2TMN2lcGE9ccgTER5lHOokf/cI+lpengj/1mRTs0oj5MezHVxBG5nzhCJHOdIyQRb7CllbqFsr4epwKeTXdhgi5DAJc8apA27fIhMGjEWQLIiKFtDcB4nOgEomAsTsRGbclybIy1wLoHLDN+Xn5RSwxY2ApxYcdBuc2ghV8RHa+mB9N7aChU1fmB2zZQQA2gQTZGBlcrq1iDwv38Xc0QIIkEFJZf4Xfwh/pBZEnkYTQ1Oj4IgkhiJyFJGg8ahY2FQ2iw/zzEgY0xwI8xmIlVKTxo8DvwoMAfyoMNfsCDBZElPDgQechDCKKpPBiIjlcvtzHM05OAVOALSAvCtzlCEDSCwsIgBa1DInuqrbSxHbR+deykbjmeKxdulLh6+pYD1z1iZNHNQ9vEdvdeO9fQS0geGcaa4gdcLYDzdD3AtWTJDyqqvxPFzyGaRksm/JGqB3Ke6g9cRaEly4FE1wIcogc6UVUaMGzAEBNcj6BRYxQoMfAYRCBEvBERmefM13LCxwd6f4c8EL6+yOdnU32VjHoJLkNtuKOttRdJHO/ABMFh4OQk3YCsc0A3CBJwgGGdE/lGJ3A0K+YOQz/cxud7lYmT5UBZn4zrCU73FviN31g3lnL8c26NQfH58UHG007t0ob1ZtyvIO5QkLhj8dr+3I/QzLwSa305bttfKxOy1cUDRy9NTPKyQfxf/9p+rFCHup//5ZsyHMBA0tOy1K4uxsqJx9PVldOlyS0Ui6emHkyHM6UrYLxKsKememoZWIHy6r3YcLciF3KUciqhiFIRuUbuNxwdGXT91wOAlp1CaYoY9/r6LR5GU5ojH5mcTCmgVxMTAwPDw///8+OUP/S9fv2ZIOOxOP2z7rddML9NzNM6Rrh2i3tebG3b+3tKw/xuiW3nt/03z/S32ZDgnkiD1vpQ0aGHD88UDdKHM206QBBV+1XplfJZ7VH549+oo6oMQO21vngxe9mCH2q3Sqf4aqPKKv9TK1TiOfk7ZFcl0d5Sk//G0wC8Thn5k5PBG011YYO1ek2cgSGdyDHSfDWiK6zfKqU10WnGRAQI0xoDe60XLi5w3kWT+FCtglWOXzB3FcAiRC4oDCVoja8BG4864GBoDi7VtN/ukcw4FKLDQBVzCIQEjoFFHBdBkcB9tMa/B5s0/oBDgihw6S7JB3qUyUK6OzIKQU3ln/rKmkb2yM6sv6ENqmC3xiC/wL7PUBYW4a9cYcBVLPGfNhdpqGGr6ULXQSlLju2ASuJOxB2S8NaoT4orqye7SWtGIaip/FNfWdNonWUX+P4b2qAKTkD8SL/Avu+fsjjNgL4aTSbErgz3nzYXaYRpDVtNF/ihpKIlFz1uQCVxVyDvDgm3a7Ia4+bNel13Ae5E/Krw1BIlWmxxJCRGwuKiBT9ZaPvBvglKRb5iwCyCqe3KwVS9Ws2Mziur1rrgdwAWqjeYTAAAAAA=') format('woff2'),
+  url('iconfont.woff?t=1559121130458') format('woff'),
+  url('iconfont.ttf?t=1559121130458') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
+  url('iconfont.svg?t=1559121130458#iconfont') format('svg'); /* iOS 4.1- */
 }
 
 .iconfont {
@@ -19,12 +19,28 @@
   content: "\e878";
 }
 
+.icon-move:before {
+  content: "\e6ff";
+}
+
+.icon-full-screen:before {
+  content: "\e648";
+}
+
+.icon-undo:before {
+  content: "\e628";
+}
+
 .icon-pencil:before {
   content: "\e669";
 }
 
 .icon-eraser:before {
   content: "\e78d";
+}
+
+.icon-marquee:before {
+  content: "\e7cf";
 }
 
 .icon-line:before {
