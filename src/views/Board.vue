@@ -59,21 +59,21 @@
       box-shadow: 0 0 2px 2px rgba(0, 0, 0, .5);
     }
   }
-  .color-swatch {
-    .vue-swatches__container {
-      bottom: 50px !important;
-    }
-  }
 </style>
 
 <template>
-  <div class="board" :style="boardStyle" @click="handleBoardClick">
+  <div class="board" @click="handleBoardClick">
     <div
       class="body"
       @dblclick="handleBoardBodyDbClick"
       @contextmenu.stop.prevent="handleBoardBodyRightClick($event)"
     >
-      <SignaturePad ref="signaturePad" :options="padOptions"></SignaturePad>
+      <SignaturePad
+        ref="signaturePad"
+        :options="padOptions"
+        :style="padStyle"
+      >
+      </SignaturePad>
       <ContextMenu></ContextMenu>
     </div>
     <div class="footer" v-show="status.footer" @mousedown="handleBoardFooterMouseDown" @contextmenu.stop.prevent>
@@ -85,9 +85,12 @@
             @click.native="handleToolClick(item)"
           >
             <template v-slot:label>
-              <XTooltip :content="item.label">
+              <!--<XTooltip :content="item.label">
                 <XIcon :type="item.icon"></XIcon>
-              </XTooltip>
+              </XTooltip>-->
+              <Tooltip :content="item.label">
+                <XIcon :type="item.icon"></XIcon>
+              </Tooltip>
             </template>
           </ToolItem>
         </template>
@@ -108,19 +111,27 @@
           </template>
         </ToolItem>
         <!-- 颜色 -->
-        <ToolItem v-if="tools.color.enable" style="opacity: 1;">
+        <ToolItem v-if="tools.penColor.enable" style="opacity: 1;">
           <template v-slot:label>
-            <XTooltip :content="tools.color.label">
-              <Swatches
-                class="color-swatch"
-                v-model="currentColor"
-                shapes="circles"
-                swatch-size="30"
-                popover-to="right"
-                show-fallback
-                :trigger-style="{width: '30px', height: '30px'}"
-              >
-              </Swatches>
+            <XTooltip :content="tools.penColor.label">
+              <ColorPicker v-model="formData.penColor" recommend alpha size="small" @on-change="(val) => handleFormChange('penColor', val)"/>
+            </XTooltip>
+          </template>
+        </ToolItem>
+        <!-- 背景色 -->
+        <ToolItem v-if="tools.backgroundColor.enable" style="opacity: 1;">
+          <template v-slot:label>
+            <XTooltip :content="tools.backgroundColor.label">
+              <!-- FIXME 使用:value形式进行绑定 -->
+              <ColorPicker :value="formData.backgroundColor" recommend alpha size="small" @on-change="(val) => handleFormChange('backgroundColor', val)"/>
+            </XTooltip>
+          </template>
+        </ToolItem>
+        <!-- 画笔大小 -->
+        <ToolItem v-if="tools.dotSize.enable" style="opacity: 1;">
+          <template v-slot:label>
+            <XTooltip :content="tools.dotSize.label">
+              <InputNumber v-model="formData.dotSize" :max="10" :min="1" size="small" @on-change="(val) => handleFormChange('dotSize', val)"></InputNumber>
             </XTooltip>
           </template>
         </ToolItem>
@@ -130,9 +141,6 @@
 </template>
 
 <script>
-  import Swatches from 'vue-swatches'
-  import 'vue-swatches/dist/vue-swatches.min.css'
-
   import ToolBox from '../components/ToolBox/Index'
   import ToolItem from '../components/ToolBox/ToolItem'
   import SignaturePad from '../components/SignaturePad/Index'
@@ -143,7 +151,6 @@
   export default {
     name: 'Board',
     components: {
-      Swatches,
       ToolBox,
       ToolItem,
       SignaturePad,
@@ -154,17 +161,11 @@
         status: {
           footer: true
         },
-        currentColor: '#222F3D',
-        themes: [
-          {
-            color: '#DEF0F0',
-            enable: true
-          },
-          {
-            color: '#357F5F',
-            enable: true
-          }
-        ],
+        formData: {
+          penColor: '#222F3D',
+          backgroundColor: 'rgba(255, 255, 255, 1)',
+          dotSize: 1
+        },
         tools: {
           common: [
             {
@@ -232,10 +233,26 @@
             cursor: '',
             enable: true
           },
-          color: {
-            name: 'color',
+          penColor: {
+            name: 'penColor',
             label: 'Color',
-            icon: 'color',
+            icon: '',
+            shortcuts: '',
+            cursor: '',
+            enable: true
+          },
+          backgroundColor: {
+            name: 'backgroundColor',
+            label: 'Background Color',
+            icon: '',
+            shortcuts: '',
+            cursor: '',
+            enable: true
+          },
+          dotSize: {
+            name: 'dotSize',
+            label: 'Size',
+            icon: '',
             shortcuts: '',
             cursor: '',
             enable: true
@@ -244,38 +261,56 @@
         // 当前激活工具
         activeTool: null,
         // 画板配置
-        padOptions: {
-          penColor: '#222F3D'
-        },
+        padOptions: {},
         // 是否全屏
-        isFullScreen: false
+        isFullScreen: false,
+        // 光标
+        cursorMap: {
+          // pencil: require('../assets/images/pencil.png'),
+          // eraser: require('../assets/images/eraser.png'),
+        }
       }
     },
     computed: {
-      boardStyle () {
+      padStyle () {
         let _t = this
-        return {
-          // background: _t.currentTheme
-          cursor: _t.activeTool && _t.activeTool.cursor ? _t.activeTool.cursor : 'auto'
+        let style = {
+          cursor: 'auto'
         }
-      }
-    },
-    watch: {
-      currentColor (val) {
-        let _t = this
-        let el = _t.$refs.signaturePad
-        if (el) {
-          el.setOption('penColor', val)
+        if (['pencil', 'eraser'].includes(_t.activeTool.name)) {
+          let png = require('../assets/images/pencil/png/' + _t.formData.dotSize + '.png')
+          let svg = require('../assets/images/pencil/svg/' + _t.formData.dotSize + '.svg')
+          style = {
+            cursor: `url(${png}) 5 5, url(${svg}) 5 5, auto`
+          }
+        } else if (_t.activeTool.cursor) {
+          style = {
+            cursor: _t.activeTool.cursor
+          }
         }
+        console.log('ddddddd', style)
+        return style
       }
     },
     methods: {
       init () {
         let _t = this
+        // 初始化option
+        _t.initPadOptions()
         // 初始化激活项
         _t.initActiveTool('pencil')
         // 绑定热键
         _t.bindShortcuts()
+      },
+      initPadOptions () {
+        let _t = this
+        _t.padOptions = {
+          dotSize: _t.formData.dotSize,
+          minWidth: _t.formData.dotSize * 0.3,
+          maxWidth: _t.formData.dotSize * 1.7,
+          backgroundColor: _t.formData.backgroundColor,
+          penColor: _t.formData.penColor
+        }
       },
       initActiveTool (name) {
         let _t = this
@@ -287,7 +322,7 @@
           let item = _t.tools.common[i]
           if (item.enable) {
             Mousetrap.bind(item.shortcuts, function () {
-              _t.activeTool = item
+              _t.handleToolClick(item)
             })
           }
         }
@@ -327,7 +362,16 @@
       },
       handleToolClick (item) {
         let _t = this
+        let el = _t.$refs.signaturePad
         _t.activeTool = item
+        switch (item.name) {
+          case 'pencil':
+            el.draw()
+            break
+          case 'eraser':
+            el.eraser()
+            break
+        }
       },
       handleUndoClick () {
         let _t = this
@@ -365,6 +409,37 @@
         }
         // 更新标识
         _t.isFullScreen = !_t.isFullScreen
+      },
+      handleFormChange (key, val) {
+        console.log('handleFormChange', key, val)
+        let _t = this
+        let el = _t.$refs.signaturePad
+        if (el) {
+          switch (key) {
+            case 'dotSize':
+              el.setOption('dotSize', val)
+              el.setOption('minWidth', val * 0.3)
+              el.setOption('maxWidth', val * 1.7)
+              break
+            case 'backgroundColor':
+              _t.$Modal.confirm({
+                title: '提示',
+                content: '切换背景色将清空当前画板，确认切换？',
+                onOk: function () {
+                  // 更新数据
+                  _t.formData.backgroundColor = val
+                  // 设置背景图
+                  el.setOption('backgroundColor', val)
+                  // 清除画布
+                  el.clear()
+                }
+              })
+              break
+            default:
+              el.setOption(key, val)
+              break
+          }
+        }
       },
       // 切换状态
       switchStatus (val, key) {

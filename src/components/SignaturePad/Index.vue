@@ -26,6 +26,15 @@
 <script>
   import SignaturePad from 'signature_pad'
 
+  // 擦除
+  SignaturePad.prototype.eraser = function () {
+    this._ctx.globalCompositeOperation = 'destination-out'
+  }
+  // 画
+  SignaturePad.prototype.draw = function () {
+    this._ctx.globalCompositeOperation = 'source-over'
+  }
+
   export default {
     name: 'SignaturePad',
     props: {
@@ -51,11 +60,11 @@
         // 默认配置
         defOptions: {
           dotSize: 1,
-          minWidth: 0.5,
-          maxWidth: 2.5,
+          minWidth: 1 * 0.3,
+          maxWidth: 1 * 1.7,
           throttle: 16,
           minDistance: 5,
-          backgroundColor: 'rgba(0,0,0,0)',
+          backgroundColor: 'rgba(0, 0, 0, 0)',
           penColor: 'black',
           velocityFilterWeight: 0.7,
           onBegin: () => {},
@@ -133,9 +142,18 @@
       fromDataURL (data) {
         return this.signaturePad.fromDataURL(data)
       },
+      // 画
+      draw () {
+        this.signaturePad.draw()
+      },
       // 清除画布
       clear () {
         this.signaturePad.clear()
+        console.log('this.signaturePad', this.signaturePad)
+      },
+      // 擦除
+      eraser () {
+        this.signaturePad.eraser()
       },
       // 解除绑定所有事件处理程序
       off () {

@@ -7,12 +7,14 @@
   .tool-item {
     display: inline-block;
     position: relative;
-    width: 30px;
+    min-width: 25px;
     height: 30px;
     line-height: 30px;
     /*padding: 10px;*/
     vertical-align: middle;
+    text-align: center;
     opacity: .3;
+    margin: 0 2px;
 
     &:hover {
       opacity: 1;

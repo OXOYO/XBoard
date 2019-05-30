@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
+    "iview": "^3.4.2",
     "js-cookie": "^2.2.0",
     "moment": "^2.24.0",
     "mousetrap": "^1.6.3",

@@ -3,6 +3,9 @@
  *
  *
  */
+// 导入iview语言包
+import _en from 'iview/dist/locale/en-US'
+import _zh from 'iview/dist/locale/zh-CN'
 
 // 导入系统语言包
 import zh from './zh-CN'
@@ -14,7 +17,7 @@ export default {
     'en-us': 'English'
   },
   data: {
-    'zh-cn': zh,
-    'en-us': en
+    'zh-cn': { ..._zh, ...zh },
+    'en-us': { ..._en, ...en }
   }
 }
