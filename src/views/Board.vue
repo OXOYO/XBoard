@@ -19,7 +19,7 @@
       top: 10px;
       display: inline-block;
       text-align: center;
-      z-index: 2000;
+      z-index: 500;
       background: transparent;
       cursor: default;
     }
@@ -29,7 +29,7 @@
       right: 0;
       bottom: 0;
       left: 0;
-      z-index: 1000;
+      z-index: 100;
     }
     .footer {
       position: absolute;
@@ -99,6 +99,14 @@
           <template v-slot:label>
             <XTooltip :content="tools.undo.label">
               <XIcon :type="tools.undo.icon"></XIcon>
+            </XTooltip>
+          </template>
+        </ToolItem>
+        <!-- 清空画板 -->
+        <ToolItem v-if="tools.clear.enable" @click.native="handleClearClick">
+          <template v-slot:label>
+            <XTooltip :content="tools.clear.label">
+              <XIcon :type="tools.clear.icon"></XIcon>
             </XTooltip>
           </template>
         </ToolItem>
@@ -225,6 +233,14 @@
             cursor: '',
             enable: true
           },
+          clear: {
+            name: 'clear',
+            label: 'Clear (C)',
+            icon: 'clear',
+            shortcuts: 'c',
+            cursor: '',
+            enable: true
+          },
           fullScreen: {
             name: 'fullScreen',
             label: 'Full Screen',
@@ -278,17 +294,15 @@
           cursor: 'auto'
         }
         if (['pencil', 'eraser'].includes(_t.activeTool.name)) {
-          let png = require('../assets/images/pencil/png/' + _t.formData.dotSize + '.png')
-          let svg = require('../assets/images/pencil/svg/' + _t.formData.dotSize + '.svg')
+          let png = require('../assets/images/64/' + _t.activeTool.name + '.png')
           style = {
-            cursor: `url(${png}) 5 5, url(${svg}) 5 5, auto`
+            cursor: `url(${png}) 32 32, auto`
           }
         } else if (_t.activeTool.cursor) {
           style = {
             cursor: _t.activeTool.cursor
           }
         }
-        console.log('ddddddd', style)
         return style
       }
     },
@@ -330,6 +344,10 @@
         if (_t.tools.undo.enable) {
           Mousetrap.bind(_t.tools.undo.shortcuts, _t.handleUndoClick)
         }
+        // 绑定clear
+        if (_t.tools.clear.enable) {
+          Mousetrap.bind(_t.tools.clear.shortcuts, _t.handleClearClick)
+        }
         // 绑定esc
         Mousetrap.bind('escape', function () {
           if (_t.isFullScreen) {
@@ -366,9 +384,18 @@
         _t.activeTool = item
         switch (item.name) {
           case 'pencil':
+            el.setOption('dotSize', _t.formData.dotSize)
+            el.setOption('minWidth', _t.formData.dotSize * 0.3)
+            el.setOption('maxWidth', _t.formData.dotSize * 1.7)
+            el.setOption('penColor', _t.formData.penColor)
             el.draw()
             break
           case 'eraser':
+            el.setOption('dotSize', 25)
+            el.setOption('minWidth', 25)
+            el.setOption('maxWidth', 25)
+            // FIXME 【BUG】设置画笔为背景色，但是并有没有什么用
+            el.setOption('penColor', _t.formData.backgroundColor)
             el.eraser()
             break
         }
@@ -378,6 +405,20 @@
         let el = _t.$refs.signaturePad
         if (el && el.undo) {
           el.undo()
+        }
+      },
+      handleClearClick () {
+        let _t = this
+        let el = _t.$refs.signaturePad
+        if (el && el.clear) {
+          _t.$Modal.confirm({
+            title: '提示',
+            content: '确认清空当前画板吗？',
+            onOk: function () {
+              // 清除画布
+              el.clear()
+            }
+          })
         }
       },
       handleFullScreenClick () {
