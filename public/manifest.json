@@ -1,6 +1,6 @@
 {
-  "name": "xboard",
-  "short_name": "xboard",
+  "name": "XBoard",
+  "short_name": "XBoard",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
