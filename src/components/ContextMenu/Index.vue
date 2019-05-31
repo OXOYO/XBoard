@@ -11,20 +11,14 @@
     width: auto !important;
     z-index: 9999;
     background: #FFF;
-    box-shadow: 2px 2px 1px 1px rgba(0, 0, 0, .1);
+    box-shadow: 0 0 5px 2px rgba(0, 0, 0, .1);
     padding: 5px 0;
-
-    .menu-item {
-
-    }
   }
 </style>
 
 <template>
   <div class="context-menu-box" v-show="isShow" :style="contextMenuStyle">
-    <div class="menu-item">
-      <h1>TODO ContextMenu</h1>
-    </div>
+    <slot></slot>
   </div>
 </template>
 

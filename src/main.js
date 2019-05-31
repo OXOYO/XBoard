@@ -33,7 +33,7 @@ Vue.prototype.$X = {
 }
 
 // i18n实例
-const i18nInstance = i18n(Vue)
+const i18nInstance = i18n(Vue, 'en-us')
 
 // 注册ui
 Vue.use(iView, {

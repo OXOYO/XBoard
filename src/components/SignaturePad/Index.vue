@@ -78,7 +78,9 @@
           y: 0
         },
         // 图片类型
-        imageTypes: ['image/png', 'image/jpeg', 'image/svg+xml']
+        imageTypes: ['image/png', 'image/jpeg', 'image/svg+xml'],
+        // 撤销历史
+        undoHistory: []
       }
     },
     methods: {
@@ -124,10 +126,22 @@
       undo () {
         let _t = this
         let data = _t.signaturePad.toData()
-
-        if (data) {
-          data.pop()
+        let last = data.pop()
+        if (last) {
+          _t.undoHistory.push(last)
           return _t.signaturePad.fromData(data)
+        }
+      },
+      // 撤回
+      redo () {
+        let _t = this
+        let data = _t.signaturePad.toData()
+        let last = _t.undoHistory.pop()
+        if (last) {
+          return _t.signaturePad.fromData([
+            ...data,
+            last
+          ])
         }
       },
       // 将签名图像作为点组数组返回
@@ -149,7 +163,6 @@
       // 清除画布
       clear () {
         this.signaturePad.clear()
-        console.log('this.signaturePad', this.signaturePad)
       },
       // 擦除
       eraser () {
@@ -166,6 +179,10 @@
       // 如果canvas为空，则返回true，否则返回false
       isEmpty () {
         return this.signaturePad.isEmpty()
+      },
+      handleOnBegin () {
+        // 清空撤销历史
+        this.undoHistory = []
       }
     },
     mounted () {
@@ -174,7 +191,8 @@
       // 创建画板实例
       _t.signaturePad = new SignaturePad(canvas, {
         ..._t.defOptions,
-        ..._t.options
+        ..._t.options,
+        onBegin: _t.handleOnBegin
       })
 
       // 绑定resize事件

@@ -16,6 +16,10 @@ export default {
     'zh-cn': '简体中文',
     'en-us': 'English'
   },
+  icon: {
+    'zh-cn': require('../assets/images/langs/zh-cn.png'),
+    'en-us': require('../assets/images/langs/en-us.png')
+  },
   data: {
     'zh-cn': { ..._zh, ...zh },
     'en-us': { ..._en, ...en }
