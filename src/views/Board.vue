@@ -167,11 +167,12 @@
           </template>
         </ToolItem>
         <Divider type="vertical" />
+        <!-- 多语言 -->
         <ToolItem v-if="tools.language.enable" style="opacity: 1;">
           <template v-slot:label>
             <Tooltip :content="$t(tools.language.lang)">
               <Dropdown trigger="click" @on-click="handleLocaleChange">
-                <a href="javascript: void(0);">
+                <a href="javascript: void(0);" style="color: #808695;">
                   <img :src="$X.langs.icon[locale]" :alt="$X.langs.label[locale]" style="width: auto; height: 20px; margin-right: 5px; vertical-align: middle;">
                   <Icon type="ios-arrow-down"></Icon>
                 </a>
@@ -185,6 +186,17 @@
                   </DropdownItem>
                 </DropdownMenu>
               </Dropdown>
+            </Tooltip>
+          </template>
+        </ToolItem>
+        <Divider type="vertical" />
+        <!-- Github -->
+        <ToolItem v-if="tools.github.enable" style="opacity: 1;">
+          <template v-slot:label>
+            <Tooltip :content="$t(tools.github.lang)">
+              <a :href="$X.config.system.github" target="_blank" style="color: #333333;">
+                <XIcon :type="tools.github.icon"></XIcon>
+              </a>
             </Tooltip>
           </template>
         </ToolItem>
@@ -378,6 +390,16 @@
             label: 'Language',
             lang: 'L10016',
             icon: '',
+            shortcuts: '',
+            cursor: '',
+            enable: true,
+            contextmenu: false
+          },
+          github: {
+            name: 'github',
+            label: 'Github',
+            lang: 'L10017',
+            icon: 'github',
             shortcuts: '',
             cursor: '',
             enable: true,

@@ -21,6 +21,7 @@ export default {
   L10014: 'Canvas Color',
   L10015: 'Pencil size',
   L10016: 'Language',
+  L10017: 'Github',
   L10101: 'Hint',
   L10102: 'Are you sure to clear the current artboard? ',
   L10103: 'Switching the background color will clear the current artboard, confirm the switch? '

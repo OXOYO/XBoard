@@ -11,5 +11,7 @@ export default {
   subtitle: 'XBoard',
   minTitle: 'XBoard',
   logo: require('../assets/images/logo.png'),
+  github: 'https://github.com/OXOYO/XBoard',
+  githubPages: 'https://oxoyo.github.io/XBoard/',
   copyright: '© 2019 OXOYO All Rights Reserved.'
 }
