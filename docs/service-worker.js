@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/XBoard/precache-manifest.6dfb9038eba183d33559a020178a49fa.js"
+  "/XBoard/precache-manifest.7854597e40065f36f5f840ceaf795297.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "XBoard"});

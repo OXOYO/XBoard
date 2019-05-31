@@ -1,7 +1,7 @@
 self.__precacheManifest = [
   {
-    "revision": "e0383c2e90130320c7f847cfbc5ba680",
-    "url": "/XBoard/img/iconfont.e0383c2e.svg"
+    "revision": "683a2b5ae57f016903f2655719a63e76",
+    "url": "/XBoard/img/iconfont.683a2b5a.svg"
   },
   {
     "revision": "b6216d61c03e6ce0c9aea6ca7808f7ca",
@@ -12,8 +12,8 @@ self.__precacheManifest = [
     "url": "/XBoard/fonts/ionicons.143146fa.woff2"
   },
   {
-    "revision": "52a03f88787855cfdb5e",
-    "url": "/XBoard/css/app.279f8799.css"
+    "revision": "a2e3a2c6e461bd882582",
+    "url": "/XBoard/css/app.8f864f95.css"
   },
   {
     "revision": "f541f6fad3ac44adfeb6",
@@ -32,33 +32,33 @@ self.__precacheManifest = [
     "url": "/XBoard/img/en-us.349a281a.png"
   },
   {
-    "revision": "c991cc81abef75162f4865e9c4186fd3",
+    "revision": "3f5c6371712360890aaffdbaabd33fa1",
     "url": "/XBoard/index.html"
   },
   {
-    "revision": "52a03f88787855cfdb5e",
-    "url": "/XBoard/js/app.05a00695.js"
-  },
-  {
-    "revision": "d535a25a79fb1365ae814b61e88fae71",
-    "url": "/XBoard/fonts/ionicons.d535a25a.ttf"
+    "revision": "a2e3a2c6e461bd882582",
+    "url": "/XBoard/js/app.c136bc44.js"
   },
   {
     "revision": "99ac3308dd8ee14f749f51538d0d5b9e",
     "url": "/XBoard/fonts/ionicons.99ac3308.woff"
   },
   {
+    "revision": "d535a25a79fb1365ae814b61e88fae71",
+    "url": "/XBoard/fonts/ionicons.d535a25a.ttf"
+  },
+  {
     "revision": "a2c4a261a239aa84463dc70e4bac9b9a",
     "url": "/XBoard/img/ionicons.a2c4a261.svg"
   },
   {
-    "revision": "902e2c0fac696bd3f518",
+    "revision": "890def57486a87fb2f37",
     "url": "/XBoard/css/about.619de122.css"
   },
   {
     "url": "/XBoard/chunk-vendors.f541f6fad3ac44adfeb6.js"
   },
   {
-    "url": "/XBoard/about.902e2c0fac696bd3f518.js"
+    "url": "/XBoard/about.890def57486a87fb2f37.js"
   }
 ];
