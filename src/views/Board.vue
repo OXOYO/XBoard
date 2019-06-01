@@ -645,9 +645,9 @@
         if (el) {
           let res = el.save()
           if (res.isEmpty) {
-            _t.$Message.info('数据为空，导出失败！')
+            _t.$Message.info(_t.$t('L10104'))
           } else {
-            let fileName = _t.$X.config.system.name + '_' + _t.$X.moment().format('YYYYMMDDhhmmss')
+            let fileName = _t.$X.config.system.name + '_' + _t.$X.utils.filters.formatDate(new Date(), 'YYYYMMDDhhmmss')
             _t.$X.utils.file.downloadFile(fileName, res.data)
           }
         }

@@ -5,6 +5,7 @@
  */
 import VueI18n from 'vue-i18n'
 import langs from './langs'
+import locale from 'iview/src/locale/index'
 
 export default function (Vue, defLang) {
   let { config, Cookies } = Vue.prototype.$X
@@ -21,8 +22,11 @@ export default function (Vue, defLang) {
   Vue.prototype.$X.langs = langs
   Vue.prototype.$X.locale = defLang
   // i18n实例
-  return new VueI18n({
+  let i18nInstance = new VueI18n({
     locale: defLang,
     messages: langs.data
   })
+  // FIXME 覆写iview i18n方法，修复$Modal弹窗报错BUG，【Issues】https://github.com/iview/iview/issues/4769#issuecomment-449851416
+  locale.i18n((path, options) => i18nInstance.t(path, options))
+  return i18nInstance
 }
