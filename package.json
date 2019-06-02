@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
+    "html2canvas": "^1.0.0-rc.3",
     "iview": "^3.4.2",
     "js-cookie": "^2.2.0",
     "mousetrap": "^1.6.3",

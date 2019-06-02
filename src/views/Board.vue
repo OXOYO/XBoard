@@ -56,12 +56,15 @@
       @dblclick="handleBoardBodyDbClick"
       @contextmenu.stop.prevent="handleBoardBodyRightClick($event)"
     >
+      <!-- 画板 -->
       <SignaturePad
         ref="signaturePad"
         :options="padOptions"
         :style="padStyle"
       >
       </SignaturePad>
+      <!-- TODO 文本 -->
+      <!-- TODO 备忘录 -->
       <ContextMenu>
         <Menu @on-select="handleContextMenuChange">
           <MenuItem
@@ -278,6 +281,7 @@
   import ContextMenu from '../components/ContextMenu/Index'
   // 热键
   import Mousetrap from 'mousetrap'
+  // import html2canvas from 'html2canvas'
 
   export default {
     name: 'Board',
@@ -715,6 +719,16 @@
             })
             break
           case 'download':
+            // html2canvas(el.$el, {
+            //   backgroundColor: null,
+            //   imageTimeout: 0
+            // }).then(function (canvas) {
+            //   let data = canvas.toDataURL('image/png')
+            //   let fileName = _t.$X.config.system.name + '_' + _t.$X.utils.filters.formatDate(new Date(), 'YYYYMMDDhhmmss')
+            //   _t.$X.utils.file.downloadFile(fileName, data)
+            // }).catch(function (error) {
+            //   console.warn('html2canvas render error!', error)
+            // })
             let res = el.save()
             if (res.isEmpty) {
               _t.$Message.info(_t.$t('L10104'))
