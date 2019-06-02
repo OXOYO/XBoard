@@ -47,7 +47,6 @@ components.install = function (Vue, options) {
     if (name && obj[name]) {
       Vue.component(name, obj[name])
       if (['Message', 'Modal'].includes(name)) {
-        console.log('name', name, `$${name}`)
         Vue.prototype[`$${name}`] = obj[name]
       }
     }

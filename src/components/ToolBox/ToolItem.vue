@@ -22,6 +22,9 @@
     &.active {
       opacity: 1;
     }
+    &.disabled {
+      cursor: not-allowed;
+    }
 
     .label {
 
@@ -30,7 +33,7 @@
 </style>
 
 <template>
-  <div :class="{ 'tool-item': true, 'active': active }">
+  <div :class="{ 'tool-item': true, 'active': active, 'disabled': disabled }">
     <slot name="label" class="label">{{ label }}</slot>
   </div>
 </template>
@@ -40,23 +43,8 @@
     name: 'ToolItem',
     props: {
       label: String,
-      active: Boolean
-    },
-    data () {
-      return {
-        visible: false
-      }
-    },
-    methods: {
-      handleOver () {
-        this.visible = true
-      },
-      handleOut () {
-        this.visible = false
-      },
-      handleClick (val) {
-        this.$emit('click', val)
-      }
+      active: Boolean,
+      disabled: Boolean
     }
   }
 </script>

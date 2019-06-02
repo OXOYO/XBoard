@@ -65,7 +65,7 @@
       <ContextMenu>
         <Menu @on-select="handleContextMenuChange">
           <MenuItem
-            v-for="(item, index) in contextMenuList"
+            v-for="(item, index) in contextMenuList.filter(item => item.types.includes(actionType))"
             :key="index"
             :name="item.fullName"
           >
@@ -81,6 +81,7 @@
           <ToolItem
             :key="index"
             :active="activeTool.name === item.name"
+            :disabled="!item.types.includes(actionType)"
             @click.native="handleToolClick(item)"
           >
             <template v-slot:label>
@@ -92,7 +93,11 @@
         </template>
         <Divider type="vertical" />
         <!-- 撤销 -->
-        <ToolItem v-if="tools.undo.enable" @click.native="handleUndoClick">
+        <ToolItem
+          v-if="tools.undo.enable"
+          :disabled="!tools.undo.types.includes(actionType)"
+          @click.native="handleToolClick(tools.undo)"
+        >
           <template v-slot:label>
             <Tooltip :content="$t(tools.undo.lang)">
               <XIcon :type="tools.undo.icon"></XIcon>
@@ -100,7 +105,11 @@
           </template>
         </ToolItem>
         <!-- 撤回 -->
-        <ToolItem v-if="tools.redo.enable" :disabled="disabled.redo" @click.native="handleRedoClick">
+        <ToolItem
+          v-if="tools.redo.enable"
+          :disabled="!tools.redo.types.includes(actionType) || (tools.redo.types.includes(actionType) && disabled.redo)"
+          @click.native="handleToolClick(tools.redo)"
+        >
           <template v-slot:label>
             <Tooltip :content="$t(tools.redo.lang)">
               <XIcon :type="tools.redo.icon"></XIcon>
@@ -109,7 +118,11 @@
         </ToolItem>
         <Divider type="vertical" />
         <!-- 图片上传 -->
-        <ToolItem v-if="tools.image.enable" @click.native="handleImageClick">
+        <ToolItem
+          v-if="tools.image.enable"
+          :disabled="!tools.image.types.includes(actionType)"
+          @click.native="handleToolClick(tools.image)"
+        >
           <template v-slot:label>
             <Tooltip :content="$t(tools.image.lang)">
               <XIcon :type="tools.image.icon"></XIcon>
@@ -117,7 +130,11 @@
           </template>
         </ToolItem>
         <!-- 清空画板 -->
-        <ToolItem v-if="tools.clear.enable" @click.native="handleClearClick">
+        <ToolItem
+          v-if="tools.clear.enable"
+          :disabled="!tools.clear.types.includes(actionType)"
+          @click.native="handleToolClick(tools.clear)"
+        >
           <template v-slot:label>
             <Tooltip :content="$t(tools.clear.lang)">
               <XIcon :type="tools.clear.icon"></XIcon>
@@ -125,7 +142,11 @@
           </template>
         </ToolItem>
         <!-- 保存 -->
-        <ToolItem v-if="tools.download.enable" @click.native="handleDownloadClick">
+        <ToolItem
+          v-if="tools.download.enable"
+          :disabled="!tools.download.types.includes(actionType)"
+          @click.native="handleToolClick(tools.download)"
+        >
           <template v-slot:label>
             <Tooltip :content="$t(tools.download.lang)">
               <XIcon :type="tools.download.icon"></XIcon>
@@ -133,7 +154,11 @@
           </template>
         </ToolItem>
         <!-- 全屏 -->
-        <ToolItem v-if="tools.fullScreen.enable" @click.native="handleFullScreenClick">
+        <ToolItem
+          v-if="tools.fullScreen.enable"
+          :disabled="!tools.fullScreen.types.includes(actionType)"
+          @click.native="handleToolClick(tools.fullScreen)"
+        >
           <template v-slot:label>
             <Tooltip :content="$t(tools.fullScreen.lang)">
               <XIcon :type="tools.fullScreen.icon"></XIcon>
@@ -142,56 +167,97 @@
         </ToolItem>
         <Divider type="vertical" />
         <!-- 颜色 -->
-        <ToolItem v-if="tools.penColor.enable" style="opacity: 1;">
+        <ToolItem
+          v-if="tools.penColor.enable"
+          :disabled="!tools.penColor.types.includes(actionType)"
+          style="opacity: 1;"
+        >
           <template v-slot:label>
             <Tooltip :content="$t(tools.penColor.lang)">
-              <ColorPicker v-model="formData.penColor" recommend alpha size="small" @on-change="(val) => handleFormChange('penColor', val)"/>
+              <ColorPicker
+                v-model="formData.penColor"
+                :disabled="!tools.penColor.types.includes(actionType)"
+                recommend
+                alpha
+                size="small"
+                @on-change="(val) => handleToolClick(tools.penColor, val)"
+              />
             </Tooltip>
           </template>
         </ToolItem>
         <!-- 背景色 -->
-        <ToolItem v-if="tools.backgroundColor.enable" style="opacity: 1;">
+        <ToolItem
+          v-if="tools.backgroundColor.enable"
+          :disabled="!tools.backgroundColor.types.includes(actionType)"
+          style="opacity: 1;"
+        >
           <template v-slot:label>
             <Tooltip :content="$t(tools.backgroundColor.lang)">
               <!-- FIXME 使用:value形式进行绑定 -->
-              <ColorPicker :value="formData.backgroundColor" recommend alpha size="small" @on-change="(val) => handleFormChange('backgroundColor', val)"/>
+              <ColorPicker
+                :value="formData.backgroundColor"
+                :disabled="!tools.backgroundColor.types.includes(actionType)"
+                recommend
+                alpha
+                size="small"
+                @on-change="(val) => handleToolClick(tools.backgroundColor, val)"
+              />
             </Tooltip>
           </template>
         </ToolItem>
         <!-- 画笔大小 -->
-        <ToolItem v-if="tools.dotSize.enable" style="opacity: 1;">
+        <ToolItem
+          v-if="tools.dotSize.enable"
+          :disabled="!tools.dotSize.types.includes(actionType)"
+          style="opacity: 1;"
+        >
           <template v-slot:label>
             <Tooltip :content="$t(tools.dotSize.lang)">
-              <InputNumber v-model="formData.dotSize" :max="10" :min="1" size="small" @on-change="(val) => handleFormChange('dotSize', val)"></InputNumber>
+              <InputNumber
+                v-model="formData.dotSize"
+                :disabled="!tools.dotSize.types.includes(actionType)"
+                :max="10"
+                :min="1"
+                size="small"
+                @on-change="(val) => handleToolClick(tools.dotSize, val)"
+              >
+              </InputNumber>
             </Tooltip>
           </template>
         </ToolItem>
         <Divider type="vertical" />
         <!-- 多语言 -->
-        <ToolItem v-if="tools.language.enable" style="opacity: 1;">
+        <ToolItem
+          v-if="tools.language.enable"
+          :disabled="!tools.language.types.includes(actionType)"
+          style="opacity: 1;"
+        >
           <template v-slot:label>
-            <Tooltip :content="$t(tools.language.lang)">
-              <Dropdown trigger="click" @on-click="handleLocaleChange">
-                <a href="javascript: void(0);" style="color: #808695;">
-                  <img :src="$X.langs.icon[locale]" :alt="$X.langs.label[locale]" style="width: auto; height: 20px; margin-right: 5px; vertical-align: middle;">
-                  <Icon type="ios-arrow-down"></Icon>
-                </a>
-                <DropdownMenu slot="list">
-                  <DropdownItem
-                    v-for="(lang, index) in Object.keys($X.langs.data)"
-                    :key="index"
-                    :name="lang"
-                  >
-                    <img :src="$X.langs.icon[lang]" :alt="$X.langs.label[lang]" style="width: auto; height: 20px; vertical-align: middle;">
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            </Tooltip>
+            <!--<Tooltip :content="$t(tools.language.lang)"></Tooltip>-->
+            <Dropdown trigger="click" @on-click="handleLocaleChange">
+              <a href="javascript: void(0);" style="color: #808695;">
+                <img :src="$X.langs.icon[locale]" :alt="$X.langs.label[locale]" style="width: auto; height: 20px; margin-right: 5px; vertical-align: middle;">
+                <Icon type="ios-arrow-down"></Icon>
+              </a>
+              <DropdownMenu slot="list">
+                <DropdownItem
+                  v-for="(lang, index) in Object.keys($X.langs.data)"
+                  :key="index"
+                  :name="lang"
+                >
+                  <img :src="$X.langs.icon[lang]" :alt="$X.langs.label[lang]" style="width: auto; height: 20px; vertical-align: middle;">
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
           </template>
         </ToolItem>
         <Divider type="vertical" />
         <!-- Github -->
-        <ToolItem v-if="tools.github.enable" style="opacity: 1;">
+        <ToolItem
+          v-if="tools.github.enable"
+          :disabled="!tools.github.types.includes(actionType)"
+          style="opacity: 1;"
+        >
           <template v-slot:label>
             <Tooltip :content="$t(tools.github.lang)">
               <a :href="$X.config.system.github" target="_blank" style="color: #333333;">
@@ -242,7 +308,8 @@
               shortcuts: 'v',
               cursor: 'move',
               enable: false,
-              contextmenu: false
+              contextmenu: false,
+              types: ['edit']
             },
             {
               name: 'marquee',
@@ -252,17 +319,30 @@
               shortcuts: 'm',
               cursor: '',
               enable: false,
-              contextmenu: false
+              contextmenu: false,
+              types: ['edit']
+            },
+            {
+              name: 'preview',
+              label: 'Preview (Ctrl + P)',
+              lang: 'L10018',
+              icon: 'cursor',
+              shortcuts: 'ctrl+p',
+              cursor: '',
+              enable: true,
+              contextmenu: true,
+              types: ['edit']
             },
             {
               name: 'pencil',
               label: 'Pencil (P)',
               lang: 'L10003',
               icon: 'pencil',
-              shortcuts: 'b',
+              shortcuts: 'p',
               cursor: '',
               enable: true,
-              contextmenu: true
+              contextmenu: true,
+              types: ['edit', 'preview']
             },
             {
               name: 'line',
@@ -272,7 +352,8 @@
               shortcuts: 'l',
               cursor: '',
               enable: false,
-              contextmenu: false
+              contextmenu: false,
+              types: ['edit']
             },
             {
               name: 'text',
@@ -282,7 +363,8 @@
               shortcuts: 't',
               cursor: 'text',
               enable: false,
-              contextmenu: false
+              contextmenu: false,
+              types: ['edit']
             },
             {
               name: 'eraser',
@@ -292,7 +374,8 @@
               shortcuts: 'e',
               cursor: '',
               enable: true,
-              contextmenu: true
+              contextmenu: true,
+              types: ['edit']
             }
           ],
           undo: {
@@ -303,7 +386,8 @@
             shortcuts: 'ctrl+z',
             cursor: '',
             enable: true,
-            contextmenu: true
+            contextmenu: true,
+            types: ['edit']
           },
           redo: {
             name: 'redo',
@@ -313,7 +397,8 @@
             shortcuts: 'ctrl+shift+z',
             cursor: '',
             enable: true,
-            contextmenu: true
+            contextmenu: true,
+            types: ['edit']
           },
           image: {
             name: 'image',
@@ -323,7 +408,8 @@
             shortcuts: 'u',
             cursor: '',
             enable: false,
-            contextmenu: false
+            contextmenu: false,
+            types: ['edit']
           },
           clear: {
             name: 'clear',
@@ -333,7 +419,8 @@
             shortcuts: 'c',
             cursor: '',
             enable: true,
-            contextmenu: true
+            contextmenu: true,
+            types: ['edit']
           },
           download: {
             name: 'download',
@@ -343,7 +430,8 @@
             shortcuts: 'ctrl+s',
             cursor: '',
             enable: true,
-            contextmenu: true
+            contextmenu: true,
+            types: ['edit', 'preview']
           },
           fullScreen: {
             name: 'fullScreen',
@@ -353,7 +441,8 @@
             shortcuts: '',
             cursor: '',
             enable: true,
-            contextmenu: false
+            contextmenu: false,
+            types: ['edit', 'preview']
           },
           penColor: {
             name: 'penColor',
@@ -363,7 +452,8 @@
             shortcuts: '',
             cursor: '',
             enable: true,
-            contextmenu: false
+            contextmenu: false,
+            types: ['edit']
           },
           backgroundColor: {
             name: 'backgroundColor',
@@ -373,7 +463,8 @@
             shortcuts: '',
             cursor: '',
             enable: true,
-            contextmenu: false
+            contextmenu: false,
+            types: ['edit']
           },
           dotSize: {
             name: 'dotSize',
@@ -383,7 +474,8 @@
             shortcuts: '',
             cursor: '',
             enable: true,
-            contextmenu: false
+            contextmenu: false,
+            types: ['edit']
           },
           language: {
             name: 'language',
@@ -393,7 +485,8 @@
             shortcuts: '',
             cursor: '',
             enable: true,
-            contextmenu: false
+            contextmenu: false,
+            types: ['edit', 'preview']
           },
           github: {
             name: 'github',
@@ -403,11 +496,14 @@
             shortcuts: '',
             cursor: '',
             enable: true,
-            contextmenu: false
+            contextmenu: false,
+            types: ['edit', 'preview']
           }
         },
         // 当前激活工具
         activeTool: null,
+        // 当前操作类型 edit: 编辑 preview 预览
+        actionType: 'edit',
         // 画板配置
         padOptions: {},
         // 右键菜单列表
@@ -450,6 +546,8 @@
         _t.initContextMenuList()
         // 绑定热键
         _t.bindShortcuts()
+        // 绑定unload
+        _t.bindUnload()
       },
       initPadOptions () {
         let _t = this
@@ -469,62 +567,49 @@
       },
       initContextMenuList () {
         let _t = this
+        let handler = function (list, key, item) {
+          if (item.enable && item.contextmenu) {
+            list.push({
+              ...item,
+              fullName: `${key}_${item.name}`
+            })
+          }
+          return list
+        }
         let list = []
         let keys = Object.keys(_t.tools)
         for (let i = 0, iLen = keys.length; i < iLen; i++) {
           let key = keys[i]
           if (Array.isArray(_t.tools[key])) {
             for (let j = 0, jLen = _t.tools[key].length; j < jLen; j++) {
-              let item = _t.tools[key][j]
-              if (item.contextmenu) {
-                list.push({
-                  ...item,
-                  fullName: `${key}_${item.name}`
-                })
-              }
+              list = handler(list, key, _t.tools[key][j])
             }
           } else {
-            let item = _t.tools[key]
-            if (item.contextmenu) {
-              list.push({
-                ...item,
-                fullName: `${key}_${item.name}`
-              })
-            }
+            list = handler(list, key, _t.tools[key])
           }
         }
         _t.contextMenuList = list
       },
       bindShortcuts () {
         let _t = this
-        for (let i = 0, len = _t.tools.common.length; i < len; i++) {
-          let item = _t.tools.common[i]
-          if (item.enable) {
+        let handler = function (item) {
+          if (item.enable && item.shortcuts) {
             Mousetrap.bind(item.shortcuts, function () {
               _t.handleToolClick(item)
               return false
             })
           }
         }
-        // 绑定undo
-        if (_t.tools.undo.enable) {
-          Mousetrap.bind(_t.tools.undo.shortcuts, _t.handleUndoClick)
-        }
-        // 绑定redo
-        if (_t.tools.redo.enable) {
-          Mousetrap.bind(_t.tools.redo.shortcuts, _t.handleRedoClick)
-        }
-        // 绑定image
-        if (_t.tools.image.enable) {
-          Mousetrap.bind(_t.tools.image.shortcuts, _t.handleImageClick)
-        }
-        // 绑定clear
-        if (_t.tools.clear.enable) {
-          Mousetrap.bind(_t.tools.clear.shortcuts, _t.handleClearClick)
-        }
-        // 绑定download
-        if (_t.tools.download.enable) {
-          Mousetrap.bind(_t.tools.download.shortcuts, _t.handleDownloadClick)
+        let keys = Object.keys(_t.tools)
+        for (let i = 0, iLen = keys.length; i < iLen; i++) {
+          let key = keys[i]
+          if (Array.isArray(_t.tools[key])) {
+            for (let j = 0, jLen = _t.tools[key].length; j < jLen; j++) {
+              handler(_t.tools[key][j])
+            }
+          } else {
+            handler(_t.tools[key])
+          }
         }
         // 绑定esc
         Mousetrap.bind('escape', function () {
@@ -532,6 +617,12 @@
             _t.isFullScreen = false
           }
         })
+      },
+      bindUnload () {
+        window.onbeforeunload = function (event) {
+          event.returnValue = false
+          return false
+        }
       },
       handleBoardClick () {
         // 广播事件
@@ -547,21 +638,8 @@
           if (target) {
             _t.handleToolClick(target)
           }
-        } else {
-          switch (name) {
-            case 'undo':
-              _t.handleUndoClick()
-              break
-            case 'redo':
-              _t.handleRedoClick()
-              break
-            case 'image':
-              _t.handleImageClick()
-              break
-            case 'clear':
-              _t.handleClearClick()
-              break
-          }
+        } else if (['undo', 'redo', 'image', 'clear', 'download'].includes(name)) {
+          _t.handleToolClick(_t.tools[name])
         }
       },
       handleBoardFooterMouseDown () {
@@ -583,12 +661,24 @@
         // 广播事件
         _t.$X.utils.bus.$emit('platform/contextMenu/show', options)
       },
-      handleToolClick (item) {
+      handleToolClick (item, val) {
         let _t = this
         let el = _t.$refs.signaturePad
-        _t.activeTool = item
+        if (!item.types.includes(_t.actionType)) {
+          console.log('XBoard tool disabled!')
+          return false
+        }
+        if (_t.tools.common.find(target => target.name === item.name)) {
+          _t.activeTool = item
+        }
         switch (item.name) {
+          case 'preview':
+            _t.actionType = 'preview'
+            el.off()
+            break
           case 'pencil':
+            _t.actionType = 'edit'
+            el.on()
             el.setOption('dotSize', _t.formData.dotSize)
             el.setOption('minWidth', _t.formData.dotSize * 0.3)
             el.setOption('maxWidth', _t.formData.dotSize * 1.7)
@@ -596,6 +686,8 @@
             el.draw()
             break
           case 'eraser':
+            _t.actionType = 'edit'
+            el.on()
             el.setOption('dotSize', 25)
             el.setOption('minWidth', 25)
             el.setOption('maxWidth', 25)
@@ -603,115 +695,87 @@
             el.setOption('penColor', _t.formData.backgroundColor)
             el.eraser()
             break
-        }
-      },
-      handleUndoClick () {
-        let _t = this
-        let el = _t.$refs.signaturePad
-        if (el && el.undo) {
-          el.undo()
-        }
-        return false
-      },
-      handleRedoClick () {
-        let _t = this
-        let el = _t.$refs.signaturePad
-        if (el && el.redo) {
-          el.redo()
-        }
-        return false
-      },
-      handleImageClick () {
-        return false
-      },
-      handleClearClick () {
-        let _t = this
-        let el = _t.$refs.signaturePad
-        if (el && el.clear) {
-          _t.$Modal.confirm({
-            title: _t.$t('L10101'),
-            content: _t.$t('L10102'),
-            onOk: function () {
-              // 清除画布
-              el.clear()
+          case 'undo':
+            el.undo()
+            break
+          case 'redo':
+            el.redo()
+            break
+          case 'image':
+            console.log('XBoard Tool image trigger!')
+            break
+          case 'clear':
+            _t.$Modal.confirm({
+              title: _t.$t('L10101'),
+              content: _t.$t('L10102'),
+              onOk: function () {
+                // 清除画布
+                el.clear()
+              }
+            })
+            break
+          case 'download':
+            let res = el.save()
+            if (res.isEmpty) {
+              _t.$Message.info(_t.$t('L10104'))
+            } else {
+              let fileName = _t.$X.config.system.name + '_' + _t.$X.utils.filters.formatDate(new Date(), 'YYYYMMDDhhmmss')
+              _t.$X.utils.file.downloadFile(fileName, res.data)
             }
-          })
+            break
+          case 'fullScreen':
+            // 判断标识或是否退出全屏操作
+            if (_t.isFullScreen) {
+              // 退出全屏
+              if (document.exitFullscreen) {
+                document.exitFullscreen()
+              } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen()
+              } else if (document.webkitCancelFullScreen) {
+                document.webkitCancelFullScreen()
+              } else if (document.msExitFullscreen) {
+                document.msExitFullscreen()
+              }
+            } else {
+              // 全屏
+              let docElm = document.documentElement
+              if (docElm.requestFullscreen) {
+                docElm.requestFullscreen()
+              } else if (docElm.mozRequestFullScreen) {
+                docElm.mozRequestFullScreen()
+              } else if (docElm.webkitRequestFullScreen) {
+                docElm.webkitRequestFullScreen()
+              } else if (docElm.msRequestFullscreen) {
+                docElm.msRequestFullscreen()
+              }
+            }
+            // 更新标识
+            _t.isFullScreen = !_t.isFullScreen
+            break
+          case 'penColor':
+            el.setOption('penColor', val)
+            break
+          case 'dotSize':
+            el.setOption('dotSize', val)
+            el.setOption('minWidth', val * 0.3)
+            el.setOption('maxWidth', val * 1.7)
+            break
+          case 'backgroundColor':
+            _t.$Modal.confirm({
+              title: _t.$t('L10101'),
+              content: _t.$t('L10103'),
+              onOk: function () {
+                // 更新数据
+                _t.formData.backgroundColor = val
+                // 设置背景图
+                el.setOption('backgroundColor', val)
+                // 清除画布
+                el.clear()
+              }
+            })
+            break
         }
         return false
-      },
-      handleDownloadClick () {
-        let _t = this
-        let el = _t.$refs.signaturePad
-        if (el) {
-          let res = el.save()
-          if (res.isEmpty) {
-            _t.$Message.info(_t.$t('L10104'))
-          } else {
-            let fileName = _t.$X.config.system.name + '_' + _t.$X.utils.filters.formatDate(new Date(), 'YYYYMMDDhhmmss')
-            _t.$X.utils.file.downloadFile(fileName, res.data)
-          }
-        }
-        return false
-      },
-      handleFullScreenClick () {
-        let _t = this
-        // 判断标识或是否退出全屏操作
-        if (_t.isFullScreen) {
-          // 退出全屏
-          if (document.exitFullscreen) {
-            document.exitFullscreen()
-          } else if (document.mozCancelFullScreen) {
-            document.mozCancelFullScreen()
-          } else if (document.webkitCancelFullScreen) {
-            document.webkitCancelFullScreen()
-          } else if (document.msExitFullscreen) {
-            document.msExitFullscreen()
-          }
-        } else {
-          // 全屏
-          let docElm = document.documentElement
-          if (docElm.requestFullscreen) {
-            docElm.requestFullscreen()
-          } else if (docElm.mozRequestFullScreen) {
-            docElm.mozRequestFullScreen()
-          } else if (docElm.webkitRequestFullScreen) {
-            docElm.webkitRequestFullScreen()
-          } else if (docElm.msRequestFullscreen) {
-            docElm.msRequestFullscreen()
-          }
-        }
-        // 更新标识
-        _t.isFullScreen = !_t.isFullScreen
-      },
-      handleFormChange (key, val) {
-        let _t = this
-        let el = _t.$refs.signaturePad
-        if (el) {
-          switch (key) {
-            case 'dotSize':
-              el.setOption('dotSize', val)
-              el.setOption('minWidth', val * 0.3)
-              el.setOption('maxWidth', val * 1.7)
-              break
-            case 'backgroundColor':
-              _t.$Modal.confirm({
-                title: _t.$t('L10101'),
-                content: _t.$t('L10103'),
-                onOk: function () {
-                  // 更新数据
-                  _t.formData.backgroundColor = val
-                  // 设置背景图
-                  el.setOption('backgroundColor', val)
-                  // 清除画布
-                  el.clear()
-                }
-              })
-              break
-            default:
-              el.setOption(key, val)
-              break
-          }
-        }
       },
       handleLocaleChange (name) {
         let _t = this
