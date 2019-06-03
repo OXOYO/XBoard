@@ -15,6 +15,7 @@
     text-align: center;
     opacity: .3;
     margin: 0 2px;
+    color: #000000;
 
     &:hover {
       opacity: 1;

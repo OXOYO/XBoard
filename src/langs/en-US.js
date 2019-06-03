@@ -26,5 +26,6 @@ export default {
   L10101: 'Hint',
   L10102: 'Are you sure to clear the current artboard? ',
   L10103: 'Switching the background color will clear the current artboard, confirm the switch? ',
-  L10104: 'Data is empty, export failed!'
+  L10104: 'Data is empty, export failed!',
+  L10105: 'Are you sure to delete the note? '
 }

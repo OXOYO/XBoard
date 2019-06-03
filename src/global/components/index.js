@@ -16,7 +16,8 @@ import {
   DropdownItem,
   Icon,
   Message,
-  Modal
+  Modal,
+  Input
 } from 'iview'
 
 import XIcon from './Icon/Index'
@@ -36,6 +37,7 @@ const obj = {
   Icon,
   Message,
   Modal,
+  Input,
   // 自定义组件
   XIcon,
   XTooltip

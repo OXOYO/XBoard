@@ -53,8 +53,10 @@
   <div class="board" @click="handleBoardClick">
     <div
       class="body"
+      ref="boardBody"
+      @click="handleBoardBodyClick"
       @dblclick="handleBoardBodyDbClick"
-      @contextmenu.stop.prevent="handleBoardBodyRightClick($event)"
+      @contextmenu.stop.prevent="handleBoardBodyRightClick"
     >
       <!-- 画板 -->
       <SignaturePad
@@ -63,8 +65,18 @@
         :style="padStyle"
       >
       </SignaturePad>
-      <!-- TODO 文本 -->
-      <!-- TODO 备忘录 -->
+      <!-- 便签 -->
+      <NotePad
+        v-for="(item, index) in noteList"
+        :key="index"
+        :info="item"
+        :disabled="actionType !== 'note'"
+        @close="() => handleNotePadClose(index)"
+        @blur="() => handleNotePadBlur(index)"
+        @focus="() => handleNotePadFocus(index)"
+      >
+      </NotePad>
+      <!-- 右键菜单 -->
       <ContextMenu>
         <Menu @on-select="handleContextMenuChange">
           <MenuItem
@@ -279,9 +291,10 @@
   import ToolItem from '../components/ToolBox/ToolItem'
   import SignaturePad from '../components/SignaturePad/Index'
   import ContextMenu from '../components/ContextMenu/Index'
+  import NotePad from '../components/NotePad/Index'
   // 热键
   import Mousetrap from 'mousetrap'
-  // import html2canvas from 'html2canvas'
+  import html2canvas from 'html2canvas'
 
   export default {
     name: 'Board',
@@ -289,7 +302,8 @@
       ToolBox,
       ToolItem,
       SignaturePad,
-      ContextMenu
+      ContextMenu,
+      NotePad
     },
     data () {
       return {
@@ -313,7 +327,7 @@
               cursor: 'move',
               enable: false,
               contextmenu: false,
-              types: ['edit']
+              types: ['draw']
             },
             {
               name: 'marquee',
@@ -324,7 +338,7 @@
               cursor: '',
               enable: false,
               contextmenu: false,
-              types: ['edit']
+              types: ['draw']
             },
             {
               name: 'preview',
@@ -335,7 +349,7 @@
               cursor: '',
               enable: true,
               contextmenu: true,
-              types: ['edit']
+              types: ['draw', 'note', 'preview']
             },
             {
               name: 'pencil',
@@ -346,7 +360,7 @@
               cursor: '',
               enable: true,
               contextmenu: true,
-              types: ['edit', 'preview']
+              types: ['draw', 'note', 'preview']
             },
             {
               name: 'line',
@@ -357,7 +371,7 @@
               cursor: '',
               enable: false,
               contextmenu: false,
-              types: ['edit']
+              types: ['draw']
             },
             {
               name: 'text',
@@ -366,9 +380,9 @@
               icon: 'text',
               shortcuts: 't',
               cursor: 'text',
-              enable: false,
-              contextmenu: false,
-              types: ['edit']
+              enable: true,
+              contextmenu: true,
+              types: ['draw', 'note', 'preview']
             },
             {
               name: 'eraser',
@@ -379,7 +393,7 @@
               cursor: '',
               enable: true,
               contextmenu: true,
-              types: ['edit']
+              types: ['draw']
             }
           ],
           undo: {
@@ -391,7 +405,7 @@
             cursor: '',
             enable: true,
             contextmenu: true,
-            types: ['edit']
+            types: ['draw']
           },
           redo: {
             name: 'redo',
@@ -402,7 +416,7 @@
             cursor: '',
             enable: true,
             contextmenu: true,
-            types: ['edit']
+            types: ['draw']
           },
           image: {
             name: 'image',
@@ -413,7 +427,7 @@
             cursor: '',
             enable: false,
             contextmenu: false,
-            types: ['edit']
+            types: ['draw', 'note']
           },
           clear: {
             name: 'clear',
@@ -424,7 +438,7 @@
             cursor: '',
             enable: true,
             contextmenu: true,
-            types: ['edit']
+            types: ['draw', 'note']
           },
           download: {
             name: 'download',
@@ -435,7 +449,7 @@
             cursor: '',
             enable: true,
             contextmenu: true,
-            types: ['edit', 'preview']
+            types: ['draw', 'note', 'preview']
           },
           fullScreen: {
             name: 'fullScreen',
@@ -446,7 +460,7 @@
             cursor: '',
             enable: true,
             contextmenu: false,
-            types: ['edit', 'preview']
+            types: ['draw', 'preview']
           },
           penColor: {
             name: 'penColor',
@@ -457,7 +471,7 @@
             cursor: '',
             enable: true,
             contextmenu: false,
-            types: ['edit']
+            types: ['draw']
           },
           backgroundColor: {
             name: 'backgroundColor',
@@ -468,7 +482,7 @@
             cursor: '',
             enable: true,
             contextmenu: false,
-            types: ['edit']
+            types: ['draw']
           },
           dotSize: {
             name: 'dotSize',
@@ -479,7 +493,7 @@
             cursor: '',
             enable: true,
             contextmenu: false,
-            types: ['edit']
+            types: ['draw']
           },
           language: {
             name: 'language',
@@ -490,7 +504,7 @@
             cursor: '',
             enable: true,
             contextmenu: false,
-            types: ['edit', 'preview']
+            types: ['draw', 'preview']
           },
           github: {
             name: 'github',
@@ -501,13 +515,15 @@
             cursor: '',
             enable: true,
             contextmenu: false,
-            types: ['edit', 'preview']
+            types: ['draw', 'preview']
           }
         },
         // 当前激活工具
         activeTool: null,
-        // 当前操作类型 edit: 编辑 preview 预览
-        actionType: 'edit',
+        // 当前操作类型 draw: 绘画 note 便签 preview 预览
+        actionType: 'draw',
+        // 操作状态
+        actionStatus: null,
         // 画板配置
         padOptions: {},
         // 右键菜单列表
@@ -517,10 +533,18 @@
         // 禁用
         disabled: {
           redo: false
-        }
+        },
+        // 便签列表
+        noteList: []
       }
     },
     computed: {
+      boardBody () {
+        return this.$refs.boardBody
+      },
+      signaturePad () {
+        return this.$refs.signaturePad
+      },
       padStyle () {
         let _t = this
         let style = {
@@ -650,6 +674,18 @@
         // 广播事件
         this.$X.utils.bus.$emit('platform/contextMenu/hide')
       },
+      handleBoardBodyClick (event) {
+        let _t = this
+        switch (_t.actionType) {
+          case 'note':
+            // 新增便签
+            _t.doAddNote({
+              x: event.clientX,
+              y: event.clientY
+            })
+            break
+        }
+      },
       handleBoardBodyDbClick () {
         let _t = this
         _t.switchStatus()
@@ -667,7 +703,7 @@
       },
       handleToolClick (item, val) {
         let _t = this
-        let el = _t.$refs.signaturePad
+        let el = _t.signaturePad
         if (!item.types.includes(_t.actionType)) {
           console.log('XBoard tool disabled!')
           return false
@@ -681,7 +717,7 @@
             el.off()
             break
           case 'pencil':
-            _t.actionType = 'edit'
+            _t.actionType = 'draw'
             el.on()
             el.setOption('dotSize', _t.formData.dotSize)
             el.setOption('minWidth', _t.formData.dotSize * 0.3)
@@ -689,8 +725,13 @@
             el.setOption('penColor', _t.formData.penColor)
             el.draw()
             break
+          case 'text':
+            _t.actionType = 'note'
+            _t.actionStatus = 'note-add'
+            el.off()
+            break
           case 'eraser':
-            _t.actionType = 'edit'
+            _t.actionType = 'draw'
             el.on()
             el.setOption('dotSize', 25)
             el.setOption('minWidth', 25)
@@ -715,27 +756,29 @@
               onOk: function () {
                 // 清除画布
                 el.clear()
+                // 清除便签
+                _t.noteList = []
               }
             })
             break
           case 'download':
-            // html2canvas(el.$el, {
-            //   backgroundColor: null,
-            //   imageTimeout: 0
-            // }).then(function (canvas) {
-            //   let data = canvas.toDataURL('image/png')
-            //   let fileName = _t.$X.config.system.name + '_' + _t.$X.utils.filters.formatDate(new Date(), 'YYYYMMDDhhmmss')
-            //   _t.$X.utils.file.downloadFile(fileName, data)
-            // }).catch(function (error) {
-            //   console.warn('html2canvas render error!', error)
-            // })
-            let res = el.save()
-            if (res.isEmpty) {
-              _t.$Message.info(_t.$t('L10104'))
-            } else {
+            html2canvas(_t.boardBody, {
+              backgroundColor: null,
+              imageTimeout: 0
+            }).then(function (canvas) {
+              let data = canvas.toDataURL('image/png')
               let fileName = _t.$X.config.system.name + '_' + _t.$X.utils.filters.formatDate(new Date(), 'YYYYMMDDhhmmss')
-              _t.$X.utils.file.downloadFile(fileName, res.data)
-            }
+              _t.$X.utils.file.downloadFile(fileName, data)
+            }).catch(function (error) {
+              console.warn('html2canvas render error!', error)
+            })
+            // let res = el.save()
+            // if (res.isEmpty) {
+            //   _t.$Message.info(_t.$t('L10104'))
+            // } else {
+            //   let fileName = _t.$X.config.system.name + '_' + _t.$X.utils.filters.formatDate(new Date(), 'YYYYMMDDhhmmss')
+            //   _t.$X.utils.file.downloadFile(fileName, res.data)
+            // }
             break
           case 'fullScreen':
             // 判断标识或是否退出全屏操作
@@ -813,6 +856,39 @@
             _t.status[k] = val !== undefined ? val : !_t.status[k]
           }
         }
+      },
+      doAddNote (info) {
+        let _t = this
+        if (_t.actionStatus !== 'note-editing') {
+          _t.noteList.push({
+            ...info
+          })
+          _t.actionStatus = 'note-editing'
+        }
+      },
+      doRemoveNote (index) {
+        let _t = this
+        _t.noteList.splice(index, 1)
+        _t.actionStatus = null
+      },
+      handleNotePadClose (index) {
+        let _t = this
+        _t.$Modal.confirm({
+          title: _t.$t('L10101'),
+          content: _t.$t('L10105'),
+          onOk: function () {
+            // 删除便签
+            _t.doRemoveNote(index)
+          }
+        })
+      },
+      handleNotePadBlur (index) {
+        let _t = this
+        _t.actionStatus = null
+      },
+      handleNotePadFocus (index) {
+        let _t = this
+        _t.actionStatus = 'note-editing'
       }
     },
     created () {

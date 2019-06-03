@@ -6,6 +6,8 @@
  * 文档：https://cli.vuejs.org/zh/config/
  */
 
+const webpack = require('webpack')
+
 module.exports = {
   // 部署应用包时的基本URL，置空使用相对路径
   publicPath: '/XBoard/',
@@ -39,5 +41,12 @@ module.exports = {
       // filename: `${fileName()}.js`,
       chunkFilename: '[name].[chunkhash].js'
     }
+  },
+  chainWebpack: config => {
+    config
+      .plugin('provide')
+      .use(webpack.ProvidePlugin, [{
+        'window.Quill': 'quill'
+      }]);
   }
 }
