@@ -12,6 +12,17 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  created () {
+    // 阻止浏览器默认右键菜单
+    document.oncontextmenu = function (event) {
+      if (event.stopPropagation) {
+        event.stopPropagation()
+      }
+      if (event.preventDefault) {
+        event.preventDefault()
+      }
+    }
+  }
 }
 </script>

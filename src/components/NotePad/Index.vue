@@ -34,6 +34,10 @@
         text-align: left;
         height: 100%;
         cursor: default;
+
+        &.disabled {
+          cursor: not-allowed !important;
+        }
       }
       .tools {
         position: absolute;
@@ -53,6 +57,10 @@
           margin: 0 2px;
           font-size: 18px;
           color: #000000;
+
+          &.disabled {
+            cursor: not-allowed;
+          }
 
           &:hover {
             opacity: 1;
@@ -87,6 +95,11 @@
     height: 20px;
     position: absolute;
     background: transparent;
+
+    &.disabled {
+      cursor: not-allowed !important;
+    }
+
     &.resize-top-left {
       cursor: nw-resize;
       top: 0;
@@ -158,20 +171,38 @@
       border: none;
     }
   }
+  .note-editor {
+    &.disabled {
+      cursor: not-allowed !important;
+
+      .ql-toolbar {
+        visibility: hidden;
+      }
+    }
+    visibility: visible;
+  }
 </style>
 
 <template>
-  <div class="x-window" v-x-drag="dragConfig" :style="windowStyle" @click.stop @dblclick.stop.prevent>
-    <div class="app-window-resize resize-top-left"></div>
-    <div class="app-window-resize resize-top-right"></div>
-    <div class="app-window-resize resize-bottom-left"></div>
-    <div class="app-window-resize resize-bottom-right"></div>
-    <div class="app-window-resize resize-top-border"></div>
-    <div class="app-window-resize resize-right-border"></div>
-    <div class="app-window-resize resize-bottom-border"></div>
-    <div class="app-window-resize resize-left-border"></div>
-    <div class="x-window-header">
-      <div class="x-window-title">
+  <div
+    class="x-window"
+    v-x-drag="dragConfig"
+    :disabled-drag="disabled"
+    :disabled-resize="disabled"
+    :style="windowStyle"
+    @click.stop
+    @dblclick.stop.prevent
+  >
+    <div :class="{ 'app-window-resize': true, 'resize-top-left': true, 'disabled': disabled }"></div>
+    <div :class="{ 'app-window-resize': true, 'resize-top-right': true, 'disabled': disabled }"></div>
+    <div :class="{ 'app-window-resize': true, 'resize-bottom-left': true, 'disabled': disabled }"></div>
+    <div :class="{ 'app-window-resize': true, 'resize-bottom-right': true, 'disabled': disabled }"></div>
+    <div :class="{ 'app-window-resize': true, 'resize-top-border': true, 'disabled': disabled }"></div>
+    <div :class="{ 'app-window-resize': true, 'resize-right-border': true, 'disabled': disabled }"></div>
+    <div :class="{ 'app-window-resize': true, 'resize-bottom-border': true, 'disabled': disabled }"></div>
+    <div :class="{ 'app-window-resize': true, 'resize-left-border': true, 'disabled': disabled }"></div>
+    <div class="x-window-header" v-show="!disabled">
+      <div :class="{ 'x-window-title': true, 'disabled': disabled }">
         <!--
         <Input
           v-model="formData.title"
@@ -181,10 +212,10 @@
         -->
       </div>
       <div class="tools">
-        <div class="tool-item" @click.stop.prevent="handleToolClick('backgroundColor')">
+        <div :class="{ 'tool-item': true, 'disabled': disabled }" @click.stop.prevent="handleToolClick('backgroundColor')">
           <Icon type="md-more" />
         </div>
-        <div class="tool-item" @click.stop.prevent="handleToolClick('close')">
+        <div :class="{ 'tool-item': true, 'disabled': disabled }" @click.stop.prevent="handleToolClick('close')">
           <Icon type="md-close" />
         </div>
       </div>
@@ -198,7 +229,8 @@
         placeholder="Enter something..."
       />-->
       <quill-editor
-        ref="myTextEditor"
+        ref="noteEditor"
+        :class="{ 'note-editor': true, 'disabled': disabled }"
         v-model="formData.content"
         :options="editorOption"
         :disabled='disabled'
@@ -343,6 +375,9 @@
     methods: {
       handleToolClick (name) {
         let _t = this
+        if (_t.disabled) {
+          return
+        }
         switch (name) {
           case 'backgroundColor':
             // 显示颜色选择器

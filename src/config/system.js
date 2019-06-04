@@ -13,5 +13,6 @@ export default {
   logo: require('../assets/images/logo.png'),
   github: 'https://github.com/OXOYO/XBoard',
   githubPages: 'https://oxoyo.github.io/XBoard/',
+  feedback: 'https://github.com/OXOYO/XBoard/issues/new',
   copyright: '© 2019 OXOYO All Rights Reserved.'
 }

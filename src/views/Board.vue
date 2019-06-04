@@ -36,7 +36,7 @@
       bottom: -50px;
       display: inline-block;
       text-align: center;
-      z-index: 2000;
+      z-index: 500;
       background: transparent;
       width: 100%;
       cursor: default;
@@ -78,7 +78,7 @@
       </NotePad>
       <!-- 右键菜单 -->
       <ContextMenu>
-        <Menu @on-select="handleContextMenuChange">
+        <Menu :active-name="activeMenu" @on-select="handleContextMenuChange">
           <MenuItem
             v-for="(item, index) in contextMenuList.filter(item => item.types.includes(actionType))"
             :key="index"
@@ -95,7 +95,7 @@
         <template v-for="(item, index) in tools.common.filter(item => item.enable)">
           <ToolItem
             :key="index"
-            :active="activeTool.name === item.name"
+            :active="activeTool && activeTool.name === item.name"
             :disabled="!item.types.includes(actionType)"
             @click.native="handleToolClick(item)"
           >
@@ -281,6 +281,20 @@
             </Tooltip>
           </template>
         </ToolItem>
+        <!-- Feedback -->
+        <ToolItem
+          v-if="tools.feedback.enable"
+          :disabled="!tools.feedback.types.includes(actionType)"
+          style="opacity: 1;"
+        >
+          <template v-slot:label>
+            <Tooltip :content="$t(tools.feedback.lang)">
+              <a :href="$X.config.system.feedback" target="_blank" style="color: #333333;">
+                <XIcon :type="tools.feedback.icon"></XIcon>
+              </a>
+            </Tooltip>
+          </template>
+        </ToolItem>
       </ToolBox>
     </div>
   </div>
@@ -460,7 +474,7 @@
             cursor: '',
             enable: true,
             contextmenu: false,
-            types: ['draw', 'preview']
+            types: ['draw', 'note', 'preview']
           },
           penColor: {
             name: 'penColor',
@@ -504,7 +518,7 @@
             cursor: '',
             enable: true,
             contextmenu: false,
-            types: ['draw', 'preview']
+            types: ['draw', 'note', 'preview']
           },
           github: {
             name: 'github',
@@ -515,7 +529,18 @@
             cursor: '',
             enable: true,
             contextmenu: false,
-            types: ['draw', 'preview']
+            types: ['draw', 'note', 'preview']
+          },
+          feedback: {
+            name: 'feedback',
+            label: 'Feedback',
+            lang: 'L10019',
+            icon: 'feedback',
+            shortcuts: '',
+            cursor: '',
+            enable: true,
+            contextmenu: false,
+            types: ['draw', 'note', 'preview']
           }
         },
         // 当前激活工具
@@ -528,6 +553,8 @@
         padOptions: {},
         // 右键菜单列表
         contextMenuList: [],
+        // 当前激活的菜单
+        activeMenu: null,
         // 是否全屏
         isFullScreen: false,
         // 禁用
@@ -550,14 +577,16 @@
         let style = {
           cursor: 'auto'
         }
-        if (['pencil', 'eraser'].includes(_t.activeTool.name)) {
-          let png = require('../assets/images/64/' + _t.activeTool.name + '.png')
-          style = {
-            cursor: `url(${png}) 32 32, auto`
-          }
-        } else if (_t.activeTool.cursor) {
-          style = {
-            cursor: _t.activeTool.cursor
+        if (_t.activeTool) {
+          if (['pencil', 'eraser'].includes(_t.activeTool.name)) {
+            let png = require('../assets/images/64/' + _t.activeTool.name + '.png')
+            style = {
+              cursor: `url(${png}) 32 32, auto`
+            }
+          } else if (_t.activeTool.cursor) {
+            style = {
+              cursor: _t.activeTool.cursor
+            }
           }
         }
         return style
@@ -591,7 +620,11 @@
       },
       initActiveTool (name) {
         let _t = this
-        _t.activeTool = _t.tools.common.find(target => target.name === name && target.enable)
+        let item = _t.tools.common.find(target => target.name === name && target.enable)
+        if (item) {
+          _t.activeTool = item
+          _t.activeMenu = `common_${name}`
+        }
       },
       initContextMenuList () {
         let _t = this
@@ -668,6 +701,9 @@
           }
         } else if (['undo', 'redo', 'image', 'clear', 'download'].includes(name)) {
           _t.handleToolClick(_t.tools[name])
+        } else {
+          _t.activeTool = null
+          _t.activeMenu = null
         }
       },
       handleBoardFooterMouseDown () {
@@ -710,6 +746,10 @@
         }
         if (_t.tools.common.find(target => target.name === item.name)) {
           _t.activeTool = item
+          _t.activeMenu = `common_${item.name}`
+        } else {
+          _t.activeTool = null
+          _t.activeMenu = null
         }
         switch (item.name) {
           case 'preview':
@@ -831,6 +871,11 @@
               }
             })
             break
+        }
+        // 非便签输入模式时清除鼠标移动事件
+        if (_t.actionType !== 'note') {
+          document.onmouseup = null
+          document.onmousemove = null
         }
         return false
       },
