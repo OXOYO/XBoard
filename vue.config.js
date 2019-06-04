@@ -15,6 +15,7 @@ module.exports = {
   outputDir: 'docs',
   // 静态资源目录
   assetsDir: '',
+  productionSourceMap: false,
   // 开发环境
   // devServer: {
   //   // 代理设置
