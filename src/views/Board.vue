@@ -773,9 +773,9 @@
           case 'eraser':
             _t.actionType = 'draw'
             el.on()
-            el.setOption('dotSize', 25)
-            el.setOption('minWidth', 25)
-            el.setOption('maxWidth', 25)
+            el.setOption('dotSize', 18)
+            el.setOption('minWidth', 18)
+            el.setOption('maxWidth', 18)
             // FIXME 【BUG】设置画笔为背景色，但是并有没有什么用
             el.setOption('penColor', _t.formData.backgroundColor)
             el.eraser()
@@ -868,6 +868,8 @@
                 el.setOption('backgroundColor', val)
                 // 清除画布
                 el.clear()
+                // 清除便签
+                _t.noteList = []
               }
             })
             break
