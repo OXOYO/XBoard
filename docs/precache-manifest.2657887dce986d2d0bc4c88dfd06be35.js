@@ -36,12 +36,12 @@ self.__precacheManifest = [
     "url": "/XBoard/js/app.4989add3.js"
   },
   {
-    "revision": "99ac3308dd8ee14f749f51538d0d5b9e",
-    "url": "/XBoard/fonts/ionicons.99ac3308.woff"
-  },
-  {
     "revision": "d535a25a79fb1365ae814b61e88fae71",
     "url": "/XBoard/fonts/ionicons.d535a25a.ttf"
+  },
+  {
+    "revision": "99ac3308dd8ee14f749f51538d0d5b9e",
+    "url": "/XBoard/fonts/ionicons.99ac3308.woff"
   },
   {
     "revision": "a2c4a261a239aa84463dc70e4bac9b9a",
