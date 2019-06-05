@@ -15,7 +15,6 @@ import utils from './global/utils'
 import components from './global/components'
 import config from './config'
 
-import 'iview/dist/styles/iview.css'
 import 'quill/dist/quill.core.css'
 import 'quill/dist/quill.snow.css'
 import 'quill/dist/quill.bubble.css'

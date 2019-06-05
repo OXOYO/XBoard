@@ -6,34 +6,29 @@
 
 <style lang="less" rel="stylesheet/less">
   .note-pad {
-    display: inline-block;
-  }
-  .x-window {
     position: absolute;
-    min-width: 390px;
+    min-width: 400px;
     min-height: 140px;
     height: 200px;
-    /*border: 1px solid rgba(0, 0, 0, .3);*/
     background: #fff;
     box-sizing: border-box;
-    overflow: hidden;
 
-    .x-window-header {
+    .note-pad-header {
+      position: absolute;
+      top: -40px;
+      width: 100%;
       height: 40px;
       line-height: 40px;
-      /*border-bottom: 1px solid rgba(0, 0, 0, .3);*/
-      background: rgba(255, 255, 255, .3);
       cursor: default;
 
-      &:hover {
-        /*background: rgba(0, 0, 0, .1);*/
-      }
+      &:hover {}
 
-      .x-window-title {
-        padding: 0 10px;
+      .note-pad-title {
+        padding: 0 15px;
         text-align: left;
         height: 100%;
         cursor: default;
+        background: rgba(255, 255, 255, .3);
 
         &.disabled {
           cursor: not-allowed !important;
@@ -42,7 +37,7 @@
       .tools {
         position: absolute;
         top: 0;
-        right: 0;
+        right: 5px;
 
         .tool-item {
           display: inline-block;
@@ -50,7 +45,6 @@
           min-width: 25px;
           height: 30px;
           line-height: 30px;
-          /*padding: 10px;*/
           vertical-align: middle;
           text-align: center;
           opacity: .6;
@@ -67,11 +61,27 @@
           }
         }
       }
+      .color-picker {
+        position: absolute;
+        display: flex;
+        width: 100%;
+        top: 0;
+        left: 0;
+        right: 0;
+
+        .color-item {
+          flex: 1 1 auto;
+          height: 40px;
+          line-height: 40px;
+          text-align: center;
+          font-size: 20px;
+        }
+      }
     }
-    .x-window-body {
-      padding: 10px;
+    .note-pad-body {
+      padding: 15px;
       overflow: auto;
-      height: calc(~"100% - 40px");
+      height: 100%;
     }
   }
 
@@ -80,21 +90,22 @@
     transition: none;
     opacity: .7;
 
-    .x-window-header {
-      .x-window-title {
+    .note-pad-header {
+      .note-pad-title {
         cursor: move !important;
       }
     }
-    .x-window-body {
+    .note-pad-body {
 
     }
   }
 
-  .app-window-resize {
+  .note-pad-resize {
     width: 20px;
     height: 20px;
     position: absolute;
     background: transparent;
+    z-index: 10;
 
     &.disabled {
       cursor: not-allowed !important;
@@ -104,62 +115,49 @@
       cursor: nw-resize;
       top: 0;
       left: 0;
+      z-index: 20;
     }
     &.resize-top-right {
       cursor: ne-resize;
       top: 0;
       right: 0;
+      z-index: 20;
     }
     &.resize-bottom-left {
       cursor: sw-resize;
       bottom: 0;
       left: 0;
+      z-index: 20;
     }
     &.resize-bottom-right {
       cursor: se-resize;
       bottom: 0;
       right: 0;
+      z-index: 20;
     }
     &.resize-top-border {
       cursor: ns-resize;
       top: 0;
       width: 100%;
-      height: 2px;
+      height: 10px;
     }
     &.resize-right-border {
       cursor: ew-resize;
       right: 0;
-      width: 2px;
+      width: 10px;
       height: 100%;
     }
     &.resize-bottom-border {
       cursor: ns-resize;
       bottom: 0;
       width: 100%;
-      height: 2px;
+      height: 10px;
     }
     &.resize-left-border {
       cursor: ew-resize;
       left: 0;
-      width: 2px;
+      width: 10px;
       height: 100%;
-    }
-  }
-
-  .color-picker {
-    position: absolute;
-    display: flex;
-    width: 100%;
-    top: 0;
-    left: 0;
-    right: 0;
-
-    .color-item {
-      flex: 1 1 auto;
-      height: 40px;
-      line-height: 40px;
-      text-align: center;
-      font-size: 20px;
     }
   }
 
@@ -185,24 +183,24 @@
 
 <template>
   <div
-    class="x-window"
+    class="note-pad"
     v-x-drag="dragConfig"
     :disabled-drag="disabled"
     :disabled-resize="disabled"
-    :style="windowStyle"
+    :style="padStyle"
     @click.stop
     @dblclick.stop.prevent
   >
-    <div :class="{ 'app-window-resize': true, 'resize-top-left': true, 'disabled': disabled }"></div>
-    <div :class="{ 'app-window-resize': true, 'resize-top-right': true, 'disabled': disabled }"></div>
-    <div :class="{ 'app-window-resize': true, 'resize-bottom-left': true, 'disabled': disabled }"></div>
-    <div :class="{ 'app-window-resize': true, 'resize-bottom-right': true, 'disabled': disabled }"></div>
-    <div :class="{ 'app-window-resize': true, 'resize-top-border': true, 'disabled': disabled }"></div>
-    <div :class="{ 'app-window-resize': true, 'resize-right-border': true, 'disabled': disabled }"></div>
-    <div :class="{ 'app-window-resize': true, 'resize-bottom-border': true, 'disabled': disabled }"></div>
-    <div :class="{ 'app-window-resize': true, 'resize-left-border': true, 'disabled': disabled }"></div>
-    <div class="x-window-header" v-show="!disabled">
-      <div :class="{ 'x-window-title': true, 'disabled': disabled }">
+    <div :class="{ 'note-pad-resize': true, 'resize-top-left': true, 'disabled': disabled }"></div>
+    <div :class="{ 'note-pad-resize': true, 'resize-top-right': true, 'disabled': disabled }"></div>
+    <div :class="{ 'note-pad-resize': true, 'resize-bottom-left': true, 'disabled': disabled }"></div>
+    <div :class="{ 'note-pad-resize': true, 'resize-bottom-right': true, 'disabled': disabled }"></div>
+    <div :class="{ 'note-pad-resize': true, 'resize-top-border': true, 'disabled': disabled }"></div>
+    <div :class="{ 'note-pad-resize': true, 'resize-right-border': true, 'disabled': disabled }"></div>
+    <div :class="{ 'note-pad-resize': true, 'resize-bottom-border': true, 'disabled': disabled }"></div>
+    <div :class="{ 'note-pad-resize': true, 'resize-left-border': true, 'disabled': disabled }"></div>
+    <div class="note-pad-header" :style="padHeaderStyle" v-show="!disabled">
+      <div :class="{ 'note-pad-title': true, 'disabled': disabled }">
         <!--
         <Input
           v-model="formData.title"
@@ -219,8 +217,19 @@
           <Icon type="md-close" />
         </div>
       </div>
+      <div class="color-picker" v-show="showColorPicker">
+        <div
+          v-for="(item, index) in colorList"
+          :class="{ 'color-item': true, 'active': formData.backgroundColor === item }"
+          :key="index"
+          :style="{ background: item }"
+          @click="handleColorPickerChange(item)"
+        >
+          <Icon v-if="formData.backgroundColor === item" type="md-checkmark" />
+        </div>
+      </div>
     </div>
-    <div class="x-window-body">
+    <div class="note-pad-body">
       <!--<Input
         v-model="formData.content"
         type="textarea"
@@ -240,17 +249,6 @@
       >
       </quill-editor>
     </div>
-    <div class="color-picker" v-show="showColorPicker">
-      <div
-        v-for="(item, index) in colorList"
-        :class="{ 'color-item': true, 'active': formData.backgroundColor === item }"
-        :key="index"
-        :style="{ background: item }"
-        @click="handleColorPickerChange(item)"
-      >
-        <Icon v-if="formData.backgroundColor === item" type="md-checkmark" />
-      </div>
-    </div>
   </div>
 </template>
 
@@ -265,8 +263,6 @@
     },
     data () {
       return {
-        // 状态 edit：编辑 preview：编辑
-        status: 'edit',
         formData: {
           // 便签标题
           title: '',
@@ -280,7 +276,7 @@
             // 是否启用拖拽
             enable: true,
             // 指定拖拽把手元素，支持一个或多个把手
-            handler: ['.x-window-title'],
+            handler: ['.note-pad-title'],
             // 拖拽不同阶段 className
             class: {
               start: 'x-drag-start',
@@ -355,21 +351,30 @@
           }
         },
         showColorPicker: false,
-        colorList: ['#FFE66E', '#A1EF9B', '#FFAFDF', '#D7AFFF', '#9EDFFF', '#E0E0E0', '#767676']
+        colorList: ['#FFE66E', '#A1EF9B', '#FFAFDF', '#D7AFFF', '#9EDFFF', '#E0E0E0', '#767676'],
+        // 是否激活
+        isFocused: false
       }
     },
     computed: {
-      windowStyle () {
+      padStyle () {
         let _t = this
         let style = {}
         if (_t.info) {
           style = {
             left: _t.info.x + 'px',
             top: _t.info.y + 'px',
-            background: _t.formData.backgroundColor
+            backgroundColor: _t.formData.backgroundColor,
+            zIndex: _t.isFocused ? 500 : 200
           }
         }
         return style
+      },
+      padHeaderStyle () {
+        let _t = this
+        return {
+          backgroundColor: _t.formData.backgroundColor
+        }
       }
     },
     methods: {
@@ -394,10 +399,14 @@
         _t.showColorPicker = false
       },
       onEditorBlur (editor) {
-        this.$emit('blur')
+        let _t = this
+        _t.isFocused = false
+        _t.$emit('blur')
       },
       onEditorFocus (editor) {
-        this.$emit('focus')
+        let _t = this
+        _t.isFocused = true
+        _t.$emit('focus')
       }
     }
   }

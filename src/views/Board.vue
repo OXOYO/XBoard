@@ -38,7 +38,6 @@
       text-align: center;
       z-index: 500;
       background: transparent;
-      width: 100%;
       cursor: default;
       transition: all .5s ease-in-out;
 
@@ -65,10 +64,21 @@
         :style="padStyle"
       >
       </SignaturePad>
+      <!-- 文本 -->
+      <TextPad
+        v-for="(item, index) in textList"
+        :key="'text_pad_' + index"
+        :info="item"
+        :disabled="actionType !== 'text'"
+        @close="() => handleTextPadClose(index)"
+        @blur="() => handleTextPadBlur(index)"
+        @focus="() => handleTextPadFocus(index)"
+      >
+      </TextPad>
       <!-- 便签 -->
       <NotePad
         v-for="(item, index) in noteList"
-        :key="index"
+        :key="'note_pad_' + index"
         :info="item"
         :disabled="actionType !== 'note'"
         @close="() => handleNotePadClose(index)"
@@ -81,7 +91,7 @@
         <Menu :active-name="activeMenu" @on-select="handleContextMenuChange">
           <MenuItem
             v-for="(item, index) in contextMenuList.filter(item => item.types.includes(actionType))"
-            :key="index"
+            :key="'menu_item_' + index"
             :name="item.fullName"
           >
             <XIcon :type="item.icon"></XIcon>
@@ -90,11 +100,17 @@
         </Menu>
       </ContextMenu>
     </div>
-    <div :class="{ footer: true, show: status.footer }" @mousedown="handleBoardFooterMouseDown" @contextmenu.stop.prevent>
+    <div
+      :class="{ footer: true, show: status.footer }"
+      ref="boardFooter"
+      :style="footerStyle"
+      @mousedown="handleBoardFooterMouseDown"
+      @contextmenu.stop.prevent
+    >
       <ToolBox style="margin: 0 auto;">
         <template v-for="(item, index) in tools.common.filter(item => item.enable)">
           <ToolItem
-            :key="index"
+            :key="'tool_item_' + index"
             :active="activeTool && activeTool.name === item.name"
             :disabled="!item.types.includes(actionType)"
             @click.native="handleToolClick(item)"
@@ -248,16 +264,15 @@
           style="opacity: 1;"
         >
           <template v-slot:label>
-            <!--<Tooltip :content="$t(tools.language.lang)"></Tooltip>-->
             <Dropdown trigger="click" @on-click="handleLocaleChange">
               <a href="javascript: void(0);" style="color: #808695;">
-                <img :src="$X.langs.icon[locale]" :alt="$X.langs.label[locale]" style="width: auto; height: 20px; margin-right: 5px; vertical-align: middle;">
+                <img :src="$X.langs.icon[locale]" :alt="$X.langs.label[locale]" style="width: auto; height: 15px; margin-right: 5px; vertical-align: middle;">
                 <Icon type="ios-arrow-down"></Icon>
               </a>
               <DropdownMenu slot="list">
                 <DropdownItem
                   v-for="(lang, index) in Object.keys($X.langs.data)"
-                  :key="index"
+                  :key="'dropdown_item_' + index"
                   :name="lang"
                 >
                   <img :src="$X.langs.icon[lang]" :alt="$X.langs.label[lang]" style="width: auto; height: 20px; vertical-align: middle;">
@@ -305,6 +320,7 @@
   import ToolItem from '../components/ToolBox/ToolItem'
   import SignaturePad from '../components/SignaturePad/Index'
   import ContextMenu from '../components/ContextMenu/Index'
+  import TextPad from '../components/TextPad/Index'
   import NotePad from '../components/NotePad/Index'
   // 热键
   import Mousetrap from 'mousetrap'
@@ -317,6 +333,7 @@
       ToolItem,
       SignaturePad,
       ContextMenu,
+      TextPad,
       NotePad
     },
     data () {
@@ -363,7 +380,7 @@
               cursor: '',
               enable: true,
               contextmenu: true,
-              types: ['draw', 'note', 'preview']
+              types: ['draw', 'text', 'note', 'preview']
             },
             {
               name: 'pencil',
@@ -374,7 +391,7 @@
               cursor: '',
               enable: true,
               contextmenu: true,
-              types: ['draw', 'note', 'preview']
+              types: ['draw', 'text', 'note', 'preview']
             },
             {
               name: 'line',
@@ -396,7 +413,18 @@
               cursor: 'text',
               enable: true,
               contextmenu: true,
-              types: ['draw', 'note', 'preview']
+              types: ['draw', 'text', 'note', 'preview']
+            },
+            {
+              name: 'note',
+              label: 'Note (N)',
+              lang: 'L10020',
+              icon: 'note',
+              shortcuts: 'n',
+              cursor: 'text',
+              enable: true,
+              contextmenu: true,
+              types: ['draw', 'text', 'note', 'preview']
             },
             {
               name: 'eraser',
@@ -441,7 +469,7 @@
             cursor: '',
             enable: false,
             contextmenu: false,
-            types: ['draw', 'note']
+            types: ['draw', 'text', 'note']
           },
           clear: {
             name: 'clear',
@@ -452,7 +480,7 @@
             cursor: '',
             enable: true,
             contextmenu: true,
-            types: ['draw', 'note']
+            types: ['draw', 'text', 'note']
           },
           download: {
             name: 'download',
@@ -463,7 +491,7 @@
             cursor: '',
             enable: true,
             contextmenu: true,
-            types: ['draw', 'note', 'preview']
+            types: ['draw', 'text', 'note', 'preview']
           },
           fullScreen: {
             name: 'fullScreen',
@@ -474,7 +502,7 @@
             cursor: '',
             enable: true,
             contextmenu: false,
-            types: ['draw', 'note', 'preview']
+            types: ['draw', 'text', 'note', 'preview']
           },
           penColor: {
             name: 'penColor',
@@ -518,7 +546,7 @@
             cursor: '',
             enable: true,
             contextmenu: false,
-            types: ['draw', 'note', 'preview']
+            types: ['draw', 'text', 'note', 'preview']
           },
           github: {
             name: 'github',
@@ -529,7 +557,7 @@
             cursor: '',
             enable: true,
             contextmenu: false,
-            types: ['draw', 'note', 'preview']
+            types: ['draw', 'text', 'note', 'preview']
           },
           feedback: {
             name: 'feedback',
@@ -540,7 +568,7 @@
             cursor: '',
             enable: true,
             contextmenu: false,
-            types: ['draw', 'note', 'preview']
+            types: ['draw', 'text', 'note', 'preview']
           }
         },
         // 当前激活工具
@@ -561,13 +589,19 @@
         disabled: {
           redo: false
         },
+        // 文本列表
+        textList: [],
         // 便签列表
-        noteList: []
+        noteList: [],
+        footerStyle: {}
       }
     },
     computed: {
       boardBody () {
         return this.$refs.boardBody
+      },
+      boardFooter () {
+        return this.$refs.boardFooter
       },
       signaturePad () {
         return this.$refs.signaturePad
@@ -685,6 +719,18 @@
           return false
         }
       },
+      initFooterStyle () {
+        let _t = this
+        let style = {}
+        let el = _t.boardFooter
+        if (el) {
+          style = {
+            left: '50%',
+            marginLeft: el.clientWidth / -2 + 'px'
+          }
+        }
+        _t.footerStyle = style
+      },
       handleBoardClick () {
         // 广播事件
         this.$X.utils.bus.$emit('platform/contextMenu/hide')
@@ -713,6 +759,13 @@
       handleBoardBodyClick (event) {
         let _t = this
         switch (_t.actionType) {
+          case 'text':
+            // 新增文本
+            _t.doAddText({
+              x: event.clientX,
+              y: event.clientY
+            })
+            break
           case 'note':
             // 新增便签
             _t.doAddNote({
@@ -766,6 +819,11 @@
             el.draw()
             break
           case 'text':
+            _t.actionType = 'text'
+            _t.actionStatus = 'text-add'
+            el.off()
+            break
+          case 'note':
             _t.actionType = 'note'
             _t.actionStatus = 'note-add'
             el.off()
@@ -796,6 +854,8 @@
               onOk: function () {
                 // 清除画布
                 el.clear()
+                // 清除文本
+                _t.textList = []
                 // 清除便签
                 _t.noteList = []
               }
@@ -868,6 +928,8 @@
                 el.setOption('backgroundColor', val)
                 // 清除画布
                 el.clear()
+                // 清除文本
+                _t.textList = []
                 // 清除便签
                 _t.noteList = []
               }
@@ -875,7 +937,7 @@
             break
         }
         // 非便签输入模式时清除鼠标移动事件
-        if (_t.actionType !== 'note') {
+        if (!['text', 'note'].includes(_t.actionType)) {
           document.onmouseup = null
           document.onmousemove = null
         }
@@ -903,6 +965,39 @@
             _t.status[k] = val !== undefined ? val : !_t.status[k]
           }
         }
+      },
+      doAddText (info) {
+        let _t = this
+        if (_t.actionStatus !== 'text-editing') {
+          _t.textList.push({
+            ...info
+          })
+          _t.actionStatus = 'text-editing'
+        }
+      },
+      doRemoveText (index) {
+        let _t = this
+        _t.textList.splice(index, 1)
+        _t.actionStatus = null
+      },
+      handleTextPadClose (index) {
+        let _t = this
+        _t.$Modal.confirm({
+          title: _t.$t('L10101'),
+          content: _t.$t('L10106'),
+          onOk: function () {
+            // 删除文本
+            _t.doRemoveText(index)
+          }
+        })
+      },
+      handleTextPadBlur (index) {
+        let _t = this
+        _t.actionStatus = null
+      },
+      handleTextPadFocus (index) {
+        let _t = this
+        _t.actionStatus = 'text-editing'
       },
       doAddNote (info) {
         let _t = this
@@ -941,6 +1036,11 @@
     created () {
       let _t = this
       _t.init()
+    },
+    mounted () {
+      let _t = this
+      // 处理样式
+      _t.initFooterStyle()
     }
   }
 </script>
