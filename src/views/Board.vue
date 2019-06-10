@@ -362,6 +362,7 @@
               cursor: 'move',
               enable: false,
               contextmenu: false,
+              type: '',
               types: ['draw']
             },
             {
@@ -373,6 +374,7 @@
               cursor: '',
               enable: false,
               contextmenu: false,
+              type: '',
               types: ['draw']
             },
             {
@@ -384,6 +386,7 @@
               cursor: '',
               enable: true,
               contextmenu: true,
+              type: 'preview',
               types: ['draw', 'text', 'note', 'preview']
             },
             {
@@ -395,6 +398,7 @@
               cursor: '',
               enable: true,
               contextmenu: true,
+              type: 'draw',
               types: ['draw', 'text', 'note', 'preview']
             },
             {
@@ -406,6 +410,7 @@
               cursor: '',
               enable: false,
               contextmenu: false,
+              type: 'line',
               types: ['draw']
             },
             {
@@ -417,6 +422,7 @@
               cursor: 'text',
               enable: true,
               contextmenu: true,
+              type: 'text',
               types: ['draw', 'text', 'note', 'preview']
             },
             {
@@ -428,6 +434,7 @@
               cursor: 'text',
               enable: true,
               contextmenu: true,
+              type: 'note',
               types: ['draw', 'text', 'note', 'preview']
             },
             {
@@ -439,6 +446,7 @@
               cursor: '',
               enable: true,
               contextmenu: true,
+              type: '',
               types: ['draw']
             }
           ],
@@ -451,6 +459,7 @@
             cursor: '',
             enable: true,
             contextmenu: true,
+            type: '',
             types: ['draw']
           },
           redo: {
@@ -462,6 +471,7 @@
             cursor: '',
             enable: true,
             contextmenu: true,
+            type: '',
             types: ['draw']
           },
           image: {
@@ -473,6 +483,7 @@
             cursor: '',
             enable: false,
             contextmenu: false,
+            type: '',
             types: ['draw', 'text', 'note']
           },
           clear: {
@@ -484,6 +495,7 @@
             cursor: '',
             enable: true,
             contextmenu: true,
+            type: '',
             types: ['draw', 'text', 'note']
           },
           download: {
@@ -495,6 +507,7 @@
             cursor: '',
             enable: true,
             contextmenu: true,
+            type: '',
             types: ['draw', 'text', 'note', 'preview']
           },
           fullScreen: {
@@ -506,6 +519,7 @@
             cursor: '',
             enable: true,
             contextmenu: false,
+            type: '',
             types: ['draw', 'text', 'note', 'preview']
           },
           penColor: {
@@ -517,6 +531,7 @@
             cursor: '',
             enable: true,
             contextmenu: false,
+            type: '',
             types: ['draw']
           },
           backgroundColor: {
@@ -528,6 +543,7 @@
             cursor: '',
             enable: true,
             contextmenu: false,
+            type: '',
             types: ['draw']
           },
           dotSize: {
@@ -539,6 +555,7 @@
             cursor: '',
             enable: true,
             contextmenu: false,
+            type: '',
             types: ['draw']
           },
           language: {
@@ -550,6 +567,7 @@
             cursor: '',
             enable: true,
             contextmenu: false,
+            type: '',
             types: ['draw', 'text', 'note', 'preview']
           },
           github: {
@@ -561,6 +579,7 @@
             cursor: '',
             enable: true,
             contextmenu: false,
+            type: '',
             types: ['draw', 'text', 'note', 'preview']
           },
           feedback: {
@@ -572,13 +591,14 @@
             cursor: '',
             enable: true,
             contextmenu: false,
+            type: '',
             types: ['draw', 'text', 'note', 'preview']
           }
         },
         // 当前激活工具
         activeTool: null,
         // 当前操作类型 draw: 绘画 note 便签 preview 预览
-        actionType: 'draw',
+        actionType: null,
         // 操作状态
         actionStatus: null,
         // 画板配置
@@ -663,6 +683,7 @@
         let item = _t.tools.common.find(target => target.name === name && target.enable)
         if (item) {
           _t.activeTool = item
+          _t.actionType = item.type
           _t.activeMenu = `common_${name}`
         }
       },
