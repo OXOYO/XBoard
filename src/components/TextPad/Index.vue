@@ -163,6 +163,10 @@
   .text-editor {
     &.disabled {
       cursor: not-allowed !important;
+
+      * {
+        cursor: not-allowed !important;
+      }
     }
   }
 </style>
@@ -174,7 +178,7 @@
     :disabled-drag="disabled"
     :disabled-resize="disabled"
     :style="padStyle"
-    @click.stop
+    @click.stop.prevent="handleClick"
     @dblclick.stop.prevent
   >
     <div :class="{ 'text-pad-resize': true, 'resize-right-border': true, 'disabled': disabled }"></div>
@@ -211,6 +215,7 @@
     </div>
     <div class="text-pad-body">
       <Input
+        ref="editor"
         :class="{ 'text-editor': true, 'disabled': disabled }"
         v-model="formData.content"
         :readonly="disabled"
@@ -230,7 +235,14 @@ export default {
   name: 'TextPad',
   props: {
     info: Object,
-    disabled: Boolean
+    disabled: {
+      type: Boolean,
+      default: false
+    },
+    active: {
+      type: Boolean,
+      default: false
+    }
   },
   data () {
     return {
@@ -291,9 +303,7 @@ export default {
         }
       },
       showColorPicker: false,
-      colorList: ['#FFE66E', '#A1EF9B', '#FFAFDF', '#D7AFFF', '#9EDFFF', '#E0E0E0', '#767676'],
-      // 是否激活
-      isFocused: false
+      colorList: ['#FFE66E', '#A1EF9B', '#FFAFDF', '#D7AFFF', '#9EDFFF', '#E0E0E0', '#767676']
     }
   },
   computed: {
@@ -305,7 +315,7 @@ export default {
           left: _t.info.x + 'px',
           top: _t.info.y + 'px',
           backgroundColor: _t.formData.backgroundColor,
-          zIndex: _t.isFocused ? 500 : 200
+          zIndex: _t.active ? 500 : 200
         }
       }
       return style
@@ -348,16 +358,41 @@ export default {
       _t.formData.backgroundColor = val
       _t.showColorPicker = false
     },
-    onEditorBlur (editor) {
+    onEditorBlur () {
       let _t = this
-      _t.isFocused = false
+      if (_t.disabled) {
+        return
+      }
       _t.$emit('blur')
     },
-    onEditorFocus (editor) {
+    onEditorFocus () {
       let _t = this
-      _t.isFocused = true
+      if (_t.disabled) {
+        return
+      }
       _t.$emit('focus')
+    },
+    handleClick () {
+      let _t = this
+      if (_t.disabled) {
+        return
+      }
+      _t.$emit('click')
+      _t.doFocus()
+    },
+    doFocus () {
+      let _t = this
+      if (_t.disabled) {
+        return
+      }
+      _t.$refs.editor.focus()
     }
+  },
+  created () {
+    let _t = this
+    _t.$nextTick(() => {
+      _t.doFocus()
+    })
   }
 }
 </script>

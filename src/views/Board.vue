@@ -70,9 +70,11 @@
         :key="'text_pad_' + index"
         :info="item"
         :disabled="actionType !== 'text'"
+        :active="activePad && activePad.name === 'text' && activePad.index === index"
         @close="() => handleTextPadClose(index)"
         @blur="() => handleTextPadBlur(index)"
         @focus="() => handleTextPadFocus(index)"
+        @click="() => handleTextPadClick(index)"
       >
       </TextPad>
       <!-- 便签 -->
@@ -81,9 +83,11 @@
         :key="'note_pad_' + index"
         :info="item"
         :disabled="actionType !== 'note'"
+        :active="activePad && activePad.name === 'note' && activePad.index === index"
         @close="() => handleNotePadClose(index)"
         @blur="() => handleNotePadBlur(index)"
         @focus="() => handleNotePadFocus(index)"
+        @click="() => handleNotePadClick(index)"
       >
       </NotePad>
       <!-- 右键菜单 -->
@@ -593,7 +597,9 @@
         textList: [],
         // 便签列表
         noteList: [],
-        footerStyle: {}
+        footerStyle: {},
+        // 当前激活的面板
+        activePad: {}
       }
     },
     computed: {
@@ -968,17 +974,17 @@
       },
       doAddText (info) {
         let _t = this
-        if (_t.actionStatus !== 'text-editing') {
+        if (_t.actionStatus === 'text-add') {
           _t.textList.push({
             ...info
           })
-          _t.actionStatus = 'text-editing'
+          _t.handleTextPadClick(_t.textList.length - 1)
         }
       },
       doRemoveText (index) {
         let _t = this
         _t.textList.splice(index, 1)
-        _t.actionStatus = null
+        _t.actionStatus = 'text-add'
       },
       handleTextPadClose (index) {
         let _t = this
@@ -993,25 +999,32 @@
       },
       handleTextPadBlur (index) {
         let _t = this
-        _t.actionStatus = null
+        _t.actionStatus = 'text-add'
       },
       handleTextPadFocus (index) {
         let _t = this
         _t.actionStatus = 'text-editing'
       },
+      handleTextPadClick (index) {
+        let _t = this
+        _t.activePad = {
+          name: 'text',
+          index: index
+        }
+      },
       doAddNote (info) {
         let _t = this
-        if (_t.actionStatus !== 'note-editing') {
+        if (_t.actionStatus === 'note-add') {
           _t.noteList.push({
             ...info
           })
-          _t.actionStatus = 'note-editing'
+          _t.handleNotePadClick(_t.noteList.length - 1)
         }
       },
       doRemoveNote (index) {
         let _t = this
         _t.noteList.splice(index, 1)
-        _t.actionStatus = null
+        _t.actionStatus = 'note-add'
       },
       handleNotePadClose (index) {
         let _t = this
@@ -1026,11 +1039,18 @@
       },
       handleNotePadBlur (index) {
         let _t = this
-        _t.actionStatus = null
+        _t.actionStatus = 'note-add'
       },
       handleNotePadFocus (index) {
         let _t = this
         _t.actionStatus = 'note-editing'
+      },
+      handleNotePadClick (index) {
+        let _t = this
+        _t.activePad = {
+          name: 'note',
+          index: index
+        }
       }
     },
     created () {
