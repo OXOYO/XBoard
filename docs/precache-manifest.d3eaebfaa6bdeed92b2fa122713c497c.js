@@ -1,18 +1,18 @@
 self.__precacheManifest = [
   {
-    "revision": "d535a25a79fb1365ae814b61e88fae71",
-    "url": "/XBoard/fonts/ionicons.d535a25a.ttf"
+    "revision": "99ac3308dd8ee14f749f51538d0d5b9e",
+    "url": "/XBoard/fonts/ionicons.99ac3308.woff"
   },
   {
     "revision": "b6216d61c03e6ce0c9aea6ca7808f7ca",
     "url": "/XBoard/robots.txt"
   },
   {
-    "revision": "2eff57f99ab01a86a4ba993661486b47",
-    "url": "/XBoard/fonts/iconfont.2eff57f9.eot"
+    "revision": "c81feb355b50be1602ddae178d44c92f",
+    "url": "/XBoard/fonts/iconfont.c81feb35.ttf"
   },
   {
-    "revision": "d32efa5fa624d78ed165",
+    "revision": "d846a0a10f8254ff2c73",
     "url": "/XBoard/css/app.21558e11.css"
   },
   {
@@ -28,20 +28,20 @@ self.__precacheManifest = [
     "url": "/XBoard/fonts/ionicons.143146fa.woff2"
   },
   {
-    "revision": "99ac3308dd8ee14f749f51538d0d5b9e",
-    "url": "/XBoard/fonts/ionicons.99ac3308.woff"
+    "revision": "d535a25a79fb1365ae814b61e88fae71",
+    "url": "/XBoard/fonts/ionicons.d535a25a.ttf"
   },
   {
-    "revision": "f89fc5c6ae1e0604367a8de716011f15",
+    "revision": "285b8abe858de0eba581871de5a5b31d",
     "url": "/XBoard/index.html"
   },
   {
-    "revision": "d32efa5fa624d78ed165",
-    "url": "/XBoard/js/app.4916fe12.js"
+    "revision": "d846a0a10f8254ff2c73",
+    "url": "/XBoard/js/app.6bdcf550.js"
   },
   {
-    "revision": "c81feb355b50be1602ddae178d44c92f",
-    "url": "/XBoard/fonts/iconfont.c81feb35.ttf"
+    "revision": "2eff57f99ab01a86a4ba993661486b47",
+    "url": "/XBoard/fonts/iconfont.2eff57f9.eot"
   },
   {
     "revision": "3e99a66af343ebb1b99ea8be2a342034",
@@ -52,13 +52,13 @@ self.__precacheManifest = [
     "url": "/XBoard/img/ionicons.a2c4a261.svg"
   },
   {
-    "revision": "67befc27b562a56a7285",
-    "url": "/XBoard/css/Board.59d873a3.css"
+    "revision": "d68bedfe71ef679825eb",
+    "url": "/XBoard/css/Board.d8fb5b14.css"
   },
   {
     "url": "/XBoard/chunk-vendors.3182ae92566fdd036c8c.js"
   },
   {
-    "url": "/XBoard/Board.67befc27b562a56a7285.js"
+    "url": "/XBoard/Board.d68bedfe71ef679825eb.js"
   }
 ];
