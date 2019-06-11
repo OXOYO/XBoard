@@ -25,10 +25,12 @@ export default {
   L10018: 'Preview (Ctrl + P)',
   L10019: 'Feedback',
   L10020: 'Note (N)',
+  L10021: 'Grid (G)',
   L10101: 'Hint',
   L10102: 'Are you sure to clear the current artboard? ',
   L10103: 'Switching the background color will clear the current artboard, confirm the switch? ',
   L10104: 'Data is empty, export failed!',
   L10105: 'Are you sure to delete the note? ',
-  L10106: 'Are you sure to delete the text? '
+  L10106: 'Are you sure to delete the text? ',
+  L10107: 'Are you sure to delete the artboard? '
 }

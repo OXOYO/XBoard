@@ -90,19 +90,6 @@
         @click="() => handleNotePadClick(index)"
       >
       </NotePad>
-      <!-- 右键菜单 -->
-      <ContextMenu>
-        <Menu :active-name="activeMenu" @on-select="handleContextMenuChange">
-          <MenuItem
-            v-for="(item, index) in contextMenuList.filter(item => item.types.includes(actionType))"
-            :key="'menu_item_' + index"
-            :name="item.fullName"
-          >
-            <XIcon :type="item.icon"></XIcon>
-            {{ $t(item.lang) }}
-          </MenuItem>
-        </Menu>
-      </ContextMenu>
     </div>
     <div
       :class="{ footer: true, show: status.footer }"
@@ -197,6 +184,18 @@
           <template v-slot:label>
             <Tooltip :content="$t(tools.fullScreen.lang)">
               <XIcon :type="tools.fullScreen.icon"></XIcon>
+            </Tooltip>
+          </template>
+        </ToolItem>
+        <!-- 栅格 -->
+        <ToolItem
+          v-if="tools.grid.enable"
+          :disabled="!tools.grid.types.includes(actionType)"
+          @click.native="handleToolClick(tools.grid)"
+        >
+          <template v-slot:label>
+            <Tooltip :content="$t(tools.grid.lang)">
+              <XIcon :type="tools.grid.icon"></XIcon>
             </Tooltip>
           </template>
         </ToolItem>
@@ -316,6 +315,21 @@
         </ToolItem>
       </ToolBox>
     </div>
+    <!-- 右键菜单 -->
+    <ContextMenu>
+      <Menu :active-name="activeMenu" @on-select="handleContextMenuChange">
+        <MenuItem
+          v-for="(item, index) in contextMenuList.filter(item => item.types.includes(actionType))"
+          :key="'menu_item_' + index"
+          :name="item.fullName"
+        >
+          <XIcon :type="item.icon"></XIcon>
+          {{ $t(item.lang) }}
+        </MenuItem>
+      </Menu>
+    </ContextMenu>
+    <!-- 栅格 -->
+    <GridBox @close="handleGridBoxClose"></GridBox>
   </div>
 </template>
 
@@ -326,6 +340,7 @@
   import ContextMenu from '../components/ContextMenu/Index'
   import TextPad from '../components/TextPad/Index'
   import NotePad from '../components/NotePad/Index'
+  import GridBox from '../components/GridBox/Index'
   // 热键
   import Mousetrap from 'mousetrap'
   import html2canvas from 'html2canvas'
@@ -338,7 +353,8 @@
       SignaturePad,
       ContextMenu,
       TextPad,
-      NotePad
+      NotePad,
+      GridBox
     },
     data () {
       return {
@@ -516,6 +532,18 @@
             lang: 'L10012',
             icon: 'full-screen',
             shortcuts: '',
+            cursor: '',
+            enable: true,
+            contextmenu: false,
+            type: '',
+            types: ['draw', 'text', 'note', 'preview']
+          },
+          grid: {
+            name: 'grid',
+            label: 'grid',
+            lang: 'L10021',
+            icon: 'grid',
+            shortcuts: 'g',
             cursor: '',
             enable: true,
             contextmenu: false,
@@ -962,6 +990,12 @@
               }
             })
             break
+          case 'grid':
+            // 切换状态
+            _t.switchStatus(false)
+            // 广播事件
+            _t.$X.utils.bus.$emit('platform/gridBox/show')
+            break
         }
         // 非便签输入模式时清除鼠标移动事件
         if (!['text', 'note'].includes(_t.actionType)) {
@@ -1072,6 +1106,11 @@
           name: 'note',
           index: index
         }
+      },
+      handleGridBoxClose () {
+        let _t = this
+        // 切换状态
+        _t.switchStatus(true)
       }
     },
     created () {
