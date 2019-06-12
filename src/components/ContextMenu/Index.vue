@@ -66,30 +66,18 @@
           x: 0,
           y: 0
         }
-      }
-    },
-    created: function () {
-      let _t = this
-      // 初始化
-      _t.init()
-      // 监听事件
-      _t.$X.utils.bus.$on('platform/contextMenu/show', function (options) {
+      },
+      doShow (options) {
+        let _t = this
         _t.options = options
         _t.isShow = true
-      })
-      _t.$X.utils.bus.$on('platform/contextMenu/hide', function () {
+      },
+      doHide () {
+        let _t = this
         // 重置options
         _t.initOptions()
         _t.isShow = false
-      })
-    },
-    beforeDestroy: function () {
-      let _t = this
-      // 注销事件
-      _t.$X.utils.bus.$off([
-        'platform/contextMenu/show',
-        'platform/contextMenu/hide'
-      ])
+      }
     }
   }
 </script>

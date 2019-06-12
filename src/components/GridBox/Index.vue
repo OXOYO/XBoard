@@ -77,6 +77,7 @@
         &.block-add {
           background: transparent;
           font-size: 50px;
+          color: #ffffff;
         }
 
         &.block-active {
@@ -131,6 +132,17 @@
             font-size: 30px;
           }
         }
+
+        .img {
+          width: 100%;
+          height: 100%;
+
+          img {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+          }
+        }
       }
     }
   }
@@ -138,24 +150,25 @@
 
 <template>
   <div class="grid-box" v-show="isShow">
-    <div class="close">
+    <div class="close" @click.stop.prevent="doClose">
       <Icon type="md-close" />
     </div>
     <div class="block-box">
       <div
         v-for="(item, index) in boardList"
         :key="index"
-        :class="{ 'block-item': true, 'block-active': activeBoardIndex === index }"
+        :class="{ 'block-item': true, 'block-active': activeIndex === index }"
         @click.stop.prevent="doTrigger(index)"
       >
-        {{ index }}
         <div class="close" @click.stop.prevent="doRemoveBoard(index)">
           <Icon type="md-close" />
         </div>
         <div class="active">
           <Icon type="md-checkmark" />
         </div>
-        <div class="img"></div>
+        <div class="img">
+          <img :src="item.screenshot" alt="">
+        </div>
       </div>
       <div class="block-item block-add" @click.stop.prevent="doAddBoard">
         <Icon type="md-add" />
@@ -165,27 +178,43 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+
   export default {
     name: 'GridBox',
+    props: {
+      active: {
+        type: Boolean,
+        default: false
+      }
+    },
     data () {
       return {
         isShow: false,
-        boardList: [
-          {
-            img: ''
-          },
-          {
-            img: ''
-          }
-        ],
-        activeBoardIndex: 0
+        activeIndex: 0
+      }
+    },
+    computed: {
+      ...mapGetters([
+        'activeBoardIndex',
+        'boardList'
+      ])
+    },
+    watch: {
+      activeBoardIndex (val) {
+        let _t = this
+        _t.activeIndex = val
       }
     },
     methods: {
       doAddBoard () {
         let _t = this
-        _t.boardList.push({
-          img: ''
+        // 更新激活项
+        _t.activeIndex = _t.boardList.length
+        // 分发mutation，新增画板
+        _t.$store.commit('board/list/add', {
+          id: new Date().getTime(),
+          screenshot: ''
         })
       },
       doRemoveBoard (index) {
@@ -194,47 +223,57 @@
           title: _t.$t('L10101'),
           content: _t.$t('L10107'),
           onOk: function () {
+            console.log('_t.boardList 001', _t.boardList.length, _t.activeIndex, index, typeof index)
             // 删除一项
-            _t.boardList.splice(index, 1)
-            // 至少有一个画板
-            if (!_t.boardList.length) {
-              _t.doAddBoard()
-            }
-            // 处理激活项
-            if (_t.activeBoardIndex > index) {
-              _t.activeBoardIndex--
-            } else if (_t.activeBoardIndex === index) {
-              _t.activeBoardIndex = index === _t.boardList.length ? index - 1 : index
-            }
+            _t.$store.commit('board/list/remove', index)
+            _t.$nextTick(function () {
+              console.log('_t.boardList 002', _t.boardList.length, _t.activeIndex)
+              // 至少有一个画板
+              if (!_t.boardList.length) {
+                _t.doAddBoard()
+              }
+              // 处理激活项
+              if (_t.activeIndex > index) {
+                _t.activeIndex = _t.activeIndex - 1
+              } else if (_t.activeIndex === index) {
+                _t.activeIndex = index === _t.boardList.length ? index - 1 : index
+              }
+              console.log('activeIndex', _t.activeIndex)
+              _t.$store.commit('board/activeBoardIndex/update', _t.activeIndex)
+            })
           }
         })
       },
       doTrigger (index) {
         let _t = this
-        _t.activeBoardIndex = index
+        _t.activeIndex = index
       },
       doClose () {
         let _t = this
-        _t.$emit('close')
-      }
-    },
-    created: function () {
-      let _t = this
-      // 监听事件
-      _t.$X.utils.bus.$on('platform/gridBox/show', function () {
-        _t.isShow = true
-      })
-      _t.$X.utils.bus.$on('platform/gridBox/hide', function () {
         _t.isShow = false
-      })
-    },
-    beforeDestroy: function () {
-      let _t = this
-      // 注销事件
-      _t.$X.utils.bus.$off([
-        'platform/gridBox/show',
-        'platform/gridBox/hide'
-      ])
+        _t.$store.commit('board/activeBoardIndex/update', _t.activeIndex)
+        _t.$emit('close')
+      },
+      doShow (data) {
+        let _t = this
+        if (!_t.active) {
+          return
+        }
+        _t.isShow = true
+        if (_t.activeIndex !== null) {
+          _t.$store.commit('board/screenshot/update', {
+            index: _t.activeIndex,
+            screenshot: data
+          })
+        }
+      },
+      doHide () {
+        let _t = this
+        if (!_t.active) {
+          return
+        }
+        _t.isShow = false
+      }
     }
   }
 </script>
