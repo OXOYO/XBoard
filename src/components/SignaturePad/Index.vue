@@ -239,9 +239,12 @@
         if (_t.boardList[newVal]) {
           // 更新options
           let padOptions = _t.boardList[newVal].signaturePad.options
-          Object.entries(padOptions).map(([key, val]) => {
+          let keys = Object.keys(padOptions)
+          for (let i = 0, len = keys.length; i < len; i++) {
+            let key = keys[i]
+            let val = padOptions[key]
             _t.setOption(key, val)
-          })
+          }
           // 清除画布
           _t.clear()
           _t.fromData(_t.boardList[newVal].signaturePad.data)
@@ -265,17 +268,7 @@
       _t.resizeCanvas()
       // 监听事件
       _t.$X.utils.bus.$on('board/list/remove', function () {
-        let newVal = 0
-        if (_t.boardList[newVal]) {
-          // 更新options
-          let padOptions = _t.boardList[newVal].signaturePad.options
-          Object.entries(padOptions).map(([key, val]) => {
-            _t.setOption(key, val)
-          })
-          // 清除画布
-          _t.clear()
-          _t.fromData(_t.boardList[newVal].signaturePad.data)
-        }
+        _t.handlePad(0)
       })
     },
     beforeDestroy () {
