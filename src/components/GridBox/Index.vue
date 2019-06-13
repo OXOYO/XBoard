@@ -65,6 +65,7 @@
         border: 3px solid #ffffff;
         text-align: center;
         overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
 
         &:hover {
           box-shadow: 0 0 1px 1px rgba(255, 255, 255, 1);
