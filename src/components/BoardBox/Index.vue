@@ -58,7 +58,6 @@
       @dblclick="handleBoardBodyDbClick"
       @contextmenu.stop.prevent="handleBoardBodyRightClick"
     >
-      <h1>{{ currentBoard.id }}</h1>
       <!-- 画板 -->
       <SignaturePad
         ref="signaturePad"
@@ -232,7 +231,7 @@
       </ToolBox>
     </div>
     <!-- 右键菜单 -->
-    <ContextMenu>
+    <ContextMenu ref="contextMenu">
       <Menu :active-name="activeMenu" @on-select="handleContextMenuChange">
         <MenuItem
           v-for="(item, index) in contextMenuList.filter(item => item.types.includes(actionType))"
