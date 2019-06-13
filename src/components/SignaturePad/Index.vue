@@ -24,6 +24,8 @@
 </template>
 
 <script>
+  import { mapGetters } from 'vuex'
+
   import SignaturePad from 'signature_pad'
 
   // 擦除
@@ -78,9 +80,23 @@
           y: 0
         },
         // 图片类型
-        imageTypes: ['image/png', 'image/jpeg', 'image/svg+xml'],
-        // 撤销历史
-        undoHistory: []
+        imageTypes: ['image/png', 'image/jpeg', 'image/svg+xml']
+      }
+    },
+    computed: {
+      ...mapGetters([
+        'activeBoardIndex',
+        'boardList'
+      ]),
+      undoHistory () {
+        let _t = this
+        return _t.boardList[_t.activeBoardIndex].signaturePad.undoHistory
+      }
+    },
+    watch: {
+      activeBoardIndex (newVal, oldVal) {
+        let _t = this
+        _t.handlePad(newVal, oldVal)
       }
     },
     methods: {
@@ -88,6 +104,14 @@
         let _t = this
         if (_t.signaturePad && key) {
           _t.signaturePad[key] = val
+          // 更新padOption
+          _t.$store.commit('board/signaturePad/options/update', {
+            index: _t.activeBoardIndex,
+            data: {
+              key,
+              val
+            }
+          })
         }
       },
       resizeCanvas () {
@@ -128,7 +152,13 @@
         let data = _t.signaturePad.toData()
         let last = data.pop()
         if (last) {
-          _t.undoHistory.push(last)
+          _t.$store.commit('board/signaturePad/undoHistory/update', {
+            index: _t.activeBoardIndex,
+            data: [
+              ..._t.undoHistory,
+              last
+            ]
+          })
           return _t.signaturePad.fromData(data)
         }
       },
@@ -137,6 +167,10 @@
         let _t = this
         let data = _t.signaturePad.toData()
         let last = _t.undoHistory.pop()
+        _t.$store.commit('board/signaturePad/undoHistory/update', {
+          index: _t.activeBoardIndex,
+          data: _t.undoHistory
+        })
         if (last) {
           return _t.signaturePad.fromData([
             ...data,
@@ -145,8 +179,12 @@
         }
       },
       // 将签名图像作为点组数组返回
-      toData (type) {
-        return this.signaturePad.toData(type)
+      toData () {
+        return this.signaturePad.toData()
+      },
+      // 从点组数组中绘制签名图像
+      fromData (data) {
+        return this.signaturePad.fromData(data)
       },
       // 将签名图像作为 DataURL 返回
       toDataURL (type) {
@@ -181,8 +219,33 @@
         return this.signaturePad.isEmpty()
       },
       handleOnBegin () {
+        let _t = this
         // 清空撤销历史
-        this.undoHistory = []
+        _t.$store.commit('board/signaturePad/undoHistory/update', {
+          index: _t.activeBoardIndex,
+          data: []
+        })
+      },
+      handlePad (newVal, oldVal) {
+        let _t = this
+        // 更新旧画板
+        if (_t.boardList[oldVal]) {
+          _t.$store.commit('board/signaturePad/data/update', {
+            index: oldVal,
+            data: _t.toData()
+          })
+        }
+        // 更新当前画板
+        if (_t.boardList[newVal]) {
+          // 更新options
+          let padOptions = _t.boardList[newVal].signaturePad.options
+          Object.entries(padOptions).map(([key, val]) => {
+            _t.setOption(key, val)
+          })
+          // 清除画布
+          _t.clear()
+          _t.fromData(_t.boardList[newVal].signaturePad.data)
+        }
       }
     },
     mounted () {
@@ -200,6 +263,20 @@
       window.addEventListener('resize', _t.onResizeHandler, false)
       // 触发resize事件
       _t.resizeCanvas()
+      // 监听事件
+      _t.$X.utils.bus.$on('board/list/remove', function () {
+        let newVal = 0
+        if (_t.boardList[newVal]) {
+          // 更新options
+          let padOptions = _t.boardList[newVal].signaturePad.options
+          Object.entries(padOptions).map(([key, val]) => {
+            _t.setOption(key, val)
+          })
+          // 清除画布
+          _t.clear()
+          _t.fromData(_t.boardList[newVal].signaturePad.data)
+        }
+      })
     },
     beforeDestroy () {
       let _t = this

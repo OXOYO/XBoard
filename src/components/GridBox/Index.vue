@@ -182,12 +182,6 @@
 
   export default {
     name: 'GridBox',
-    props: {
-      active: {
-        type: Boolean,
-        default: false
-      }
-    },
     data () {
       return {
         isShow: false,
@@ -223,22 +217,19 @@
           title: _t.$t('L10101'),
           content: _t.$t('L10107'),
           onOk: function () {
-            console.log('_t.boardList 001', _t.boardList.length, _t.activeIndex, index, typeof index)
             // 删除一项
             _t.$store.commit('board/list/remove', index)
             _t.$nextTick(function () {
-              console.log('_t.boardList 002', _t.boardList.length, _t.activeIndex)
-              // 至少有一个画板
-              if (!_t.boardList.length) {
-                _t.doAddBoard()
-              }
               // 处理激活项
-              if (_t.activeIndex > index) {
-                _t.activeIndex = _t.activeIndex - 1
-              } else if (_t.activeIndex === index) {
-                _t.activeIndex = index === _t.boardList.length ? index - 1 : index
+              if (_t.activeIndex >= index) {
+                if (_t.activeIndex > 0) {
+                  _t.activeIndex--
+                } else {
+                  _t.activeIndex = 0
+                  // 广播事件
+                  _t.$X.utils.bus.$emit('board/list/remove')
+                }
               }
-              console.log('activeIndex', _t.activeIndex)
               _t.$store.commit('board/activeBoardIndex/update', _t.activeIndex)
             })
           }
@@ -256,22 +247,14 @@
       },
       doShow (data) {
         let _t = this
-        if (!_t.active) {
-          return
-        }
         _t.isShow = true
-        if (_t.activeIndex !== null) {
-          _t.$store.commit('board/screenshot/update', {
-            index: _t.activeIndex,
-            screenshot: data
-          })
-        }
+        _t.$store.commit('board/screenshot/update', {
+          index: _t.activeIndex || 0,
+          screenshot: data
+        })
       },
       doHide () {
         let _t = this
-        if (!_t.active) {
-          return
-        }
         _t.isShow = false
       }
     }
