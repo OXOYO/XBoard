@@ -771,7 +771,9 @@ export default {
     },
     handleBoardBodyDbClick () {
       let _t = this
-      _t.switchStatus()
+      if (_t.actionType === 'preview') {
+        _t.switchStatus()
+      }
     },
     handleBoardBodyRightClick: function (event) {
       let _t = this
