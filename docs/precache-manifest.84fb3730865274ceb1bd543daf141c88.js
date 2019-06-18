@@ -12,7 +12,7 @@ self.__precacheManifest = [
     "url": "/XBoard/fonts/iconfont.110f3b5d.eot"
   },
   {
-    "revision": "984c9e7bca128dad76f6",
+    "revision": "5fda55838149cee641b6",
     "url": "/XBoard/css/app.497f2970.css"
   },
   {
@@ -20,7 +20,7 @@ self.__precacheManifest = [
     "url": "/XBoard/css/chunk-vendors.239019ff.css"
   },
   {
-    "revision": "5efa538d3727ec12c740ead4c71aa6f1",
+    "revision": "1dcfad1d03b6dbebbecf3b9177d47dde",
     "url": "/XBoard/favicon.png"
   },
   {
@@ -32,12 +32,12 @@ self.__precacheManifest = [
     "url": "/XBoard/fonts/ionicons.99ac3308.woff"
   },
   {
-    "revision": "1d942e8acfd7bac951af4a340ed78fd1",
+    "revision": "e1a9e93b4ac0a58a7dc573b34e30acb8",
     "url": "/XBoard/index.html"
   },
   {
-    "revision": "984c9e7bca128dad76f6",
-    "url": "/XBoard/js/app.1fe9e008.js"
+    "revision": "5fda55838149cee641b6",
+    "url": "/XBoard/js/app.5061dce5.js"
   },
   {
     "revision": "651c1d74b6218d281534c8737c505e8a",
@@ -52,13 +52,13 @@ self.__precacheManifest = [
     "url": "/XBoard/img/ionicons.a2c4a261.svg"
   },
   {
-    "revision": "0d669c51b2d6d2182f1f",
+    "revision": "bd324164ea764af25227",
     "url": "/XBoard/css/Board.dbf499b0.css"
   },
   {
     "url": "/XBoard/chunk-vendors.c0c8fae224699133f194.js"
   },
   {
-    "url": "/XBoard/Board.0d669c51b2d6d2182f1f.js"
+    "url": "/XBoard/Board.bd324164ea764af25227.js"
   }
 ];
