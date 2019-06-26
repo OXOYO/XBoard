@@ -26,7 +26,8 @@
 <script>
   import { mapGetters } from 'vuex'
 
-  import SignaturePad from 'signature_pad'
+  // import SignaturePad from 'signature_pad'
+  import SignaturePad from '@/global/lib/signature_pad.js'
 
   // 擦除
   SignaturePad.prototype.eraser = function () {
@@ -197,6 +198,11 @@
       // 画
       draw () {
         this.signaturePad.draw()
+      },
+      drawLine () {
+        let _t = this
+        let oldData = _t.toData()
+        console.log('oldData', oldData)
       },
       // 清除画布
       clear () {

@@ -291,7 +291,7 @@ export default {
             enable: false,
             contextmenu: false,
             type: '',
-            types: ['draw'],
+            types: ['draw', 'line'],
             divider: false
           },
           {
@@ -304,7 +304,7 @@ export default {
             enable: false,
             contextmenu: false,
             type: '',
-            types: ['draw'],
+            types: ['draw', 'line'],
             divider: false
           },
           {
@@ -317,7 +317,7 @@ export default {
             enable: true,
             contextmenu: true,
             type: 'preview',
-            types: ['draw', 'text', 'note', 'preview'],
+            types: ['draw', 'line', 'text', 'note', 'preview'],
             divider: false
           },
           {
@@ -330,7 +330,7 @@ export default {
             enable: true,
             contextmenu: true,
             type: 'draw',
-            types: ['draw', 'text', 'note', 'preview'],
+            types: ['draw', 'line', 'text', 'note', 'preview'],
             divider: false
           },
           {
@@ -343,7 +343,7 @@ export default {
             enable: true,
             contextmenu: true,
             type: 'draw',
-            types: ['draw'],
+            types: ['draw', 'line'],
             divider: false
           },
           {
@@ -353,10 +353,10 @@ export default {
             icon: 'line',
             shortcuts: 'l',
             cursor: '',
-            enable: false,
+            enable: true,
             contextmenu: false,
             type: 'line',
-            types: ['draw'],
+            types: ['draw', 'line'],
             divider: false
           },
           {
@@ -369,7 +369,7 @@ export default {
             enable: true,
             contextmenu: true,
             type: '',
-            types: ['draw'],
+            types: ['draw', 'line'],
             divider: false
           },
           {
@@ -382,7 +382,7 @@ export default {
             enable: true,
             contextmenu: true,
             type: '',
-            types: ['draw'],
+            types: ['draw', 'line'],
             divider: true
           },
           {
@@ -395,7 +395,7 @@ export default {
             enable: true,
             contextmenu: true,
             type: 'text',
-            types: ['draw', 'text', 'note', 'preview']
+            types: ['draw', 'line', 'text', 'note', 'preview']
           },
           {
             name: 'note',
@@ -407,7 +407,7 @@ export default {
             enable: true,
             contextmenu: true,
             type: 'note',
-            types: ['draw', 'text', 'note', 'preview'],
+            types: ['draw', 'line', 'text', 'note', 'preview'],
             divider: true
           },
           {
@@ -420,7 +420,7 @@ export default {
             enable: false,
             contextmenu: false,
             type: '',
-            types: ['draw', 'text', 'note'],
+            types: ['draw', 'line', 'text', 'note'],
             divider: false
           },
           {
@@ -433,7 +433,7 @@ export default {
             enable: true,
             contextmenu: false,
             type: '',
-            types: ['draw', 'text', 'note', 'preview'],
+            types: ['draw', 'line', 'text', 'note', 'preview'],
             divider: false
           },
           {
@@ -446,7 +446,7 @@ export default {
             enable: true,
             contextmenu: true,
             type: '',
-            types: ['draw', 'text', 'note'],
+            types: ['draw', 'line', 'text', 'note'],
             divider: false
           },
           {
@@ -459,7 +459,7 @@ export default {
             enable: true,
             contextmenu: true,
             type: '',
-            types: ['draw', 'text', 'note', 'preview'],
+            types: ['draw', 'line', 'text', 'note', 'preview'],
             divider: false
           },
           {
@@ -472,7 +472,7 @@ export default {
             enable: true,
             contextmenu: false,
             type: '',
-            types: ['draw', 'text', 'note', 'preview'],
+            types: ['draw', 'line', 'text', 'note', 'preview'],
             divider: true
           }
         ],
@@ -486,7 +486,7 @@ export default {
           enable: true,
           contextmenu: false,
           type: '',
-          types: ['draw'],
+          types: ['draw', 'line'],
           divider: false
         },
         backgroundColor: {
@@ -499,7 +499,7 @@ export default {
           enable: true,
           contextmenu: false,
           type: '',
-          types: ['draw'],
+          types: ['draw', 'line'],
           divider: false
         },
         dotSize: {
@@ -512,7 +512,7 @@ export default {
           enable: true,
           contextmenu: false,
           type: '',
-          types: ['draw'],
+          types: ['draw', 'line'],
           divider: false
         },
         language: {
@@ -525,7 +525,7 @@ export default {
           enable: true,
           contextmenu: false,
           type: '',
-          types: ['draw', 'text', 'note', 'preview'],
+          types: ['draw', 'line', 'text', 'note', 'preview'],
           divider: false
         },
         github: {
@@ -538,7 +538,7 @@ export default {
           enable: true,
           contextmenu: false,
           type: '',
-          types: ['draw', 'text', 'note', 'preview'],
+          types: ['draw', 'line', 'text', 'note', 'preview'],
           divider: false
         },
         feedback: {
@@ -807,6 +807,20 @@ export default {
           el.setOption('minWidth', _t.currentBoard.formData.dotSize * 0.3)
           el.setOption('maxWidth', _t.currentBoard.formData.dotSize * 1.7)
           el.setOption('penColor', _t.currentBoard.formData.penColor)
+          // 取消直线模式
+          el.setOption('straightLine', false)
+          el.draw()
+          break
+        case 'line':
+          _t.handleActiveTool(item.name)
+          el.on()
+          el.setOption('dotSize', _t.currentBoard.formData.dotSize)
+          el.setOption('minWidth', _t.currentBoard.formData.dotSize * 1)
+          el.setOption('maxWidth', _t.currentBoard.formData.dotSize * 1)
+          el.setOption('penColor', _t.currentBoard.formData.penColor)
+          // 设置直线模式
+          el.setOption('straightLine', true)
+          // el.drawLine()
           el.draw()
           break
         case 'text':
