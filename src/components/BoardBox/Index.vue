@@ -341,7 +341,7 @@ export default {
             shortcuts: 'l',
             cursor: '',
             enable: true,
-            contextmenu: false,
+            contextmenu: true,
             type: 'line',
             types: ['draw', 'line', 'text', 'note', 'preview'],
             divider: false
