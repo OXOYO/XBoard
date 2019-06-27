@@ -311,38 +311,39 @@ var SignaturePad = (function () {
         var point = this._createPoint(x, y);
         var isLastPointTooClose = lastPoint ? point.distanceTo(lastPoint) <= this.minDistance : false;
         var color = lastPointGroup.color;
-        if (!lastPoint || !(lastPoint && isLastPointTooClose)) {
-            var curve = this._addPoint(point);
-            if (this.straightLine) {
-              if (!lastPoints.length) {
-                lastPoints.push({
-                  time: point.time,
-                  x: point.x,
-                  y: point.y
-                });
-              } else {
-                lastPoints[1] = {
-                  time: point.time,
-                  x: point.x,
-                  y: point.y
-                }
-              }
-              this._drawLine({ color: color, point: point, startPoint: lastPoints[0] })
-            } else if (!lastPoint) {
-              this._drawDot({ color: color, point: point });
-              lastPoints.push({
-                time: point.time,
-                x: point.x,
-                y: point.y
-              });
-            } else if (curve) {
-              this._drawCurve({ color: color, curve: curve });
-              lastPoints.push({
-                time: point.time,
-                x: point.x,
-                y: point.y
-              });
+
+        if (this.straightLine) {
+          if (!lastPoints.length) {
+            lastPoints.push({
+              time: point.time,
+              x: point.x,
+              y: point.y
+            });
+          } else {
+            lastPoints[1] = {
+              time: point.time,
+              x: point.x,
+              y: point.y
             }
+          }
+          this._drawLine({ color: color, point: point, startPoint: lastPoints[0] })
+        } else if (!lastPoint || !(lastPoint && isLastPointTooClose)) {
+          var curve = this._addPoint(point);
+          if (!lastPoint) {
+            this._drawDot({ color: color, point: point });
+            lastPoints.push({
+              time: point.time,
+              x: point.x,
+              y: point.y
+            });
+          } else if (curve) {
+            this._drawCurve({ color: color, curve: curve });
+            lastPoints.push({
+              time: point.time,
+              x: point.x,
+              y: point.y
+            });
+          }
         }
     };
     SignaturePad.prototype._strokeEnd = function (event) {
@@ -457,14 +458,12 @@ var SignaturePad = (function () {
       var width = typeof this.dotSize === 'function' ? this.dotSize() : this.dotSize;
       ctx.beginPath();
       ctx.moveTo(startPoint.x, startPoint.y);
-      // ctx.arc(point.x, point.y, width, 0, 2 * Math.PI, false);
       ctx.lineTo(point.x, point.y);
       ctx.lineWidth = width
       this._isEmpty = false;
+      ctx.strokeStyle = color
       ctx.stroke()
       ctx.closePath();
-      ctx.fillStyle = color;
-      ctx.fill();
     };
     SignaturePad.prototype._fromData = function (pointGroups, drawCurve, drawDot) {
         for (var _i = 0, pointGroups_1 = pointGroups; _i < pointGroups_1.length; _i++) {
