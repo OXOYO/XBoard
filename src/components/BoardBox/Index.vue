@@ -334,19 +334,6 @@ export default {
             divider: false
           },
           {
-            name: 'eraser',
-            label: 'Eraser (E)',
-            lang: 'L10006',
-            icon: 'eraser',
-            shortcuts: 'e',
-            cursor: '',
-            enable: true,
-            contextmenu: true,
-            type: 'draw',
-            types: ['draw', 'line'],
-            divider: false
-          },
-          {
             name: 'line',
             label: 'Line (L)',
             lang: 'L10004',
@@ -356,7 +343,20 @@ export default {
             enable: true,
             contextmenu: false,
             type: 'line',
-            types: ['draw', 'line'],
+            types: ['draw', 'line', 'text', 'note', 'preview'],
+            divider: false
+          },
+          {
+            name: 'eraser',
+            label: 'Eraser (E)',
+            lang: 'L10006',
+            icon: 'eraser',
+            shortcuts: 'e',
+            cursor: '',
+            enable: true,
+            contextmenu: true,
+            type: 'draw',
+            types: ['draw', 'line', 'text', 'note', 'preview'],
             divider: false
           },
           {
