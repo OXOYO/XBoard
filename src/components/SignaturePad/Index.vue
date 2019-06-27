@@ -199,11 +199,6 @@
       draw () {
         this.signaturePad.draw()
       },
-      drawLine () {
-        let _t = this
-        let oldData = _t.toData()
-        console.log('oldData', oldData)
-      },
       // 清除画布
       clear () {
         this.signaturePad.clear()

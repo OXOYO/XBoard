@@ -281,6 +281,12 @@ var SignaturePad = (function () {
         return this._data;
     };
     SignaturePad.prototype._strokeBegin = function (event) {
+        if (this.straightLine) {
+          // 保存当前画布数据
+          this._imgData = this._ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        } else {
+          this._imgData = null
+        }
         var newPointGroup = {
             color: this.penColor,
             points: []
@@ -292,23 +298,22 @@ var SignaturePad = (function () {
             this.onBegin(event);
         }
     };
-    SignaturePad.prototype._strokeUpdate = function (event) {
+    SignaturePad.prototype._strokeUpdate = function (event, isEnd = false) {
         var x = event.clientX;
         var y = event.clientY;
-        // var firstPoint =
-        console.log('x', x, 'y', y, this.straightLine, this._data)
-
+        // 恢复canvas数据
+        if (this.straightLine && this._imgData && !isEnd) {
+          this._ctx.putImageData(this._imgData,0, 0, 0, 0, this.canvas.width, this.canvas.height)
+        }
         var lastPointGroup = this._data[this._data.length - 1];
         var lastPoints = lastPointGroup.points;
         var lastPoint = lastPoints.length > 0 && lastPoints[lastPoints.length - 1];
-        console.log('lastPoint', lastPoint)
         var point = this._createPoint(x, y);
         var isLastPointTooClose = lastPoint ? point.distanceTo(lastPoint) <= this.minDistance : false;
         var color = lastPointGroup.color;
         if (!lastPoint || !(lastPoint && isLastPointTooClose)) {
             var curve = this._addPoint(point);
-            if (this.straightLine && lastPoints.length) {
-              this._drawLine({ color: 'red', point: point, startPoint: lastPoints[0] })
+            if (this.straightLine) {
               if (!lastPoints.length) {
                 lastPoints.push({
                   time: point.time,
@@ -322,6 +327,7 @@ var SignaturePad = (function () {
                   y: point.y
                 }
               }
+              this._drawLine({ color: color, point: point, startPoint: lastPoints[0] })
             } else if (!lastPoint) {
               this._drawDot({ color: color, point: point });
               lastPoints.push({
@@ -340,7 +346,7 @@ var SignaturePad = (function () {
         }
     };
     SignaturePad.prototype._strokeEnd = function (event) {
-        this._strokeUpdate(event);
+        this._strokeUpdate(event, true);
         if (typeof this.onEnd === 'function') {
             this.onEnd(event);
         }
@@ -449,12 +455,11 @@ var SignaturePad = (function () {
       var color = _a.color, point = _a.point, startPoint = _a.startPoint;
       var ctx = this._ctx;
       var width = typeof this.dotSize === 'function' ? this.dotSize() : this.dotSize;
-      // var canvas = this.canvas;
-      // ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.beginPath();
       ctx.moveTo(startPoint.x, startPoint.y);
+      // ctx.arc(point.x, point.y, width, 0, 2 * Math.PI, false);
       ctx.lineTo(point.x, point.y);
-      ctx.arc(point.x, point.y, width, 0, 2 * Math.PI, false);
+      ctx.lineWidth = width
       this._isEmpty = false;
       ctx.stroke()
       ctx.closePath();

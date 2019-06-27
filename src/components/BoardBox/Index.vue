@@ -841,6 +841,8 @@ export default {
           el.setOption('maxWidth', 18)
           // FIXME 【BUG】设置画笔为背景色，但是并有没有什么用
           el.setOption('penColor', _t.currentBoard.formData.backgroundColor)
+          // 取消直线模式
+          el.setOption('straightLine', false)
           el.eraser()
           break
         case 'undo':
