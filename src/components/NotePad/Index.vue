@@ -79,7 +79,7 @@
       }
     }
     .note-pad-body {
-      padding: 15px;
+      padding: 1px;
       overflow: auto;
       height: 100%;
     }
