@@ -1,18 +1,18 @@
 self.__precacheManifest = [
   {
-    "revision": "99ac3308dd8ee14f749f51538d0d5b9e",
-    "url": "/XBoard/fonts/ionicons.99ac3308.woff"
+    "revision": "d535a25a79fb1365ae814b61e88fae71",
+    "url": "/XBoard/fonts/ionicons.d535a25a.ttf"
   },
   {
     "revision": "b6216d61c03e6ce0c9aea6ca7808f7ca",
     "url": "/XBoard/robots.txt"
   },
   {
-    "revision": "4d05c8777042af0915b3cf5fd9cf9308",
-    "url": "/XBoard/fonts/iconfont.4d05c877.ttf"
+    "revision": "311f124c951d90859346633e1a077d5c",
+    "url": "/XBoard/fonts/iconfont.311f124c.eot"
   },
   {
-    "revision": "de3745065f5f3a8568a6",
+    "revision": "0530aba56fcd8e887a9d",
     "url": "/XBoard/css/app.40690573.css"
   },
   {
@@ -28,20 +28,20 @@ self.__precacheManifest = [
     "url": "/XBoard/fonts/ionicons.143146fa.woff2"
   },
   {
-    "revision": "d535a25a79fb1365ae814b61e88fae71",
-    "url": "/XBoard/fonts/ionicons.d535a25a.ttf"
+    "revision": "99ac3308dd8ee14f749f51538d0d5b9e",
+    "url": "/XBoard/fonts/ionicons.99ac3308.woff"
   },
   {
-    "revision": "9a9a6cf72db35963c97de2f3ba7f791d",
+    "revision": "af94ed2132ccb0c46bcf19cf3c8c24b0",
     "url": "/XBoard/index.html"
   },
   {
-    "revision": "de3745065f5f3a8568a6",
-    "url": "/XBoard/js/app.56ccdbf8.js"
+    "revision": "0530aba56fcd8e887a9d",
+    "url": "/XBoard/js/app.de80e4a5.js"
   },
   {
-    "revision": "311f124c951d90859346633e1a077d5c",
-    "url": "/XBoard/fonts/iconfont.311f124c.eot"
+    "revision": "4d05c8777042af0915b3cf5fd9cf9308",
+    "url": "/XBoard/fonts/iconfont.4d05c877.ttf"
   },
   {
     "revision": "99c79cd846788271049c058c991e1ede",
@@ -52,13 +52,13 @@ self.__precacheManifest = [
     "url": "/XBoard/img/ionicons.a2c4a261.svg"
   },
   {
-    "revision": "56ee8dfa266ca73c0de7",
+    "revision": "8e013d6d282d84d18eb5",
     "url": "/XBoard/css/Board.8a8a479b.css"
   },
   {
     "url": "/XBoard/chunk-vendors.63387bbfd9ea93860353.js"
   },
   {
-    "url": "/XBoard/Board.56ee8dfa266ca73c0de7.js"
+    "url": "/XBoard/Board.8e013d6d282d84d18eb5.js"
   }
 ];
