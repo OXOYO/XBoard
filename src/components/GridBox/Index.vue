@@ -62,7 +62,7 @@
         margin: 10px;
         background: #ffffff;
         color: #000000;
-        border: 3px solid #ffffff;
+        border: 2px solid #ffffff;
         text-align: center;
         overflow: hidden;
         box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
@@ -82,10 +82,10 @@
         }
 
         &.block-active {
-          border-color: #19be6b;
+          /*border-color: #19be6b;*/
 
           &:hover {
-            box-shadow: 0 0 1px 1px #19be6b;
+            /*box-shadow: 0 0 1px 1px #19be6b;*/
           }
 
           .active {

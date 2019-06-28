@@ -26,6 +26,7 @@ export default {
   L10019: 'Feedback',
   L10020: 'Note (N)',
   L10021: 'Grid (G)',
+  L10022: 'Material (Ctrl + M)',
   L10101: 'Hint',
   L10102: 'Are you sure to clear the current artboard? ',
   L10103: 'Switching the background color will clear the current artboard, confirm the switch? ',

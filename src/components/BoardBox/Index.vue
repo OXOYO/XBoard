@@ -245,6 +245,8 @@
     </ContextMenu>
     <!-- 栅格 -->
     <GridBox ref="gridBox" @close="handleGridBoxClose"></GridBox>
+    <!-- 物料 -->
+    <MaterialsBox ref="materialsBox"></MaterialsBox>
   </div>
 </template>
 
@@ -258,6 +260,8 @@ import ContextMenu from '../ContextMenu/Index'
 import TextPad from '../TextPad/Index'
 import NotePad from '../NotePad/Index'
 import GridBox from '../GridBox/Index'
+import MaterialsBox from '../MaterialsBox/Index'
+
 // 热键
 import Mousetrap from 'mousetrap'
 import html2canvas from 'html2canvas'
@@ -271,7 +275,8 @@ export default {
     ContextMenu,
     TextPad,
     NotePad,
-    GridBox
+    GridBox,
+    MaterialsBox
   },
   props: {
     info: Object
@@ -407,6 +412,19 @@ export default {
             enable: true,
             contextmenu: true,
             type: 'note',
+            types: ['draw', 'line', 'text', 'note', 'preview'],
+            divider: true
+          },
+          {
+            name: 'materials',
+            label: 'Materials (Ctrl + M)',
+            lang: 'L10022',
+            icon: 'materials',
+            shortcuts: 'ctrl+m',
+            cursor: '',
+            enable: true,
+            contextmenu: true,
+            type: 'materials',
             types: ['draw', 'line', 'text', 'note', 'preview'],
             divider: true
           },
@@ -551,7 +569,7 @@ export default {
           enable: true,
           contextmenu: false,
           type: '',
-          types: ['draw', 'text', 'note', 'preview'],
+          types: ['draw', 'line', 'text', 'note', 'preview'],
           divider: false
         }
       },
@@ -595,6 +613,15 @@ export default {
     },
     signaturePad () {
       return this.$refs.signaturePad
+    },
+    contextMenu () {
+      return this.$refs.contextMenu
+    },
+    gridBox () {
+      return this.$refs.gridBox
+    },
+    materialsBox () {
+      return this.$refs.materialsBox
     },
     boardStyle () {
       let _t = this
@@ -783,9 +810,8 @@ export default {
         x: xVal,
         y: yVal
       }
-      let contextMenu = _t.$refs.contextMenu
-      if (contextMenu && contextMenu.doShow) {
-        contextMenu.doShow(options)
+      if (_t.contextMenu && _t.contextMenu.doShow) {
+        _t.contextMenu.doShow(options)
       }
     },
     handleToolClick (item, val) {
@@ -943,14 +969,24 @@ export default {
             backgroundColor: null,
             imageTimeout: 0
           }).then(function (canvas) {
+            // 隐藏物料
+            if (_t.materialsBox && _t.materialsBox.doHide) {
+              _t.materialsBox.doHide()
+            }
+
             let data = canvas.toDataURL('image/png')
-            let gridBox = _t.$refs.gridBox
-            if (gridBox && gridBox.doShow) {
-              gridBox.doShow(data)
+            if (_t.gridBox && _t.gridBox.doShow) {
+              _t.gridBox.doShow(data)
             }
           }).catch(function (error) {
             console.warn('html2canvas render error!', error)
           })
+          break
+        case 'materials':
+          console.log('materials show...')
+          if (_t.materialsBox && _t.materialsBox.doToggle) {
+            _t.materialsBox.doToggle('selector')
+          }
           break
       }
       // 非便签输入模式时清除鼠标移动事件
@@ -1072,9 +1108,8 @@ export default {
     },
     doHideContextMenu () {
       let _t = this
-      let contextMenu = _t.$refs.contextMenu
-      if (contextMenu && contextMenu.doHide) {
-        contextMenu.doHide()
+      if (_t.contextMenu && _t.contextMenu.doHide) {
+        _t.contextMenu.doHide()
       }
     }
   },
