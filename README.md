@@ -2,7 +2,7 @@
 
 Online whiteboard
 
-## [Online](https://github.com/OXOYO/XBoard)
+## [Online](http://oxoyo.co/XBoard/)
 
 ## START
 
