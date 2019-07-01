@@ -1,5 +1,5 @@
 /**
-* Created by yangfan9244 on 2019/6/28.
+* Created by OXOYO on 2019/6/28.
 *
 * MaterialsBox
 */
@@ -13,7 +13,7 @@
     bottom: 0;
     z-index: 600;
     width: 300px;
-    box-shadow: -2px 0 2px 2px rgba(0, 0, 0, .1);
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, .1);
     background: #ffffff;
     transition: all .5s ease-in-out;
 
@@ -32,9 +32,9 @@
 <template>
   <div :class="['materials-box', mode]">
     <!-- 物料编辑器 -->
-    <MaterialsEditor v-if="mode === 'editor'"></MaterialsEditor>
+    <MaterialsEditor v-if="mode === 'editor'" @close="handleEditorClose"></MaterialsEditor>
     <!-- 物料选择器 -->
-    <MaterialsSelector v-if="mode === 'selector'" @close="handleSelectorClose"></MaterialsSelector>
+    <MaterialsSelector v-if="mode === 'selector'" @close="handleSelectorClose" @edit="handleEditorTrigger"></MaterialsSelector>
   </div>
 </template>
 
@@ -75,6 +75,14 @@
         _t.mode = null
       },
       handleSelectorClose () {
+        let _t = this
+        _t.doHide()
+      },
+      handleEditorTrigger () {
+        let _t = this
+        _t.doShow('editor')
+      },
+      handleEditorClose () {
         let _t = this
         _t.doHide()
       }

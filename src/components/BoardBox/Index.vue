@@ -99,18 +99,17 @@
       @mousedown="handleBoardFooterMouseDown"
       @contextmenu.stop.prevent
     >
-      <ToolBox style="margin: 0 auto;">
+      <ToolBox style="box-shadow: 0 0 2px 2px rgba(0, 0, 0, .1); margin: 0 auto;">
         <template v-for="(item, index) in tools.common.filter(item => item.enable)">
           <ToolItem
             :key="'tool_item_' + index"
             :active="activeTool && activeTool.name === item.name"
             :disabled="!item.types.includes(actionType)"
+            :title="$t(item.lang)"
             @click.native="handleToolClick(item)"
           >
             <template v-slot:label>
-              <Tooltip :content="$t(item.lang)">
-                <XIcon :type="item.icon"></XIcon>
-              </Tooltip>
+              <XIcon :type="item.icon"></XIcon>
             </template>
           </ToolItem>
           <Divider :key="'divider_' + index" v-if="item.divider" type="vertical" />
@@ -119,59 +118,56 @@
         <ToolItem
           v-if="tools.penColor.enable"
           :disabled="!tools.penColor.types.includes(actionType)"
+          :title="$t(tools.penColor.lang)"
           style="opacity: 1;"
         >
           <template v-slot:label>
-            <Tooltip :content="$t(tools.penColor.lang)">
-              <ColorPicker
-                v-model="currentBoard.formData.penColor"
-                :disabled="!tools.penColor.types.includes(actionType)"
-                recommend
-                alpha
-                size="small"
-                @on-change="(val) => handleToolClick(tools.penColor, val)"
-              />
-            </Tooltip>
+            <ColorPicker
+              v-model="currentBoard.formData.penColor"
+              :disabled="!tools.penColor.types.includes(actionType)"
+              recommend
+              alpha
+              size="small"
+              @on-change="(val) => handleToolClick(tools.penColor, val)"
+            />
           </template>
         </ToolItem>
         <!-- 背景色 -->
         <ToolItem
           v-if="tools.backgroundColor.enable"
           :disabled="!tools.backgroundColor.types.includes(actionType)"
+          :title="$t(tools.backgroundColor.lang)"
           style="opacity: 1;"
         >
           <template v-slot:label>
-            <Tooltip :content="$t(tools.backgroundColor.lang)">
-              <!-- FIXME 使用:value形式进行绑定 -->
-              <ColorPicker
-                :value="currentBoard.formData.backgroundColor"
-                :disabled="!tools.backgroundColor.types.includes(actionType)"
-                recommend
-                alpha
-                size="small"
-                @on-change="(val) => handleToolClick(tools.backgroundColor, val)"
-              />
-            </Tooltip>
+            <!-- FIXME 使用:value形式进行绑定 -->
+            <ColorPicker
+              :value="currentBoard.formData.backgroundColor"
+              :disabled="!tools.backgroundColor.types.includes(actionType)"
+              recommend
+              alpha
+              size="small"
+              @on-change="(val) => handleToolClick(tools.backgroundColor, val)"
+            />
           </template>
         </ToolItem>
         <!-- 画笔大小 -->
         <ToolItem
           v-if="tools.dotSize.enable"
           :disabled="!tools.dotSize.types.includes(actionType)"
+          :title="$t(tools.dotSize.lang)"
           style="opacity: 1;"
         >
           <template v-slot:label>
-            <Tooltip :content="$t(tools.dotSize.lang)">
-              <InputNumber
-                v-model="currentBoard.formData.dotSize"
-                :disabled="!tools.dotSize.types.includes(actionType)"
-                :max="10"
-                :min="1"
-                size="small"
-                @on-change="(val) => handleToolClick(tools.dotSize, val)"
-              >
-              </InputNumber>
-            </Tooltip>
+            <InputNumber
+              v-model="currentBoard.formData.dotSize"
+              :disabled="!tools.dotSize.types.includes(actionType)"
+              :max="10"
+              :min="1"
+              size="small"
+              @on-change="(val) => handleToolClick(tools.dotSize, val)"
+            >
+            </InputNumber>
           </template>
         </ToolItem>
         <Divider type="vertical" />
@@ -179,6 +175,7 @@
         <ToolItem
           v-if="tools.language.enable"
           :disabled="!tools.language.types.includes(actionType)"
+          :title="$t(tools.language.lang)"
           style="opacity: 1;"
         >
           <template v-slot:label>
@@ -204,28 +201,26 @@
         <ToolItem
           v-if="tools.github.enable"
           :disabled="!tools.github.types.includes(actionType)"
+          :title="$t(tools.github.lang)"
           style="opacity: 1;"
         >
           <template v-slot:label>
-            <Tooltip :content="$t(tools.github.lang)">
-              <a :href="$X.config.system.github" target="_blank" style="color: #333333;">
-                <XIcon :type="tools.github.icon"></XIcon>
-              </a>
-            </Tooltip>
+            <a :href="$X.config.system.github" target="_blank" style="color: #333333;">
+              <XIcon :type="tools.github.icon"></XIcon>
+            </a>
           </template>
         </ToolItem>
         <!-- Feedback -->
         <ToolItem
           v-if="tools.feedback.enable"
           :disabled="!tools.feedback.types.includes(actionType)"
+          :title="$t(tools.feedback.lang)"
           style="opacity: 1;"
         >
           <template v-slot:label>
-            <Tooltip :content="$t(tools.feedback.lang)">
-              <a :href="$X.config.system.feedback" target="_blank" style="color: #333333;">
-                <XIcon :type="tools.feedback.icon"></XIcon>
-              </a>
-            </Tooltip>
+            <a :href="$X.config.system.feedback" target="_blank" style="color: #333333;">
+              <XIcon :type="tools.feedback.icon"></XIcon>
+            </a>
           </template>
         </ToolItem>
       </ToolBox>
@@ -246,7 +241,7 @@
     <!-- 栅格 -->
     <GridBox ref="gridBox" @close="handleGridBoxClose"></GridBox>
     <!-- 物料 -->
-    <MaterialsBox ref="materialsBox"></MaterialsBox>
+    <MaterialsBox ref="materialsBox" v-show="currentBoard.status.materialsBox"></MaterialsBox>
   </div>
 </template>
 

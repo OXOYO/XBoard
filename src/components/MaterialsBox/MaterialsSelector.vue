@@ -1,5 +1,5 @@
 /**
-* Created by yangfan9244 on 2019/6/28.
+* Created by OXOYO on 2019/6/28.
 *
 * MaterialsSelector 物料选择器
 */
@@ -93,7 +93,7 @@
 
 <template>
   <div class="materials-selector">
-    <div class="handler" @click.stop.prevent="doClose"></div>
+    <!--<div class="handler" @click.stop.prevent="doClose"></div>-->
     <div class="category">
       <template v-for="(item, index) in categoryList.filter(target => target.enable)">
         <div
@@ -106,7 +106,11 @@
         <Divider :key="'category_divider_' + index" v-if="item.divider" type="horizontal" />
       </template>
       <template v-for="(item, index) in toolList.filter(target => target.enable)">
-        <div class="tool-item" :key="'tool_' + index">
+        <div
+          class="tool-item"
+          :key="'tool_' + index"
+          @click="handleToolClick(item.name)"
+        >
           <XIcon type="add"></XIcon>
         </div>
         <Divider :key="'tool_divider_' + index" v-if="item.divider" type="horizontal" />
@@ -179,6 +183,17 @@
       handleCategoryClick (name) {
         let _t = this
         _t.activeCategory = _t.categoryList.find(target => target.name === name)
+      },
+      handleToolClick (name) {
+        let _t = this
+        switch (name) {
+          case 'add':
+            _t.$emit('edit')
+            _t.$X.utils.bus.$emit('board/materials/editor/show', {
+              status: 'add'
+            })
+            break
+        }
       },
       doClose () {
         let _t = this

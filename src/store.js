@@ -13,7 +13,8 @@ const defBoard = {
   id: '',
   screenshot: '',
   status: {
-    footer: true
+    footer: true,
+    materialsBox: true
   },
   formData: formData,
   signaturePad: {

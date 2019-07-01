@@ -36,7 +36,7 @@ Vue.prototype.$X = {
 }
 
 // i18n实例
-const i18nInstance = i18n(Vue, 'en-us')
+const i18nInstance = i18n(Vue, 'zh-cn')
 // 注册拖拽插件
 Vue.use(XDrag)
 // 注册quill编辑器
