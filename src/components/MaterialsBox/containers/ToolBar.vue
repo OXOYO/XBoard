@@ -225,13 +225,20 @@
       }
     },
     methods: {
-      handleToolClick (item) {
+      handleToolClick (item, type) {
         let _t = this
         console.log('MaterialsEditor tool click', item.name)
-        switch (item.name) {
-          case 'close':
-            _t.$emit('close')
-            break
+        if (type === 'center') {
+          _t.$X.utils.bus.$emit('board/materials/editor/tool/trigger', item.name)
+        } else {
+          switch (item.name) {
+            case 'back':
+              _t.$X.utils.bus.$emit('board/materials/editor/back')
+              break
+            case 'close':
+              _t.$X.utils.bus.$emit('board/materials/editor/close')
+              break
+          }
         }
       }
     }

@@ -14,27 +14,19 @@
 
 <template>
   <div class="materials-editor">
-    <ToolBar @close="doClose"></ToolBar>
+    <ToolBar></ToolBar>
     <Sketchpad></Sketchpad>
-    <CardBox>
-      <CardItem>
-        <Options></Options>
-      </CardItem>
-      <CardItem>
-        <Navigator></Navigator>
-      </CardItem>
-    </CardBox>
+    <PanelLeft></PanelLeft>
+    <PanelRight></PanelRight>
     <!--<ContextMenu></ContextMenu>-->
   </div>
 </template>
 
 <script>
-  import ToolBar from './components/ToolBar'
-  import Sketchpad from './components/Sketchpad'
-  import CardBox from './components/CardBox'
-  import CardItem from './components/CardItem'
-  import Options from './components/Options'
-  import Navigator from './components/Navigator'
+  import ToolBar from './containers/ToolBar'
+  import Sketchpad from './containers/Sketchpad'
+  import PanelLeft from './containers/PanelLeft'
+  import PanelRight from './containers/PanelRight'
   // import ContextMenu from './components/ContextMenu'
 
   export default {
@@ -42,10 +34,8 @@
     components: {
       ToolBar,
       Sketchpad,
-      CardBox,
-      CardItem,
-      Options,
-      Navigator
+      PanelLeft,
+      PanelRight
       // ,
       // ContextMenu
     },
@@ -74,10 +64,6 @@
       doHide () {
         let _t = this
         _t.isShow = false
-      },
-      doClose () {
-        let _t = this
-        _t.$emit('close')
       }
     },
     created () {

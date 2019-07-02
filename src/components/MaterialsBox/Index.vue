@@ -32,9 +32,9 @@
 <template>
   <div :class="['materials-box', mode]">
     <!-- 物料编辑器 -->
-    <MaterialsEditor v-if="mode === 'editor'" @close="handleEditorClose"></MaterialsEditor>
+    <MaterialsEditor v-if="mode === 'editor'"></MaterialsEditor>
     <!-- 物料选择器 -->
-    <MaterialsSelector v-if="mode === 'selector'" @close="handleSelectorClose" @edit="handleEditorTrigger"></MaterialsSelector>
+    <MaterialsSelector v-if="mode === 'selector'"></MaterialsSelector>
   </div>
 </template>
 
@@ -55,6 +55,16 @@
         mode: null
       }
     },
+    watch: {
+      mode (val) {
+        let _t = this
+        if (val && val === 'editor') {
+          _t.$nextTick(function () {
+            _t.$X.utils.bus.$emit('board/materials/editor/create')
+          })
+        }
+      }
+    },
     methods: {
       doToggle (data) {
         let _t = this
@@ -73,19 +83,22 @@
         let _t = this
         _t.isShow = false
         _t.mode = null
-      },
-      handleSelectorClose () {
-        let _t = this
-        _t.doHide()
-      },
-      handleEditorTrigger () {
-        let _t = this
-        _t.doShow('editor')
-      },
-      handleEditorClose () {
-        let _t = this
-        _t.doHide()
       }
+    },
+    created () {
+      let _t = this
+      _t.$X.utils.bus.$on('board/materials/editor/close', function (data) {
+        _t.doHide()
+      })
+      _t.$X.utils.bus.$on('board/materials/editor/back', function (data) {
+        _t.doShow('selector')
+      })
+      _t.$X.utils.bus.$on('board/materials/editor/trigger', function (data) {
+        _t.doShow('editor')
+      })
+      _t.$X.utils.bus.$on('board/materials/selector/close', function (data) {
+        _t.doHide()
+      })
     }
   }
 </script>

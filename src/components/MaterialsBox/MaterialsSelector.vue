@@ -76,6 +76,10 @@
           opacity: 1;
         }
       }
+
+      .divider {
+        margin: 5px 0;
+      }
     }
     .list-block {
       display: inline-block;
@@ -103,7 +107,7 @@
         >
           <XIcon :type="item.icon"></XIcon>
         </div>
-        <Divider :key="'category_divider_' + index" v-if="item.divider" type="horizontal" />
+        <Divider class="divider" :key="'category_divider_' + index" v-if="item.divider" type="horizontal" />
       </template>
       <template v-for="(item, index) in toolList.filter(target => target.enable)">
         <div
@@ -113,7 +117,7 @@
         >
           <XIcon type="add"></XIcon>
         </div>
-        <Divider :key="'tool_divider_' + index" v-if="item.divider" type="horizontal" />
+        <Divider class="divider" :key="'tool_divider_' + index" v-if="item.divider" type="horizontal" />
       </template>
     </div>
     <div class="list-block">
@@ -188,7 +192,7 @@
         let _t = this
         switch (name) {
           case 'add':
-            _t.$emit('edit')
+            _t.$X.utils.bus.$emit('board/materials/editor/trigger')
             _t.$X.utils.bus.$emit('board/materials/editor/show', {
               status: 'add'
             })
@@ -197,7 +201,7 @@
       },
       doClose () {
         let _t = this
-        _t.$emit('close')
+        _t.$X.utils.bus.$emit('board/materials/selector/close')
       }
     },
     created () {
