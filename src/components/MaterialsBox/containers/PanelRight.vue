@@ -11,7 +11,7 @@
     <CardItem>
       <Options></Options>
     </CardItem>
-    <CardItem>
+    <CardItem title="导航栏">
       <Navigator></Navigator>
     </CardItem>
   </CardBox>

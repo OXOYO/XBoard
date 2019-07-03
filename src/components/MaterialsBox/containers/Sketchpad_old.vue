@@ -1,83 +1,51 @@
 /**
-* Created by OXOYO on 2019/6/28.
+* Created by OXOYO on 2019/7/1.
 *
-* MaterialsEditor 物料编辑器
+* Sketchpad 画板
 */
 
 <style scoped lang="less" rel="stylesheet/less">
-  .materials-editor {
+  .sketchpad {
     display: inline-block;
     width: 100%;
-    height: 100%;
+    position: absolute;
+    top: 65px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
   }
 </style>
 
 <template>
-  <div class="materials-editor">
-    <ToolBar></ToolBar>
-    <Sketchpad></Sketchpad>
-    <PanelLeft></PanelLeft>
-    <PanelRight></PanelRight>
-    <!--<ContextMenu></ContextMenu>-->
-  </div>
+  <div class="sketchpad" id="sketchpad" ref="sketchpad"></div>
 </template>
 
 <script>
-  import ToolBar from './containers/ToolBar'
-  import Sketchpad from './containers/Sketchpad'
-  import PanelLeft from './containers/PanelLeft'
-  import PanelRight from './containers/PanelRight'
-  // import ContextMenu from './components/ContextMenu'
-  import G6 from '@/global/lib/g6'
+  import G6 from '@antv/g6'
   import Minimap from '@antv/g6/build/minimap'
-  import Grid from '@antv/g6/build/grid'
 
   export default {
-    name: 'MaterialsEditor',
-    components: {
-      ToolBar,
-      Sketchpad,
-      PanelLeft,
-      PanelRight
-      // ,
-      // ContextMenu
-    },
+    name: 'Sketchpad',
     data () {
       return {
-        isShow: false,
-        editorInfo: {},
-        defInfo: {
-          // 编辑器状态：add || edit || preview
-          status: 'add'
-        },
         editor: null
       }
     },
     methods: {
       init () {
         let _t = this
-        let el = _t.$el
-        let sketchpad = el.querySelector('#sketchpad')
-        let navigator = el.querySelector('#navigator')
-        console.log('sketchpad', sketchpad, sketchpad.clientWidth, sketchpad.clientHeight)
-        console.log('navigator', navigator, navigator.clientWidth, navigator.clientHeight)
-        let size = [navigator.clientWidth, parseInt(navigator.clientWidth * sketchpad.clientHeight / sketchpad.clientWidth)]
-        console.log('size', size)
-        const minimap = new Minimap({
-          container: navigator,
-          type: 'delegate',
-          size: size
-        })
-        const grid = new Grid()
+        let el = _t.$refs.sketchpad
+        console.log('el', el, el.clientWidth, el.clientHeight)
+        const minimap = new Minimap()
         // 生成编辑器实例
         _t.editor = new G6.Graph({
           plugins: [
-            minimap,
-            grid
+            minimap
           ],
-          container: sketchpad,
-          width: sketchpad.clientWidth,
-          height: sketchpad.clientHeight,
+          container: el,
+          width: el.clientWidth,
+          height: el.clientHeight,
           fitViewPadding: 20,
           // 模式
           modes: {
@@ -86,11 +54,9 @@
               'drag-canvas',
               'drag-node',
               'click-select',
-              'tooltip',
-              'edge-tooltip',
-              'activate-relations',
-              // 自定义交互：画线
-              'draw-line'
+              // 'tooltip',
+              // 'edge-tooltip',
+              'activate-relations'
               // ,
               // {
               //   type: 'brush-select',
@@ -121,7 +87,7 @@
         })
         // 绑定事件
         // _t.editor.on('click', _t._editorClick)
-        _t.editor.on('node:click', _t._nodeClick)
+        // _t.editor.on('node:click', _t._nodeClick)
         // _t.editor.on('node:mouseover', _t._nodeHover)
         // _t.editor.on('node:mouseleave', _t._nodeLeave)
         // _t.editor.on('node:contextmenu', _t._nodeContextmenu)
@@ -130,9 +96,7 @@
         console.log('_editorClick', event)
       },
       _nodeClick (event) {
-        let _t = this
         console.log('_nodeClick', event)
-        _t.editor.setItemState(event.item, 'active', true)
       },
       _nodeHover (event) {
         let _t = this
@@ -171,18 +135,15 @@
       doAddNode (info) {
         let _t = this
         console.log('doAddNode', info)
-
         let node = {
-          // id: info.shape + (new Date().getTime()),
-          id: G6.Util.uniqueId(),
+          id: info.shape + (new Date().getTime()),
           shape: info.shape,
           label: info.shape,
           x: parseInt(info.style.left) + 20,
           y: parseInt(info.style.top) + 20,
           anchorPoints: [[0, 0.5], [1, 0.5]]
         }
-        _t.editor.emit('flow:addnode', node)
-        // _t.editor.addItem('node', node)
+        _t.editor.addItem('node', node)
         console.log('getNodes', _t.editor.getNodes())
       },
       handleToolTrigger (toolName) {
@@ -200,31 +161,10 @@
             _t.editor.setMode('preview')
             break
         }
-      },
-      initInfo (data = {}) {
-        let _t = this
-        _t.editorInfo = {
-          ..._t.defInfo,
-          ...data
-        }
-      },
-      doShow () {
-        let _t = this
-        _t.isShow = true
-      },
-      doHide () {
-        let _t = this
-        _t.isShow = false
       }
     },
     created () {
       let _t = this
-      // 监听事件
-      _t.$X.utils.bus.$on('board/materials/editor/show', function (data) {
-        _t.doShow()
-        // 处理操作类型，初始化编辑器
-        _t.initInfo(data)
-      })
       _t.$X.utils.bus.$on('board/materials/editor/create', function () {
         // FIXME 设置500ms延时，用于等待transition结束
         setTimeout(_t.init, 600)

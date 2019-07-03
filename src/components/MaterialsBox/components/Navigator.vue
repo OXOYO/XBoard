@@ -13,7 +13,7 @@
 </style>
 
 <template>
-  <h1>TODO Navigator</h1>
+  <div class="navigator" id="navigator"></div>
 </template>
 
 <script>

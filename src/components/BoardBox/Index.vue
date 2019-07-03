@@ -4,7 +4,7 @@
 * BoardBox
 */
 
-<style lang="less" rel="stylesheet/less">
+<style scoped lang="less" rel="stylesheet/less">
   .board {
     position: absolute;
     top: 0;
