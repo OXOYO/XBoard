@@ -20,7 +20,9 @@
     <CardItem>
       <NodeElement shape="rect"></NodeElement>
       <NodeElement shape="circle"></NodeElement>
-      <NodeElement shape="customNode"></NodeElement>
+      <NodeElement shape="anchor-node"></NodeElement>
+      <NodeElement shape="custom-node"></NodeElement>
+      <NodeElement shape="jump-node"></NodeElement>
     </CardItem>
   </CardBox>
 </template>

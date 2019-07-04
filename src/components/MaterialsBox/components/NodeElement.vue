@@ -26,8 +26,9 @@
   <div
     class="node-element"
     :style="elementStyle"
-    v-x-drag="dragConfig"
+    @mousedown="handleMouseDown"
   >
+    <!-- v-x-drag="dragConfig" -->
     <div class="content">
       {{ shape }}
     </div>
@@ -94,6 +95,16 @@
         console.log('drag done', style)
         _t.$X.utils.bus.$emit('board/materials/editor/add/node', {
           style,
+          shape: _t.shape
+        })
+      },
+      handleMouseDown (event) {
+        let _t = this
+        _t.$X.utils.bus.$emit('board/materials/editor/add/node', {
+          style: {
+            left: event.clientX,
+            top: event.clientY
+          },
           shape: _t.shape
         })
       }

@@ -59,7 +59,7 @@
               <XIcon :type="item.icon" :title="$t(item.lang)"></XIcon>
             </template>
           </ToolItem>
-          <Divider :key="'tool_' + type + '_divider_' + index" v-if="item.divider" type="vertical" />
+          <Divider :key="'tool_' + type + '_divider_' + index" v-if="item.divider" type="vertical" style="height: 100%;" />
         </template>
       </ToolBox>
     </template>
@@ -78,7 +78,14 @@
     },
     data () {
       return {
-        toolMap: {
+        // 模式
+        mode: 'edit'
+      }
+    },
+    computed: {
+      toolMap () {
+        let _t = this
+        return {
           left: [
             {
               name: 'add',
@@ -96,6 +103,7 @@
               lang: 'L10007',
               icon: 'undo',
               enable: true,
+              disabled: _t.mode === 'preview',
               divider: false
             },
             {
@@ -104,6 +112,7 @@
               lang: 'L10008',
               icon: 'redo',
               enable: true,
+              disabled: _t.mode === 'preview',
               divider: true
             },
             {
@@ -112,6 +121,7 @@
               lang: '',
               icon: 'copy',
               enable: true,
+              disabled: _t.mode === 'preview',
               divider: false
             },
             {
@@ -120,6 +130,7 @@
               lang: '',
               icon: 'paste',
               enable: true,
+              disabled: _t.mode === 'preview',
               divider: false
             },
             {
@@ -128,6 +139,7 @@
               lang: '',
               icon: 'clear',
               enable: true,
+              disabled: _t.mode === 'preview',
               divider: true
             },
             {
@@ -136,6 +148,7 @@
               lang: '',
               icon: 'zoom-in',
               enable: true,
+              disabled: false,
               divider: false
             },
             {
@@ -144,6 +157,7 @@
               lang: '',
               icon: 'zoom-out',
               enable: true,
+              disabled: false,
               divider: false
             },
             {
@@ -152,6 +166,7 @@
               lang: '',
               icon: 'fit',
               enable: true,
+              disabled: false,
               divider: false
             },
             {
@@ -160,6 +175,7 @@
               lang: '',
               icon: 'actual-size',
               enable: true,
+              disabled: false,
               divider: true
             },
             {
@@ -168,6 +184,7 @@
               lang: '',
               icon: 'to-back',
               enable: true,
+              disabled: _t.mode === 'preview',
               divider: false
             },
             {
@@ -176,6 +193,7 @@
               lang: '',
               icon: 'to-front',
               enable: true,
+              disabled: _t.mode === 'preview',
               divider: true
             },
             {
@@ -184,6 +202,7 @@
               lang: 'L10002',
               icon: 'marquee',
               enable: true,
+              disabled: _t.mode === 'preview',
               divider: false
             },
             {
@@ -192,6 +211,7 @@
               lang: '',
               icon: 'group',
               enable: true,
+              disabled: _t.mode === 'preview',
               divider: false
             },
             {
@@ -200,6 +220,25 @@
               lang: '',
               icon: 'ungroup',
               enable: true,
+              disabled: _t.mode === 'preview',
+              divider: true
+            },
+            {
+              name: 'edit',
+              label: 'edit',
+              lang: '',
+              icon: 'edit',
+              enable: _t.mode === 'preview',
+              disabled: false,
+              divider: false
+            },
+            {
+              name: 'preview',
+              label: 'preview',
+              lang: '',
+              icon: 'preview',
+              enable: _t.mode === 'edit',
+              disabled: false,
               divider: false
             }
           ],
@@ -227,9 +266,23 @@
     methods: {
       handleToolClick (item, type) {
         let _t = this
+        if (item.disabled) {
+          return
+        }
         console.log('MaterialsEditor tool click', item.name)
         if (type === 'center') {
-          _t.$X.utils.bus.$emit('board/materials/editor/tool/trigger', item.name)
+          switch (item.name) {
+            case 'edit':
+              _t.mode = 'edit'
+              break
+            case 'preview':
+              _t.mode = 'preview'
+              break
+          }
+          _t.$X.utils.bus.$emit('board/materials/editor/tool/trigger', {
+            name: item.name,
+            data: {}
+          })
         } else {
           switch (item.name) {
             case 'back':

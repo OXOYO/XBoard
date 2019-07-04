@@ -9,6 +9,7 @@
     display: inline-block;
     width: 100%;
     height: 100%;
+    user-select: none;
   }
 </style>
 
@@ -28,7 +29,7 @@
   import PanelLeft from './containers/PanelLeft'
   import PanelRight from './containers/PanelRight'
   // import ContextMenu from './components/ContextMenu'
-  import G6 from '@/global/lib/g6'
+  import G6 from '@/global/lib/g6/index'
   import Minimap from '@antv/g6/build/minimap'
   import Grid from '@antv/g6/build/grid'
 
@@ -81,7 +82,7 @@
           fitViewPadding: 20,
           // 模式
           modes: {
-            default: [
+            edit: [
               'zoom-canvas',
               'drag-canvas',
               'drag-node',
@@ -90,7 +91,9 @@
               'edge-tooltip',
               'activate-relations',
               // 自定义交互：画线
-              'draw-line'
+              'draw-line',
+              // 自定义交互：拖拽节点到编辑器
+              'drag-node-to-editor'
               // ,
               // {
               //   type: 'brush-select',
@@ -106,22 +109,33 @@
           },
           nodeStyle: {
             default: {
-              fill: '#40a9ff',
-              stroke: '#096dd9'
+              fill: '#E7F7FE',
+              // fillOpacity: 0.5,
+              stroke: '#096dd9',
+              strokeOpacity: 0.7,
+              lineWidth: 2
             },
             // 当节点在 selected 状态下的样式
             hover: {
               lineWidth: 2,
-              fillOpacity: 0.8
+              fillOpacity: 0.5
+              // ,
+              // strokeOpacity: 1
             }
           },
           edgeStyle: {
-            default: { stroke: '#A3B1BF' }
+            default: {
+              stroke: '#096dd9',
+              strokeOpacity: 0.7
+            }
           }
         })
+        // 设置模式为编辑
+        _t.editor.setMode('edit')
+        console.log('_t.editor', _t.editor)
         // 绑定事件
         // _t.editor.on('click', _t._editorClick)
-        _t.editor.on('node:click', _t._nodeClick)
+        // _t.editor.on('node:click', _t._nodeClick)
         // _t.editor.on('node:mouseover', _t._nodeHover)
         // _t.editor.on('node:mouseleave', _t._nodeLeave)
         // _t.editor.on('node:contextmenu', _t._nodeContextmenu)
@@ -154,10 +168,11 @@
         if (position) {
           center = position
         } else {
-          let el = _t.$refs.sketchpad
+          let el = _t.$el
+          let sketchpad = el.querySelector('#sketchpad')
           center = {
-            x: el.clientWidth / 2,
-            y: el.clientHeight / 2
+            x: sketchpad.clientWidth / 2,
+            y: sketchpad.clientHeight / 2
           }
         }
         if (['zoomIn', 'zoomOut'].includes(toolName)) {
@@ -177,27 +192,32 @@
           id: G6.Util.uniqueId(),
           shape: info.shape,
           label: info.shape,
-          x: parseInt(info.style.left) + 20,
-          y: parseInt(info.style.top) + 20,
-          anchorPoints: [[0, 0.5], [1, 0.5]]
+          // x: parseInt(info.style.left) + 20,
+          // y: parseInt(info.style.top) + 20,
+          width: 40,
+          height: 40,
+          anchorPoints: [[0, 0], [0, 1], [1, 0], [1, 1]]
         }
-        _t.editor.emit('flow:addnode', node)
+        _t.editor.emit('editor:addnode', node)
         // _t.editor.addItem('node', node)
         console.log('getNodes', _t.editor.getNodes())
       },
-      handleToolTrigger (toolName) {
+      handleToolTrigger (info) {
         let _t = this
-        switch (toolName) {
+        switch (info.name) {
           case 'zoomIn':
           case 'zoomOut':
           case 'actualSize':
-            _t._zoom(toolName)
+            _t._zoom(info.name)
             break
           case 'fit':
             _t.editor.fitView()
             break
           case 'preview':
             _t.editor.setMode('preview')
+            break
+          case 'edit':
+            _t.editor.setMode('edit')
             break
         }
       },
