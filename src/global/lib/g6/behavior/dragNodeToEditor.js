@@ -75,6 +75,7 @@ export default {
           size: [_t.currentNode.width, _t.currentNode.height],
           ..._t.currentNode
         }
+        console.log('node', node)
         _t.graph.addItem('node', node)
         _t.dottedNode.remove()
         _t.dottedNode = null

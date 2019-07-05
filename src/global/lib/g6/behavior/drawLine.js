@@ -22,7 +22,6 @@ export default {
     },
     onNodeClick (event) {
       let _t = this
-      debugger
       let node = event.item
       // 获取元素的数据模型
       let model = node.getModel()
