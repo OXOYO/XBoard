@@ -1,22 +1,33 @@
 /**
  * Created by OXOYO on 2019/7/4.
  *
- *
+ * 锚点节点
  */
-
-const defaultAnchorStyle = {
-  symbol: 'circle',
-  radius: 3.5,
-  fill: '#fff',
-  stroke: '#1890FF',
-  lineAppendWidth: 12
-}
 
 // 继承 node，新增画锚点
 export default {
   name: 'anchor-node',
   extendName: 'node',
   options: {
+    // setState (name, value, item) {
+    //   let group = item.getContainer()
+    //   console.log('setState', name)
+    //   if (name === 'hover') {
+    //     let children = group.get('children')
+    //     console.log('children', children)
+    //     let marker = children[2]
+    //     console.log('marker', marker, value)
+    //     if (value) {
+    //       marker.attr({
+    //         fill: 'red'
+    //       })
+    //     } else {
+    //       marker.attr({
+    //         fill: 'green'
+    //       })
+    //     }
+    //   }
+    // },
     // 绘制后附加锚点
     afterDraw (cfg, group) {
       const { anchorPoints, width, height, id } = cfg
@@ -34,7 +45,12 @@ export default {
           id,
           index,
           attrs: {
-            ...defaultAnchorStyle,
+            symbol: 'circle',
+            radius: 3.5,
+            fill: '#fff',
+            stroke: '#1890FF',
+            lineAppendWidth: 12,
+            fillOpacity: 1,
             x: anchorPointX,
             y: anchorPointY
           }

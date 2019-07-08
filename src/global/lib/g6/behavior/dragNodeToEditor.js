@@ -5,6 +5,7 @@
  */
 
 import G6 from '@antv/g6'
+import config from '../config/index'
 
 export default {
   name: 'drag-node-to-editor',
@@ -17,11 +18,7 @@ export default {
         dottedNode: null,
         // 虚线框节点样式
         dottedNodeStyle: {
-          fill: '#000000',
-          fillOpacity: 0.1,
-          stroke: '#1890FF',
-          strokeOpacity: 0.9,
-          lineDash: [ 5, 5 ]
+          ...config.dottedNode.style.default
         }
       }
     },

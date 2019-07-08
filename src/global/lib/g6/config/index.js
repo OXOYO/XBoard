@@ -4,7 +4,10 @@
  * 配置
  */
 
+import anchor from './anchor'
+import dottedNode from './dottedNode'
 
 export default {
-
+  anchor,
+  dottedNode
 }

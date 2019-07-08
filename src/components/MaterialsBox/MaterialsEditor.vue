@@ -107,26 +107,27 @@
             // 只读，
             preview: ['drag-canvas', 'zoom-canvas']
           },
+          // 节点样式
           nodeStyle: {
+            // 默认样式
             default: {
-              fill: '#E7F7FE',
-              // fillOpacity: 0.5,
-              stroke: '#096dd9',
-              strokeOpacity: 0.7,
+              fill: '#FFFFFF',
+              fillOpacity: 1,
+              stroke: '#000000',
+              strokeOpacity: 1,
               lineWidth: 2
             },
-            // 当节点在 selected 状态下的样式
-            hover: {
-              lineWidth: 2,
-              fillOpacity: 0.5
-              // ,
-              // strokeOpacity: 1
-            }
+            // active 状态下的样式
+            active: {},
+            // selected 状态下的样式
+            selected: {},
+            // hover 状态下的样式
+            hover: {}
           },
           edgeStyle: {
             default: {
-              stroke: '#096dd9',
-              strokeOpacity: 0.7
+              stroke: '#000000',
+              strokeOpacity: 1
             }
           }
         })
@@ -136,8 +137,8 @@
         // 绑定事件
         // _t.editor.on('click', _t._editorClick)
         // _t.editor.on('node:click', _t._nodeClick)
-        // _t.editor.on('node:mouseover', _t._nodeHover)
-        // _t.editor.on('node:mouseleave', _t._nodeLeave)
+        _t.editor.on('node:mouseover', _t._nodeHover)
+        _t.editor.on('node:mouseout', _t._nodeOut)
         // _t.editor.on('node:contextmenu', _t._nodeContextmenu)
       },
       _editorClick (event) {
@@ -150,12 +151,12 @@
       },
       _nodeHover (event) {
         let _t = this
-        console.log('_nodeHover', event)
+        console.log('_nodeHover', event.item)
         _t.editor.setItemState(event.item, 'hover', true)
       },
-      _nodeLeave (event) {
+      _nodeOut (event) {
         let _t = this
-        console.log('_nodeLeave', event)
+        console.log('_nodeOut', event.item)
         _t.editor.setItemState(event.item, 'hover', false)
       },
       _nodeContextmenu (event) {
@@ -186,21 +187,18 @@
       doAddNode (info) {
         let _t = this
         console.log('doAddNode', info)
-
         let node = {
-          // id: info.shape + (new Date().getTime()),
           id: G6.Util.uniqueId(),
           shape: info.shape,
+          // shape: 'anchor-rect',
           label: info.shape,
-          // x: parseInt(info.style.left) + 20,
-          // y: parseInt(info.style.top) + 20,
           width: 40,
           height: 40,
+          // FIXME 定义锚点坐标
           anchorPoints: [[0, 0], [0, 1], [1, 0], [1, 1]]
         }
+        // 广播事件，通过自定义交互 drag-node-to-editor 添加节点
         _t.editor.emit('editor:addnode', node)
-        // _t.editor.addItem('node', node)
-        console.log('getNodes', _t.editor.getNodes())
       },
       handleToolTrigger (info) {
         let _t = this

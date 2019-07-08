@@ -18,11 +18,13 @@
 <template>
   <CardBox class="panel-left" placement="left" :width="250">
     <CardItem>
-      <NodeElement shape="rect"></NodeElement>
-      <NodeElement shape="circle"></NodeElement>
+      <NodeElement title="rect" shape="anchor-rect"></NodeElement>
+      <NodeElement title="circle" shape="anchor-circle"></NodeElement>
+      <!--
       <NodeElement shape="anchor-node"></NodeElement>
       <NodeElement shape="custom-node"></NodeElement>
       <NodeElement shape="jump-node"></NodeElement>
+      -->
     </CardItem>
   </CardBox>
 </template>

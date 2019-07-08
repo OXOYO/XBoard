@@ -30,7 +30,7 @@
   >
     <!-- v-x-drag="dragConfig" -->
     <div class="content">
-      {{ shape }}
+      {{ title || shape }}
     </div>
   </div>
 </template>
@@ -40,6 +40,7 @@
     name: 'NodeElement',
     props: {
       shape: String,
+      title: String,
       width: {
         type: Number,
         default: 40

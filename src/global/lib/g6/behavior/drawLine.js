@@ -41,7 +41,7 @@ export default {
             x: event.x,
             y: event.y
           },
-          // FIXME 边的形式
+          // FIXME 边的形式需要与工具栏联动
           shape: 'cubic'
         })
         _t.isDrawing = true
