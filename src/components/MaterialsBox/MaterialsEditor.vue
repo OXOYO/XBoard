@@ -131,6 +131,8 @@
             }
           }
         })
+        // 挂载全局命名空间
+        _t.editor.$X = {}
         // 设置模式为编辑
         _t.editor.setMode('edit')
         console.log('_t.editor', _t.editor)
@@ -216,6 +218,10 @@
             break
           case 'edit':
             _t.editor.setMode('edit')
+            break
+          case 'lineType':
+            console.log('lineType', info)
+            _t.editor.$X.lineType = info
             break
         }
       },

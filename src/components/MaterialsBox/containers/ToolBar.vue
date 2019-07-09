@@ -50,6 +50,39 @@
       <ToolBox :key="typeIndex" :class="type">
         <template v-for="(item, index) in toolMap[type].filter(target => target.enable)">
           <ToolItem
+            v-if="item.children"
+            :key="'tool_' + type + '_item_' + index"
+            :active="item.active"
+            :disabled="item.disabled"
+          >
+            <template v-slot:label>
+              <Dropdown @on-click="(name) => handleDropdownClick(item, type, name)">
+                <div>
+                  <XIcon
+                    :type="item.children[item.selected].icon"
+                    :title="$t(item.children[item.selected].lang)"
+                    style="vertical-align: middle;"
+                  >
+                  </XIcon>
+                  <Icon type="ios-arrow-down"></Icon>
+                </div>
+                <DropdownMenu slot="list">
+                  <DropdownItem
+                    v-for="(child, childIndex) in item.children"
+                    :key="childIndex"
+                    :name="childIndex"
+                    :disabled="child.disabled"
+                    :divided="child.divided"
+                    :selected="item.selected === childIndex"
+                  >
+                    <XIcon :type="child.icon" :title="$t(child.lang)"></XIcon>
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </template>
+          </ToolItem>
+          <ToolItem
+            v-else
             :key="'tool_' + type + '_item_' + index"
             :active="item.active"
             :disabled="item.disabled"
@@ -79,7 +112,9 @@
     data () {
       return {
         // 模式
-        mode: 'edit'
+        mode: 'edit',
+        // 选中的线
+        selectedLine: 0
       }
     },
     computed: {
@@ -179,6 +214,47 @@
               divider: true
             },
             {
+              name: 'lineType',
+              label: 'line type',
+              lang: '',
+              icon: '',
+              enable: true,
+              disabled: _t.mode === 'preview',
+              divider: true,
+              // 默认选中项index
+              selected: _t.selectedLine,
+              // 子节点
+              children: [
+                {
+                  name: 'flowLine',
+                  label: 'flow line',
+                  lang: '',
+                  icon: 'flow-line',
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 'flowBroken',
+                  label: 'flow broken',
+                  lang: '',
+                  icon: 'flow-broken',
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 'flowCurve',
+                  label: 'flow curve',
+                  lang: '',
+                  icon: 'flow-curve',
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                }
+              ]
+            },
+            {
               name: 'toBack',
               label: 'To Back',
               lang: '',
@@ -264,6 +340,20 @@
       }
     },
     methods: {
+      handleDropdownClick (item, type, name) {
+        let _t = this
+        console.log('item', item, type, name)
+        switch (item.name) {
+          case 'lineType':
+            _t.selectedLine = name
+            let child = item.children[name]
+            _t.$X.utils.bus.$emit('board/materials/editor/tool/trigger', {
+              name: item.name,
+              data: child
+            })
+            break
+        }
+      },
       handleToolClick (item, type) {
         let _t = this
         if (item.disabled) {

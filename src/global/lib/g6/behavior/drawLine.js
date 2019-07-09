@@ -23,6 +23,7 @@ export default {
     onNodeClick (event) {
       let _t = this
       let node = event.item
+      console.log('_t.editor.$X', _t.graph.$X)
       // 获取元素的数据模型
       let model = node.getModel()
       if (_t.isDrawing && _t.currentEdge) {
