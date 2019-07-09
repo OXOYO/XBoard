@@ -221,7 +221,7 @@
             break
           case 'lineType':
             console.log('lineType', info)
-            _t.editor.$X.lineType = info
+            _t.editor.$X.lineType = info.data
             break
         }
       },

@@ -226,8 +226,8 @@
               // 子节点
               children: [
                 {
-                  name: 'flowLine',
-                  label: 'flow line',
+                  name: 'line',
+                  label: 'line',
                   lang: '',
                   icon: 'flow-line',
                   enable: true,
@@ -235,8 +235,8 @@
                   divider: false
                 },
                 {
-                  name: 'flowBroken',
-                  label: 'flow broken',
+                  name: 'broken',
+                  label: 'broken',
                   lang: '',
                   icon: 'flow-broken',
                   enable: true,
@@ -244,8 +244,8 @@
                   divider: false
                 },
                 {
-                  name: 'flowCurve',
-                  label: 'flow curve',
+                  name: 'cubic',
+                  label: 'cubic',
                   lang: '',
                   icon: 'flow-curve',
                   enable: true,
@@ -349,7 +349,7 @@
             let child = item.children[name]
             _t.$X.utils.bus.$emit('board/materials/editor/tool/trigger', {
               name: item.name,
-              data: child
+              data: child.name
             })
             break
         }

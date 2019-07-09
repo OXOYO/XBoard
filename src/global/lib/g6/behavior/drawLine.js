@@ -43,7 +43,7 @@ export default {
             y: event.y
           },
           // FIXME 边的形式需要与工具栏联动
-          shape: 'cubic'
+          shape: _t.graph.$X.lineType || 'line'
         })
         _t.isDrawing = true
       }
