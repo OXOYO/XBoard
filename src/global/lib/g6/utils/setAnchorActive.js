@@ -13,7 +13,7 @@ export default function (name, value, item) {
     for (let i = 0, len = children.length; i < len; i++) {
       let child = children[i]
       // 处理锚点状态
-      if (child._cfg.name === 'anchor') {
+      if (child._attrs.name === 'anchor') {
         if (value) {
           child.attr(config.anchor.style.hover)
         } else {

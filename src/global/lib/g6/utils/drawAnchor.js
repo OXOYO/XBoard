@@ -18,9 +18,9 @@ export default function (cfg, group) {
     // 添加Marker形状
     group.addShape('marker', {
       id: id + '_anchor_' + index,
-      name: 'anchor',
       index: index,
       attrs: {
+        name: 'anchor',
         x: anchorPointX,
         y: anchorPointY,
         // 形状半径

@@ -4,6 +4,8 @@
  * 自定义节点
  */
 
+import utils from '../utils/index'
+
 export default {
   name: 'custom-node',
   extendName: 'node',
@@ -17,6 +19,10 @@ export default {
         [0, 0.5]
       ]
     },
+    setState (name, value, item) {
+      // 设置锚点激活
+      utils.setAnchorActive(name, value, item)
+    },
     draw (cfg, group) {
       console.log('cfg', cfg)
       let x = 0
@@ -24,15 +30,6 @@ export default {
       let width = 100
       let height = 100
       let r = 6
-      group.addShape('image', {
-        attrs: {
-          x: x + 5,
-          y: x + 5,
-          width: width - 10,
-          height: width - 10,
-          img: './ecs.svg'
-        }
-      })
       // 激活状态
       group.addShape('rect', {
         attrs: {
@@ -40,7 +37,8 @@ export default {
           y: y,
           width: width,
           height: width,
-          stroke: 'black'
+          stroke: 'black',
+          fill: '#FFFFFF'
         }
       })
       // 上
@@ -49,7 +47,10 @@ export default {
           x: (width - r) / 2,
           y: y,
           r: r,
-          fill: '#91d5ff'
+          name: 'anchor',
+          fill: '#91d5ff',
+          fillOpacity: 0,
+          strokeOpacity: 0
         }
       })
       // 右
@@ -58,6 +59,7 @@ export default {
           x: width,
           y: (height - r) / 2,
           r: r,
+          name: 'anchor',
           fill: '#91d5ff'
         }
       })
@@ -67,6 +69,7 @@ export default {
           x: (width - r) / 2,
           y: height,
           r: r,
+          name: 'anchor',
           fill: '#91d5ff'
         }
       })
@@ -76,6 +79,7 @@ export default {
           x: x,
           y: (height - y) / 2,
           r: r,
+          name: 'anchor',
           fill: '#91d5ff'
         }
       })

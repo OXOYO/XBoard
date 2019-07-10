@@ -4,16 +4,14 @@
  * 注册节点
  */
 
-// import anchorNode from './anchorNode'
-// import customNode from './customNode'
+import customNode from './customNode'
 // import jumpNode from './jumpNode'
 
 import anchorRect from './anchorRect'
 import anchorCircle from './anchorCircle'
 
 const obj = {
-  // anchorNode
-  // customNode,
+  customNode,
   // jumpNode
   anchorRect,
   anchorCircle

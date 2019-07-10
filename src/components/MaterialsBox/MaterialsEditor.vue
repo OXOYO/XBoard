@@ -153,12 +153,12 @@
       },
       _nodeHover (event) {
         let _t = this
-        console.log('_nodeHover', event.item)
+        // console.log('_nodeHover', event.item)
         _t.editor.setItemState(event.item, 'hover', true)
       },
       _nodeOut (event) {
         let _t = this
-        console.log('_nodeOut', event.item)
+        // console.log('_nodeOut', event.item)
         _t.editor.setItemState(event.item, 'hover', false)
       },
       _nodeContextmenu (event) {

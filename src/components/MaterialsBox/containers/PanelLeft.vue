@@ -20,6 +20,7 @@
     <CardItem>
       <NodeElement title="rect" shape="anchor-rect"></NodeElement>
       <NodeElement title="circle" shape="anchor-circle"></NodeElement>
+      <NodeElement title="custom-node" shape="custom-node"></NodeElement>
       <!--
       <NodeElement shape="anchor-node"></NodeElement>
       <NodeElement shape="custom-node"></NodeElement>
