@@ -6,8 +6,12 @@
 
 import drawAnchor from './drawAnchor'
 import setAnchorActive from './setAnchorActive'
+import drawShapeControl from './drawShapeControl'
+import drawLineAnimate from './drawLineAnimate'
 
 export default {
   drawAnchor,
-  setAnchorActive
+  setAnchorActive,
+  drawShapeControl,
+  drawLineAnimate
 }

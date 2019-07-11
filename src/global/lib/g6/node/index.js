@@ -4,21 +4,15 @@
  * 注册节点
  */
 
-import customNode from './customNode'
-// import jumpNode from './jumpNode'
-
-import anchorRect from './anchorRect'
-import anchorCircle from './anchorCircle'
+import rect from './rect'
+import circle from './circle'
 
 const obj = {
-  customNode,
-  // jumpNode
-  anchorRect,
-  anchorCircle
+  rect,
+  circle
 }
 
 export default function (G6) {
-  // 再注册其他常规节点
   Object.values(obj).map(item => {
     G6.registerNode(item.name, item.options, item.extendName)
   })

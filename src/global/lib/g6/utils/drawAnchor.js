@@ -7,29 +7,29 @@
 import config from '../config/index'
 
 export default function (cfg, group) {
+  let node = group.getFirst()
+  console.log('node', node)
   let { anchorPoints, width, height, id } = cfg
-  anchorPoints.forEach((points, index) => {
-    let [x, y] = points
-    // 计算Marker中心点坐标
-    let originX = -width / 2
-    let originY = -height / 2
-    let anchorPointX = x * width + originX
-    let anchorPointY = y * height + originY
-    // 添加Marker形状
-    group.addShape('marker', {
-      id: id + '_anchor_' + index,
-      index: index,
-      attrs: {
-        name: 'anchor',
-        x: anchorPointX,
-        y: anchorPointY,
-        // 形状半径
-        radius: 5,
-        // 指定形状
-        symbol: 'circle',
-        // 锚点默认样式
-        ...config.anchor.style.default
-      }
-    })
-  })
+  if (anchorPoints && anchorPoints.length) {
+    for (let i = 0, len = anchorPoints.length; i < len; i++) {
+      let [x, y] = anchorPoints[i]
+      // 计算Marker中心点坐标
+      let originX = -width / 2
+      let originY = -height / 2
+      let anchorX = x * width + originX
+      let anchorY = y * height + originY
+      // 添加Marker形状
+      group.addShape('marker', {
+        id: id + '_anchor_' + i,
+        index: i,
+        attrs: {
+          name: 'anchor',
+          x: anchorX,
+          y: anchorY,
+          // 锚点默认样式
+          ...config.anchor.style.default
+        }
+      })
+    }
+  }
 }

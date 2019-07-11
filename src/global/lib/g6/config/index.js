@@ -6,8 +6,12 @@
 
 import anchor from './anchor'
 import dottedNode from './dottedNode'
+import lineAnimate from './lineAnimate'
+import shapeControl from './shapeControl'
 
 export default {
   anchor,
-  dottedNode
+  dottedNode,
+  lineAnimate,
+  shapeControl
 }

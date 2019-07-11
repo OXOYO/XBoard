@@ -4,10 +4,12 @@
  * 注册边
  */
 
-import customEdge from './customEdge'
+import line from './line'
+import cubic from './cubic'
 
 const obj = {
-  customEdge
+  line,
+  cubic
 }
 
 export default function (G6) {

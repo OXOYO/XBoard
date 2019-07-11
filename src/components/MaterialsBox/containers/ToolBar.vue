@@ -214,6 +214,42 @@
               divider: true
             },
             {
+              name: 'fill',
+              label: 'fill',
+              lang: '',
+              icon: 'fill',
+              enable: true,
+              disabled: false,
+              divider: false
+            },
+            {
+              name: 'lineColor',
+              label: 'line color',
+              lang: '',
+              icon: 'line-color',
+              enable: true,
+              disabled: false,
+              divider: false
+            },
+            {
+              name: 'lineWidth',
+              label: 'line width',
+              lang: '',
+              icon: 'line-width',
+              enable: true,
+              disabled: false,
+              divider: false
+            },
+            {
+              name: 'lineStyle',
+              label: 'line style',
+              lang: '',
+              icon: 'line-style',
+              enable: true,
+              disabled: false,
+              divider: true
+            },
+            {
               name: 'lineType',
               label: 'line type',
               lang: '',
@@ -226,7 +262,7 @@
               // 子节点
               children: [
                 {
-                  name: 'line',
+                  name: 'x-line',
                   label: 'line',
                   lang: '',
                   icon: 'flow-line',
@@ -235,7 +271,7 @@
                   divider: false
                 },
                 {
-                  name: 'broken',
+                  name: 'x-broken',
                   label: 'broken',
                   lang: '',
                   icon: 'flow-broken',
@@ -244,7 +280,7 @@
                   divider: false
                 },
                 {
-                  name: 'cubic',
+                  name: 'x-cubic',
                   label: 'cubic',
                   lang: '',
                   icon: 'flow-curve',

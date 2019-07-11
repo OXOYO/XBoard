@@ -7,6 +7,8 @@
 export default {
   style: {
     default: {
+      radius: 5,
+      symbol: 'circle',
       fill: '#FFFFFF',
       fillOpacity: 0,
       stroke: '#1890FF',

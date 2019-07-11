@@ -132,7 +132,9 @@
           }
         })
         // 挂载全局命名空间
-        _t.editor.$X = {}
+        _t.editor.$X = {
+          lineType: 'x-line'
+        }
         // 设置模式为编辑
         _t.editor.setMode('edit')
         console.log('_t.editor', _t.editor)
@@ -192,12 +194,13 @@
         let node = {
           id: G6.Util.uniqueId(),
           shape: info.shape,
-          // shape: 'anchor-rect',
           label: info.shape,
-          width: 40,
-          height: 40,
+          width: info.width,
+          height: info.height,
           // FIXME 定义锚点坐标
-          anchorPoints: [[0, 0], [0, 1], [1, 0], [1, 1]]
+          anchorPoints: info.anchorPoints,
+          // 定义shapeControl
+          shapeControl: info.shapeControl
         }
         // 广播事件，通过自定义交互 drag-node-to-editor 添加节点
         _t.editor.emit('editor:addnode', node)

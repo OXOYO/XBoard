@@ -28,9 +28,8 @@
     :style="elementStyle"
     @mousedown="handleMouseDown"
   >
-    <!-- v-x-drag="dragConfig" -->
     <div class="content">
-      {{ title || shape }}
+      {{ title }}
     </div>
   </div>
 </template>
@@ -39,8 +38,24 @@
   export default {
     name: 'NodeElement',
     props: {
-      shape: String,
-      title: String,
+      title: {
+        type: String,
+        required: true
+      },
+      info: {
+        type: Object,
+        required: true,
+        default () {
+          return {
+            shape: 'circle',
+            label: 'circle',
+            enable: true,
+            width: 40,
+            height: 40,
+            anchorPoints: [ [0, 0], [0, 1], [1, 0], [1, 1] ]
+          }
+        }
+      },
       width: {
         type: Number,
         default: 40
@@ -48,33 +63,6 @@
       height: {
         type: Number,
         default: 40
-      }
-    },
-    data () {
-      let _t = this
-      return {
-        dragConfig: {
-          // 拖拽配置
-          drag: {
-            // 是否启用拖拽
-            enable: true,
-            // 指定拖拽把手元素，支持一个或多个把手
-            handler: ['.content'],
-            // 拖拽不同阶段 className
-            class: {
-              start: 'x-drag-start',
-              move: 'x-drag-move',
-              done: 'x-drag-done',
-              main: 'x-drag'
-            },
-            // 回调
-            callback: {
-              start: null,
-              move: null,
-              done: _t.handleDragDone
-            }
-          }
-        }
       }
     },
     computed: {
@@ -91,23 +79,9 @@
       }
     },
     methods: {
-      handleDragDone (style) {
-        let _t = this
-        console.log('drag done', style)
-        _t.$X.utils.bus.$emit('board/materials/editor/add/node', {
-          style,
-          shape: _t.shape
-        })
-      },
       handleMouseDown (event) {
         let _t = this
-        _t.$X.utils.bus.$emit('board/materials/editor/add/node', {
-          style: {
-            left: event.clientX,
-            top: event.clientY
-          },
-          shape: _t.shape
-        })
+        _t.$X.utils.bus.$emit('board/materials/editor/add/node', _t.info)
       }
     }
   }

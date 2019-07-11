@@ -18,19 +18,20 @@
 <template>
   <CardBox class="panel-left" placement="left" :width="250">
     <CardItem>
-      <NodeElement title="rect" shape="anchor-rect"></NodeElement>
-      <NodeElement title="circle" shape="anchor-circle"></NodeElement>
-      <NodeElement title="custom-node" shape="custom-node"></NodeElement>
-      <!--
-      <NodeElement shape="anchor-node"></NodeElement>
-      <NodeElement shape="custom-node"></NodeElement>
-      <NodeElement shape="jump-node"></NodeElement>
-      -->
+      <NodeElement
+        v-for="(item, index) in materials.filter(target => target.enable)"
+        :key="index"
+        :title="item.label"
+        :info="item"
+      >
+      </NodeElement>
     </CardItem>
   </CardBox>
 </template>
 
 <script>
+  import config from '../config/index'
+
   import CardBox from '../components/CardBox'
   import CardItem from '../components/CardItem'
   import NodeElement from '../components/NodeElement'
@@ -41,6 +42,11 @@
       CardBox,
       CardItem,
       NodeElement
+    },
+    data () {
+      return {
+        materials: config.materials || []
+      }
     }
   }
 </script>
