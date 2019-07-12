@@ -93,7 +93,9 @@
               // 自定义交互：画线
               'draw-line',
               // 自定义交互：拖拽节点到编辑器
-              'drag-node-to-editor'
+              'drag-node-to-editor',
+              // 图形控制
+              'shape-control'
               // ,
               // {
               //   type: 'brush-select',
@@ -115,7 +117,8 @@
               fillOpacity: 1,
               stroke: '#000000',
               strokeOpacity: 1,
-              lineWidth: 2
+              lineWidth: 2,
+              cursor: 'move'
             },
             // active 状态下的样式
             active: {},
@@ -133,17 +136,35 @@
         })
         // 挂载全局命名空间
         _t.editor.$X = {
-          lineType: 'x-line'
+          lineType: 'x-line',
+          shapeControl: {
+            activeNodes: []
+          }
         }
         // 设置模式为编辑
         _t.editor.setMode('edit')
         console.log('_t.editor', _t.editor)
         // 绑定事件
+        _t.editor.on('canvas:mousedown', _t._canvasMousedown)
         // _t.editor.on('click', _t._editorClick)
         // _t.editor.on('node:click', _t._nodeClick)
+        _t.editor.on('node:mousedown', _t._nodeMousedown)
         _t.editor.on('node:mouseover', _t._nodeHover)
         _t.editor.on('node:mouseout', _t._nodeOut)
         // _t.editor.on('node:contextmenu', _t._nodeContextmenu)
+      },
+      _canvasMousedown () {
+        let _t = this
+        let nodes = _t.editor.getNodes()
+        console.log('_canvasMousedown ', nodes)
+        // 清除节点状态
+        let activeNodes = _t.editor.$X.shapeControl.activeNodes
+        for (let i = 0, len = activeNodes.length; i < len; i++) {
+          let node = _t.editor.findById(activeNodes[i])
+          console.log('hasState3', i, node.hasState('shape-control'))
+          // _t.editor.setItemState(node, 'shape-control', false)
+          _t.editor.clearItemStates(node)
+        }
       },
       _editorClick (event) {
         console.log('_editorClick', event)
@@ -152,6 +173,13 @@
         let _t = this
         console.log('_nodeClick', event)
         _t.editor.setItemState(event.item, 'active', true)
+      },
+      _nodeMousedown (event) {
+        let _t = this
+        console.log('_nodeClick', event)
+        console.log('hasState1', event.item.hasState('shape-control'))
+        _t.editor.setItemState(event.item, 'shape-control', true)
+        console.log('hasState2', event.item.hasState('shape-control'))
       },
       _nodeHover (event) {
         let _t = this

@@ -21,15 +21,15 @@ export default function (cfg, group) {
       let anchorY = y * height + originY
       // 添加Marker形状
       group.addShape('marker', {
-        id: id + '_shape_control_anchor' + i,
+        id: id + '_shape_control_point' + i,
         index: i,
         attrs: {
-          name: 'shapeControlAnchor',
+          name: 'shapeControlPoint',
           x: anchorX,
           y: anchorY,
           cursor: cursor || 'pointer',
           // 锚点默认样式
-          ...config.shapeControl.style.default.points
+          ...config.shapeControl.style.default.point
         }
       })
     }
@@ -48,6 +48,6 @@ export default function (cfg, group) {
       }
     })
     // 前置
-    edge.toFront()
+    // edge.toFront()
   }
 }
