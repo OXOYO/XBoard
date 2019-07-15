@@ -7,7 +7,7 @@
 export default {
   style: {
     default: {
-      radius: 5,
+      radius: 3,
       symbol: 'circle',
       fill: '#FFFFFF',
       fillOpacity: 0,

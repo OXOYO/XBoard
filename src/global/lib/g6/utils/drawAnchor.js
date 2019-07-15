@@ -21,7 +21,6 @@ export default function (cfg, group) {
       // 添加Marker形状
       group.addShape('marker', {
         id: id + '_anchor_' + i,
-        index: i,
         attrs: {
           name: 'anchor',
           x: anchorX,

@@ -23,10 +23,16 @@ export default function (cfg, group) {
       group.addShape('marker', {
         id: id + '_shape_control_point' + i,
         index: i,
+        name: 'shapeControlPoint',
         attrs: {
           name: 'shapeControlPoint',
           x: anchorX,
           y: anchorY,
+          // 原始位置数据
+          position: {
+            x,
+            y
+          },
           cursor: cursor || 'pointer',
           // 锚点默认样式
           ...config.shapeControl.style.default.point

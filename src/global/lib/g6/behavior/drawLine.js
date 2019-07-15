@@ -32,7 +32,7 @@ export default {
       } else {
         target = node
       }
-
+      console.log('linkPoint', target)
       if (_t.isDrawing && _t.currentEdge) {
         _t.graph.updateItem(_t.currentEdge, {
           target: target

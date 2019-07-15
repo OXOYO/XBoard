@@ -7,8 +7,8 @@
 export default {
   style: {
     default: {
-      fill: '#000000',
-      fillOpacity: 0.1,
+      fill: '#FFFFFF',
+      fillOpacity: 1,
       stroke: '#1890FF',
       strokeOpacity: 1,
       lineDash: [ 5, 5 ]

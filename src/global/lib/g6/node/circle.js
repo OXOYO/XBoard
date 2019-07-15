@@ -10,15 +10,6 @@ export default {
   name: 'x-circle',
   extendName: 'circle',
   options: {
-    // 设置锚点
-    getAnchorPoints () {
-      return [
-        [0, 0],
-        [0, 1],
-        [1, 0],
-        [1, 1]
-      ]
-    },
     setState (name, value, item) {
       // 设置锚点激活
       utils.setAnchorActive(name, value, item)

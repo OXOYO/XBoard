@@ -89,22 +89,40 @@
               'click-select',
               'tooltip',
               'edge-tooltip',
+              'activate-relations'
+            ],
+            // 自定义交互：拖拽节点到编辑器
+            'drag-node-to-editor': [
+              'zoom-canvas',
+              'drag-canvas',
+              'drag-node',
+              'click-select',
+              'tooltip',
+              'edge-tooltip',
               'activate-relations',
-              // 自定义交互：画线
-              'draw-line',
-              // 自定义交互：拖拽节点到编辑器
-              'drag-node-to-editor',
-              // 图形控制
+              'drag-node-to-editor'
+            ],
+            // 图形控制
+            'shape-control': [
+              'zoom-canvas',
+              'drag-canvas',
+              // 'drag-node',
+              'click-select',
+              'tooltip',
+              'edge-tooltip',
+              'activate-relations',
               'shape-control'
-              // ,
-              // {
-              //   type: 'brush-select',
-              //   onSelect (nodes) { console.log('selected:', nodes) },
-              //   onDeselect (nodes) { console.log('deselect', nodes) }
-              // }
-              // ,
-              // 只适用于树图，展开或收起节点
-              // 'collapse-expand'
+            ],
+            // 自定义交互：画线
+            'draw-line': [
+              'zoom-canvas',
+              'drag-canvas',
+              'drag-node',
+              'click-select',
+              'tooltip',
+              'edge-tooltip',
+              'activate-relations',
+              'draw-line'
             ],
             // 只读，
             preview: ['drag-canvas', 'zoom-canvas']
@@ -170,16 +188,32 @@
         console.log('_editorClick', event)
       },
       _nodeClick (event) {
-        let _t = this
+        // let _t = this
         console.log('_nodeClick', event)
-        _t.editor.setItemState(event.item, 'active', true)
+        // _t.editor.setItemState(event.item, 'active', true)
       },
       _nodeMousedown (event) {
         let _t = this
-        console.log('_nodeClick', event)
-        console.log('hasState1', event.item.hasState('shape-control'))
-        _t.editor.setItemState(event.item, 'shape-control', true)
-        console.log('hasState2', event.item.hasState('shape-control'))
+        // console.log('_nodeClick', event)
+        // console.log('hasState1', event.item.hasState('shape-control'))
+        let target = event.target
+        console.log('target._attrs.name', target._attrs.name, target._cfg.index)
+        if (target && target._attrs.name) {
+          switch (target._attrs.name) {
+            case 'anchor':
+              // 设置编辑器模式
+              _t.editor.setMode('draw-line')
+              break
+            case 'shapeControlPoint':
+              // 设置编辑器模式
+              _t.editor.setMode('shape-control')
+              _t.editor.setItemState(event.item, 'shape-control', true)
+              break
+          }
+        } else {
+          _t.editor.setMode('shape-control')
+          _t.editor.setItemState(event.item, 'shape-control', true)
+        }
       },
       _nodeHover (event) {
         let _t = this
@@ -230,6 +264,9 @@
           // 定义shapeControl
           shapeControl: info.shapeControl
         }
+        // 设置编辑器模式
+        _t.editor.setMode('drag-node-to-editor')
+        // _t.editor.addBehaviors('drag-node-to-editor', 'edit')
         // 广播事件，通过自定义交互 drag-node-to-editor 添加节点
         _t.editor.emit('editor:addnode', node)
       },
@@ -253,6 +290,16 @@
           case 'lineType':
             console.log('lineType', info)
             _t.editor.$X.lineType = info.data
+            break
+          case 'clear':
+            _t.$Modal.confirm({
+              title: '提示',
+              content: '确认清空画布？',
+              onOk: function () {
+                _t.editor.clear()
+                _t.editor.paint()
+              }
+            })
             break
         }
       },
