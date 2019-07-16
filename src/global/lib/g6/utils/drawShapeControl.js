@@ -7,9 +7,6 @@
 import config from '../config/index'
 
 export default function (cfg, group) {
-  let node = group.getFirst()
-  console.log('drawShapeControl', node)
-
   let { shapeControl, width, height, id } = cfg
   if (shapeControl && shapeControl.hasOwnProperty('controllers') && shapeControl.controllers.length) {
     for (let i = 0, len = shapeControl.controllers.length; i < len; i++) {
@@ -39,21 +36,5 @@ export default function (cfg, group) {
         }
       })
     }
-    // FIXME 边框绘制存在BUG
-    // 绘制边框
-    let edge = group.addShape('rect', {
-      id: id + '_shape_control_edge',
-      attrs: {
-        name: 'shapeControlEdge',
-        x: node.x,
-        y: node.y,
-        width,
-        height,
-        // 锚点默认样式
-        ...config.shapeControl.style.default.edge
-      }
-    })
-    // 前置
-    // edge.toFront()
   }
 }

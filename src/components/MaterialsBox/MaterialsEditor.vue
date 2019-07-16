@@ -148,16 +148,19 @@
           edgeStyle: {
             default: {
               stroke: '#000000',
-              strokeOpacity: 1
+              strokeOpacity: 1,
+              lineWidth: 2,
+              // 扩展响应范围
+              lineAppendWidth: 10,
+              cursor: 'pointer'
             }
           }
         })
         // 挂载全局命名空间
         _t.editor.$X = {
           lineType: 'x-line',
-          shapeControl: {
-            activeNodes: []
-          }
+          startArrow: false,
+          endArrow: false
         }
         // 设置模式为编辑
         _t.editor.setMode('edit')
@@ -170,19 +173,12 @@
         _t.editor.on('node:mouseover', _t._nodeHover)
         _t.editor.on('node:mouseout', _t._nodeOut)
         // _t.editor.on('node:contextmenu', _t._nodeContextmenu)
+        _t.editor.on('edge:click', _t._edgeClick)
       },
       _canvasMousedown () {
         let _t = this
-        let nodes = _t.editor.getNodes()
-        console.log('_canvasMousedown ', nodes)
-        // 清除节点状态
-        let activeNodes = _t.editor.$X.shapeControl.activeNodes
-        for (let i = 0, len = activeNodes.length; i < len; i++) {
-          let node = _t.editor.findById(activeNodes[i])
-          console.log('hasState3', i, node.hasState('shape-control'))
-          // _t.editor.setItemState(node, 'shape-control', false)
-          _t.editor.clearItemStates(node)
-        }
+        console.log('_canvasMousedown ')
+        _t.doClearAllStates()
       },
       _editorClick (event) {
         console.log('_editorClick', event)
@@ -204,11 +200,6 @@
               // 设置编辑器模式
               _t.editor.setMode('draw-line')
               break
-            case 'shapeControlPoint':
-              // 设置编辑器模式
-              _t.editor.setMode('shape-control')
-              _t.editor.setItemState(event.item, 'shape-control', true)
-              break
           }
         } else {
           _t.editor.setMode('shape-control')
@@ -228,7 +219,31 @@
       _nodeContextmenu (event) {
         console.log('_nodeContextmenu', event)
       },
-      _zoom (toolName, position) {
+      _edgeClick (event) {
+        let _t = this
+        console.log('_edgeClick', event)
+        if (event.item && !event.item.destroyed) {
+          _t.editor.setItemState(event.item, 'active', !event.item.hasState('active'))
+        }
+      },
+      // 清除所有状态
+      doClearAllStates () {
+        let _t = this
+        if (!_t.editor) {
+          return
+        }
+        // 批量操作时关闭自动重绘，以提升性能
+        _t.editor.setAutoPaint(false)
+        _t.editor.getNodes().forEach(function (node) {
+          _t.editor.clearItemStates(node)
+        })
+        _t.editor.getEdges().forEach(function (edge) {
+          _t.editor.clearItemStates(edge)
+        })
+        _t.editor.paint()
+        _t.editor.setAutoPaint(true)
+      },
+      doZoom (toolName, position) {
         let _t = this
         let ratio = 1
         let center
@@ -276,7 +291,7 @@
           case 'zoomIn':
           case 'zoomOut':
           case 'actualSize':
-            _t._zoom(info.name)
+            _t.doZoom(info.name)
             break
           case 'fit':
             _t.editor.fitView()

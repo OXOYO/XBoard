@@ -12,7 +12,8 @@ export default {
       fill: '#FFFFFF',
       fillOpacity: 0,
       stroke: '#1890FF',
-      strokeOpacity: 0
+      strokeOpacity: 0,
+      cursor: 'crosshair'
     },
     hover: {
       fillOpacity: 1,

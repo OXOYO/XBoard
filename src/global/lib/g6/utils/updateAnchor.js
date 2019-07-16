@@ -1,10 +1,8 @@
 /**
- * Created by OXOYO on 2019/7/8.
+ * Created by OXOYO on 2019/7/16.
  *
- * 绘制锚点
+ * 更新锚点
  */
-
-import config from '../config/index'
 
 export default function (cfg, group) {
   let { anchorPoints, width, height, id } = cfg
@@ -16,16 +14,10 @@ export default function (cfg, group) {
       let originY = -height / 2
       let anchorX = x * width + originX
       let anchorY = y * height + originY
-      // 添加Marker形状
-      group.addShape('marker', {
-        id: id + '_anchor_' + i,
-        attrs: {
-          name: 'anchor',
-          x: anchorX,
-          y: anchorY,
-          // 锚点默认样式
-          ...config.anchor.style.default
-        }
+      let marker = group.findById(id + '_anchor_' + i)
+      marker.attr({
+        x: anchorX,
+        y: anchorY
       })
     }
   }

@@ -4,24 +4,27 @@
  *
  */
 
+import utils from '../utils/index'
+
 export default {
   name: 'shape-control',
   options: {
-    getDefaultCfg() {
+    getDefaultCfg () {
       return {
         status: false,
         currentNode: null,
         currentTarget: null,
+        startPoint: null,
         minHeight: 20,
         minWidth: 20
       }
     },
-    getEvents() {
+    getEvents () {
       return {
         'node:mousedown': 'onNodeMousedown',
         'node:mouseup': 'onNodeMouseup',
-        'canvas:mousemove': 'onMousemove',
-        'canvas:mouseup': 'onMouseup'
+        'mousemove': 'onMousemove',
+        'mouseup': 'onMouseup'
       }
     },
     onNodeMousedown (event) {
@@ -31,10 +34,11 @@ export default {
       let target = event.target
       _t.currentNode = node
       _t.currentTarget = target
-      if (!_t.graph.$X.shapeControl.activeNodes.includes(model.id)) {
-        _t.graph.$X.shapeControl.activeNodes.push(model.id)
+      _t.startPoint = {
+        x: model.x,
+        y: model.y,
+        size: model.size || []
       }
-      console.log('shape-control node', node, _t.graph.$X)
     },
     onNodeMouseup (event) {
       let _t = this
@@ -49,47 +53,84 @@ export default {
         let targetAttrs = _t.currentTarget._attrs
         let position = targetAttrs.position
         let attrs = {
-          x: nodeModel.x,
-          y: nodeModel.y,
+          x: _t.startPoint.x,
+          y: _t.startPoint.y,
           size: nodeModel.size
         }
         let width = nodeModel.width
         let height = nodeModel.height
-        console.log('position', position)
         if (position) {
-          let originX = -width / 2
-          let originY = -height / 2
-          let anchorX = x * width + originX
-          let anchorY = y * height + originY
-
+          // 参照点，及当前contoller的对角点
+          let referencePoint = {}
           if (position.x === 0) {
-            attrs.x = event.x
             if (position.y === 0) {
-              attrs.y = event.y
-              attrs.size[0] = anchorX - event.x + width
-              attrs.size[1] = anchorY - event.y + height
+              referencePoint = {
+                x: _t.startPoint.x + width / 2,
+                y: _t.startPoint.y + height / 2
+              }
+              // 计算宽、高
+              attrs.size[0] = Math.abs(referencePoint.x - event.x)
+              attrs.size[1] = Math.abs(referencePoint.y - event.y)
+              // 计算中心点坐标
+              attrs.x = event.x + attrs.size[0] / 2
+              attrs.y = event.y + attrs.size[1] / 2
             } else if (position.y === 1) {
-              attrs.size[0] = anchorX - event.x + width
-              attrs.size[1] = event.y - anchorY + height
+              referencePoint = {
+                x: _t.startPoint.x + width / 2,
+                y: _t.startPoint.y - height / 2
+              }
+              // 计算宽、高
+              attrs.size[0] = Math.abs(referencePoint.x - event.x)
+              attrs.size[1] = Math.abs(referencePoint.y - event.y)
+              // 计算中心点坐标
+              attrs.x = event.x + attrs.size[0] / 2
+              attrs.y = event.y - attrs.size[1] / 2
             }
           } else if (position.x === 1) {
             if (position.y === 0) {
-              attrs.size[0] = event.x - anchorX + width
-              attrs.size[1] = anchorY - event.y + height
+              referencePoint = {
+                x: _t.startPoint.x - width / 2,
+                y: _t.startPoint.y + height / 2
+              }
+              // 计算宽、高
+              attrs.size[0] = Math.abs(referencePoint.x - event.x)
+              attrs.size[1] = Math.abs(referencePoint.y - event.y)
+              // 计算中心点坐标
+              attrs.x = event.x - attrs.size[0] / 2
+              attrs.y = event.y + attrs.size[1] / 2
             } else if (position.y === 1) {
-              attrs.size[0] = event.x - anchorX + width
-              attrs.size[1] = event.y - anchorY + height
+              referencePoint = {
+                x: _t.startPoint.x - width / 2,
+                y: _t.startPoint.y - height / 2
+              }
+              // 计算宽、高
+              attrs.size[0] = Math.abs(referencePoint.x - event.x)
+              attrs.size[1] = Math.abs(referencePoint.y - event.y)
+              // 计算中心点坐标
+              attrs.x = event.x - attrs.size[0] / 2
+              attrs.y = event.y - attrs.size[1] / 2
             }
           }
         }
-        if (attrs.size[0] < 20) {
-          attrs.size[0] = 20
+        if (attrs.size[0] < 20 || attrs.size[1] < 20) {
+          return
         }
-        if (attrs.size[1] < 20) {
-          attrs.size[1] = 20
-        }
-        console.log('attrs', JSON.stringify(attrs))
+        // 当前节点容器
+        let group = _t.currentNode.getContainer()
+        // 更新锚点
+        utils.updateAnchor({
+          ..._t.currentNode.getModel(),
+          width: attrs.size[0],
+          height: attrs.size[1]
+        }, group)
+        // 更新shapeControl
+        utils.updateShapeControl({
+          ..._t.currentNode.getModel(),
+          width: attrs.size[0],
+          height: attrs.size[1]
+        }, group)
         _t.currentNode.update(attrs)
+        // 绘制
         _t.graph.paint()
       }
     },

@@ -7,12 +7,12 @@
 export default {
   name: 'draw-line',
   options: {
-    getDefaultCfg () {
-      return {
-        isDrawing: false,
-        currentEdge: null
-      }
-    },
+    // getDefaultCfg () {
+    //   return {
+    //     isDrawing: false,
+    //     currentEdge: null
+    //   }
+    // },
     getEvents () {
       return {
         'node:click': 'onNodeClick',
@@ -32,16 +32,15 @@ export default {
       } else {
         target = node
       }
-      console.log('linkPoint', target)
-      if (_t.isDrawing && _t.currentEdge) {
-        _t.graph.updateItem(_t.currentEdge, {
+      if (_t.graph.$X.isDrawing && _t.graph.$X.currentEdge) {
+        _t.graph.updateItem(_t.graph.$X.currentEdge, {
           target: target
         })
 
-        _t.currentEdge = null
-        _t.isDrawing = false
+        _t.graph.$X.currentEdge = null
+        _t.graph.$X.isDrawing = false
       } else {
-        _t.currentEdge = _t.graph.addItem('edge', {
+        _t.graph.$X.currentEdge = _t.graph.addItem('edge', {
           // 起始节点
           source: target,
           // 终止节点/位置
@@ -50,15 +49,17 @@ export default {
             y: event.y
           },
           // FIXME 边的形式需要与工具栏联动
-          shape: _t.graph.$X.lineType || 'line'
+          shape: _t.graph.$X.lineType || 'line',
+          startArrow: _t.graph.$X.startArrow || false,
+          endArrow: _t.graph.$X.endArrow || false
         })
-        _t.isDrawing = true
+        _t.graph.$X.isDrawing = true
       }
     },
     onMousemove (event) {
       let _t = this
-      if (_t.isDrawing && _t.currentEdge) {
-        _t.graph.updateItem(_t.currentEdge, {
+      if (_t.graph.$X.isDrawing && _t.graph.$X.currentEdge) {
+        _t.graph.updateItem(_t.graph.$X.currentEdge, {
           target: {
             x: event.x,
             y: event.y
@@ -68,13 +69,12 @@ export default {
     },
     onEdgeClick (event) {
       let _t = this
-      let currentEdge = event.item
-      if (_t.isDrawing && _t.currentEdge === currentEdge) {
+      if (_t.graph.$X.isDrawing && _t.graph.$X.currentEdge === event.item) {
         // 画线过程中点击则移除当前画线
-        _t.graph.removeItem(_t.currentEdge)
+        _t.graph.removeItem(_t.graph.$X.currentEdge)
 
-        _t.currentEdge = null
-        _t.isDrawing = false
+        _t.graph.$X.currentEdge = null
+        _t.graph.$X.isDrawing = false
       }
     }
   }
