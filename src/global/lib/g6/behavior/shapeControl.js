@@ -11,10 +11,6 @@ export default {
   options: {
     getDefaultCfg () {
       return {
-        status: false,
-        currentNode: null,
-        currentTarget: null,
-        startPoint: null,
         minHeight: 20,
         minWidth: 20
       }
@@ -112,7 +108,7 @@ export default {
             }
           }
         }
-        if (attrs.size[0] < 20 || attrs.size[1] < 20) {
+        if (attrs.size[0] < _t.minWidth || attrs.size[1] < _t.minHeight) {
           return
         }
         // 当前节点容器

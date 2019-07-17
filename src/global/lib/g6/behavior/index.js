@@ -7,11 +7,13 @@
 import drawLine from './drawLine'
 import dragNodeToEditor from './dragNodeToEditor'
 import shapeControl from './shapeControl'
+import nodeControl from './nodeControl'
 
 const obj = {
   drawLine,
   dragNodeToEditor,
-  shapeControl
+  shapeControl,
+  nodeControl
 }
 
 export default function (G6) {

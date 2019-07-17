@@ -12,10 +12,6 @@ export default {
   options: {
     getDefaultCfg () {
       return {
-        // 当前节点
-        currentNode: null,
-        // 虚线框节点
-        dottedNode: null,
         // 虚线框节点样式
         dottedNodeStyle: {
           ...config.dottedNode.style.default
@@ -70,7 +66,8 @@ export default {
           x: event.x,
           y: event.y,
           size: [_t.currentNode.width, _t.currentNode.height],
-          ..._t.currentNode
+          ..._t.currentNode,
+          name: 'nodexxx'
         }
         _t.graph.addItem('node', node)
         _t.dottedNode.remove()

@@ -7,12 +7,6 @@
 export default {
   name: 'draw-line',
   options: {
-    // getDefaultCfg () {
-    //   return {
-    //     isDrawing: false,
-    //     currentEdge: null
-    //   }
-    // },
     getEvents () {
       return {
         'node:click': 'onNodeClick',
@@ -39,6 +33,7 @@ export default {
 
         _t.graph.$X.currentEdge = null
         _t.graph.$X.isDrawing = false
+        _t.shouldEnd.call(this, event)
       } else {
         _t.graph.$X.currentEdge = _t.graph.addItem('edge', {
           // 起始节点

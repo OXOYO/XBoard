@@ -7,7 +7,7 @@
 import config from '../config/index'
 
 export default function (name, value, item) {
-  if (name === 'shape-control') {
+  if (name === 'active') {
     let group = item.getContainer()
     let children = group.get('children')
     for (let i = 0, len = children.length; i < len; i++) {

@@ -25,9 +25,11 @@ export default function (cfg, group) {
   circle.animate({
     onFrame (ratio) {
       let tmpPoint = node.getPoint(ratio)
-      return {
-        x: tmpPoint.x,
-        y: tmpPoint.y
+      if (tmpPoint) {
+        return {
+          x: tmpPoint.x,
+          y: tmpPoint.y
+        }
       }
     },
     repeat: true

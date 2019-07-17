@@ -11,7 +11,7 @@ export default function (name, value, item) {
     let group = item.getContainer()
     let children = group.get('children')
     let line = children[0]
-    // 处理锚点状态
+    // 处理线条状态
     if (line) {
       if (value) {
         line.attr(config.line.style.active)
