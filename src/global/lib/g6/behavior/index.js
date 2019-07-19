@@ -4,15 +4,20 @@
  * 注册交互
  */
 
-import drawLine from './drawLine'
-import dragNodeToEditor from './dragNodeToEditor'
-import shapeControl from './shapeControl'
+// 单独画线交互
+// import drawLine from './drawLine'
+// 单独拖拽交互
+// import dragNodeToEditor from './dragNodeToEditor'
+// 单独图形控制交互
+// import shapeControl from './shapeControl'
+
+// 综合节点控制交互
 import nodeControl from './nodeControl'
 
 const obj = {
-  drawLine,
-  dragNodeToEditor,
-  shapeControl,
+  // drawLine,
+  // dragNodeToEditor,
+  // shapeControl,
   nodeControl
 }
 

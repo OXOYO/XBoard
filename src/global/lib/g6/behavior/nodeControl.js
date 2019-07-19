@@ -31,7 +31,6 @@ export default {
         node: event.item,
         target: event.target
       }
-      console.log('_t.info.target._attrs.name', _t.info.target._attrs.name)
       if (_t.info.target && _t.info.target._attrs.name) {
         switch (_t.info.target._attrs.name) {
           case 'anchor':
@@ -50,39 +49,32 @@ export default {
     },
     onMousemove (event) {
       let _t = this
-      console.log('onMousemove')
       if (_t.info && _t.info.type) {
         _t[_t.info.type].move.call(_t, event)
       }
     },
     onCanvasMouseenter (event) {
       let _t = this
-      console.log('onCanvasMouseenter')
       if (_t.info && _t.info.type === 'dragNode') {
         _t[_t.info.type].createDottedNode.call(_t, event)
       }
     },
     onCanvasMouseup (event) {
       let _t = this
-      console.log('onCanvasMouseup')
       if (_t.info && _t.info.type === 'dragNode') {
         if (_t.dragNode.status === 'dragNodeToEditor') {
           _t[_t.info.type].createNode.call(_t, event)
-        // } else if (_t.dragNode.status === 'dragNode') {
-        //   _t[_t.info.type].updateNode.call(_t, event)
         }
       }
     },
     onCanvasMouseleave (event) {
       let _t = this
-      console.log('onCanvasMouseleave')
       if (_t.info && _t.info.type === 'dragNode') {
         _t[_t.info.type].stop.call(_t, event)
       }
     },
     onNodeMouseup (event) {
       let _t = this
-      console.log('onNodeMouseup')
       if (_t.info && _t.info.type) {
         _t[_t.info.type].stop.call(_t, event)
       }
@@ -126,6 +118,9 @@ export default {
             x: event.x,
             y: event.y
           },
+          // FIXME label 需支持双击编辑
+          label: '',
+          attrs: {},
           // FIXME 边的形式需要与工具栏联动
           shape: _t.graph.$X.lineType || 'line',
           startArrow: _t.graph.$X.startArrow || false,
@@ -151,19 +146,26 @@ export default {
             // 画线过程中点击则移除当前画线
             _t.graph.removeItem(event.item)
           } else {
-            let stopNode = event.item
+            let endNode = event.item
+            let startModel = _t.info.node.getModel()
+            let endModel = endNode.getModel()
             let target
             // 锚点数据
-            let anchorPoints = stopNode.getAnchorPoints()
+            let anchorPoints = endNode.getAnchorPoints()
             // 处理线条目标点
             if (anchorPoints && anchorPoints.length) {
               // 获取距离指定坐标最近的一个锚点
-              target = stopNode.getLinkPoint({ x: event.x, y: event.y })
+              target = endNode.getLinkPoint({ x: event.x, y: event.y })
             } else {
-              target = stopNode
+              target = endNode
             }
             _t.graph.updateItem(_t.drawLine.currentLine, {
-              target: target
+              target: target,
+              // 存储起始点ID，用于拖拽节点时更新线条
+              attrs: {
+                start: startModel.id,
+                end: endModel.id
+              }
             })
           }
         }
@@ -195,7 +197,7 @@ export default {
           let attrs = {
             x: _t.shapeControl.startPoint.x,
             y: _t.shapeControl.startPoint.y,
-            size: model.size || []
+            size: [...model.size]
           }
           let width = model.width
           let height = model.height
@@ -214,6 +216,14 @@ export default {
                 // 计算中心点坐标
                 attrs.x = event.x + attrs.size[0] / 2
                 attrs.y = event.y + attrs.size[1] / 2
+                if (
+                  event.x > _t.shapeControl.startPoint.x ||
+                  event.y > _t.shapeControl.startPoint.y ||
+                  attrs.size[0] < _t.minWidth ||
+                  attrs.size[1] < _t.minHeight
+                ) {
+                  return
+                }
               } else if (position.y === 1) {
                 referencePoint = {
                   x: _t.shapeControl.startPoint.x + width / 2,
@@ -225,6 +235,14 @@ export default {
                 // 计算中心点坐标
                 attrs.x = event.x + attrs.size[0] / 2
                 attrs.y = event.y - attrs.size[1] / 2
+                if (
+                  event.x > _t.shapeControl.startPoint.x ||
+                  event.y < _t.shapeControl.startPoint.y ||
+                  attrs.size[0] < _t.minWidth ||
+                  attrs.size[1] < _t.minHeight
+                ) {
+                  return
+                }
               }
             } else if (position.x === 1) {
               if (position.y === 0) {
@@ -238,6 +256,14 @@ export default {
                 // 计算中心点坐标
                 attrs.x = event.x - attrs.size[0] / 2
                 attrs.y = event.y + attrs.size[1] / 2
+                if (
+                  event.x < _t.shapeControl.startPoint.x ||
+                  event.y > _t.shapeControl.startPoint.y ||
+                  attrs.size[0] < _t.minWidth ||
+                  attrs.size[1] < _t.minHeight
+                ) {
+                  return
+                }
               } else if (position.y === 1) {
                 referencePoint = {
                   x: _t.shapeControl.startPoint.x - width / 2,
@@ -249,12 +275,18 @@ export default {
                 // 计算中心点坐标
                 attrs.x = event.x - attrs.size[0] / 2
                 attrs.y = event.y - attrs.size[1] / 2
+                if (
+                  event.x < _t.shapeControl.startPoint.x ||
+                  event.y < _t.shapeControl.startPoint.y ||
+                  attrs.size[0] < _t.minWidth ||
+                  attrs.size[1] < _t.minHeight
+                ) {
+                  return
+                }
               }
             }
           }
-          if (attrs.size[0] < _t.minWidth || attrs.size[1] < _t.minHeight) {
-            return
-          }
+          _t.info.attrs = attrs
           // 当前节点容器
           let group = _t.info.node.getContainer()
           // 更新锚点
@@ -269,13 +301,33 @@ export default {
             width: attrs.size[0],
             height: attrs.size[1]
           }, group)
-          _t.info.node.update(attrs)
-          // 绘制
-          _t.graph.paint()
+          // 更新节点
+          _t.graph.updateItem(_t.info.node, attrs)
+          // 更新线条
+          utils.updateLine(_t.info.node, _t.graph)
         }
       },
       stop (event) {
         let _t = this
+        if (_t.info.node && _t.info.attrs && _t.shapeControl.startPoint && _t.shapeControl.isMoving) {
+          let attrs = _t.info.attrs
+          // 当前节点容器
+          let group = _t.info.node.getContainer()
+          // 更新锚点
+          utils.updateAnchor({
+            ..._t.info.node.getModel(),
+            width: attrs.size[0],
+            height: attrs.size[1]
+          }, group)
+          // 更新shapeControl
+          utils.updateShapeControl({
+            ..._t.info.node.getModel(),
+            width: attrs.size[0],
+            height: attrs.size[1]
+          }, group)
+          // 更新节点
+          _t.graph.updateItem(_t.info.node, attrs)
+        }
         _t.shapeControl.startPoint = null
         _t.shapeControl.isMoving = false
         _t.info = null
@@ -299,8 +351,7 @@ export default {
               width,
               height,
               x: event.x - width / 2,
-              y: event.y - height / 2,
-              fill: 'green'
+              y: event.y - height / 2
             }
           })
           _t.graph.paint()
@@ -336,7 +387,6 @@ export default {
       },
       start (event) {
         let _t = this
-        console.log('dragNode Start...', _t.dragNode.dottedNode)
         _t.dragNode.createDottedNode.call(_t, event)
         _t.dragNode.status = 'dragNode'
       },
@@ -344,23 +394,25 @@ export default {
         let _t = this
         if (_t.dragNode.status === 'dragNodeToEditor') {
           if (_t.dragNode.dottedNode && _t.info.node) {
-            console.log('dragNode Move...', _t.dragNode.dottedNode)
             let { width, height } = _t.info.node
             _t.dragNode.dottedNode.attr({
               x: event.x - width / 2,
-              y: event.y - height / 2,
-              fill: 'red'
+              y: event.y - height / 2
             })
             _t.graph.paint()
           }
         } else if (_t.dragNode.status === 'dragNode') {
           if (_t.info.node) {
-            let node = {
+            let attrs = {
               x: event.x,
-              y: event.y
+              y: event.y,
+              // 拖拽时样式
+              style: {}
             }
-            _t.info.node.updatePosition(node)
-            _t.graph.paint()
+            // 更新节点
+            _t.graph.updateItem(_t.info.node, attrs)
+            // 更新线条
+            utils.updateLine(_t.info.node, _t.graph)
           }
         }
       },

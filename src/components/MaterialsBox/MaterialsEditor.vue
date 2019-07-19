@@ -88,7 +88,12 @@
               // 'drag-node',
               'click-select',
               'tooltip',
-              'edge-tooltip',
+              {
+                type: 'edge-tooltip',
+                formatText (model) {
+                  return model.label
+                }
+              },
               'node-control'
               // ,
               // 'drag-node-to-editor'
