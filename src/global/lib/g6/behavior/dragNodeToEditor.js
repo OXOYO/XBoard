@@ -20,7 +20,7 @@ export default {
     },
     getEvents () {
       return {
-        'editor:addnode': 'startAddNode',
+        'editor:addNode': 'startAddNode',
         'canvas:mouseenter': 'onMouseenter',
         'canvas:mousemove': 'onMousemove',
         'canvas:mouseup': 'onMouseup',

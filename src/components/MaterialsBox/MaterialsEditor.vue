@@ -85,15 +85,7 @@
             edit: [
               'zoom-canvas',
               'drag-canvas',
-              // 'drag-node',
               'click-select',
-              'tooltip',
-              {
-                type: 'edge-tooltip',
-                formatText (model) {
-                  return model.label
-                }
-              },
               {
                 type: 'node-control',
                 updateEdge: true
@@ -249,7 +241,8 @@
         let node = {
           id: G6.Util.uniqueId(),
           shape: info.shape,
-          label: info.shape,
+          // label: info.shape,
+          text: info.shape,
           width: info.width,
           height: info.height,
           // FIXME 定义锚点坐标
@@ -258,7 +251,7 @@
           shapeControl: info.shapeControl
         }
         // 广播事件，通过自定义交互 node-control 添加节点
-        _t.editor.emit('editor:addnode', node)
+        _t.editor.emit('editor:addNode', node)
       },
       handleToolTrigger (info) {
         let _t = this

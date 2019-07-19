@@ -19,15 +19,26 @@ export default {
     },
     getEvents () {
       return {
-        'editor:addnode': 'startAddNode',
+        'editor:addNode': 'startAddNode',
         'node:mousedown': 'onNodeMousedown',
         'node:mouseup': 'onNodeMouseup',
-        'mousemove': 'onMousemove',
+        'node:dblclick': 'onNodeDblclick',
         'canvas:mouseenter': 'onCanvasMouseenter',
-        'mouseup': 'onCanvasMouseup',
         'canvas:mouseleave': 'onCanvasMouseleave',
-        'edge:mouseup': 'onEdgeMouseup'
+        'edge:mouseup': 'onEdgeMouseup',
+        'mousemove': 'onMousemove',
+        'mouseup': 'onMouseup'
       }
+    },
+    startAddNode (node) {
+      let _t = this
+      // 初始化数据
+      _t.info = {
+        type: 'dragNode',
+        node: node,
+        target: null
+      }
+      _t.dragNode.status = 'dragNodeToEditor'
     },
     onNodeMousedown (event) {
       let _t = this
@@ -53,11 +64,16 @@ export default {
         _t[_t.info.type].start.call(_t, event)
       }
     },
-    onMousemove (event) {
+    onNodeMouseup (event) {
       let _t = this
       if (_t.info && _t.info.type) {
-        _t[_t.info.type].move.call(_t, event)
+        _t[_t.info.type].stop.call(_t, event)
       }
+    },
+    onNodeDblclick (event) {
+      let _t = this
+      console.log('onNodeDblclick', event.item)
+      _t.nodeText.create.call(_t, event)
     },
     onCanvasMouseenter (event) {
       let _t = this
@@ -65,23 +81,9 @@ export default {
         _t[_t.info.type].createDottedNode.call(_t, event)
       }
     },
-    onCanvasMouseup (event) {
-      let _t = this
-      if (_t.info && _t.info.type === 'dragNode') {
-        if (_t.dragNode.status === 'dragNodeToEditor') {
-          _t[_t.info.type].createNode.call(_t, event)
-        }
-      }
-    },
     onCanvasMouseleave (event) {
       let _t = this
       if (_t.info && _t.info.type === 'dragNode') {
-        _t[_t.info.type].stop.call(_t, event)
-      }
-    },
-    onNodeMouseup (event) {
-      let _t = this
-      if (_t.info && _t.info.type) {
         _t[_t.info.type].stop.call(_t, event)
       }
     },
@@ -91,15 +93,19 @@ export default {
         _t[_t.info.type].stop.call(_t, event)
       }
     },
-    startAddNode (node) {
+    onMousemove (event) {
       let _t = this
-      // 初始化数据
-      _t.info = {
-        type: 'dragNode',
-        node: node,
-        target: null
+      if (_t.info && _t.info.type) {
+        _t[_t.info.type].move.call(_t, event)
       }
-      _t.dragNode.status = 'dragNodeToEditor'
+    },
+    onMouseup (event) {
+      let _t = this
+      if (_t.info && _t.info.type === 'dragNode') {
+        if (_t.dragNode.status === 'dragNodeToEditor') {
+          _t[_t.info.type].createNode.call(_t, event)
+        }
+      }
     },
     drawLine: {
       isMoving: false,
@@ -440,6 +446,30 @@ export default {
         _t.dragNode.status = null
         _t.info = null
       }
-    }
+    },
+    nodeText: {
+      // TODO 节点文本创建
+      create (event) {
+        let _t = this
+        let canvas = _t.graph.get('canvas')
+        let node = event.item
+        let nodeModel = node.getModel()
+        const el = canvas.get('el')
+        el.style.position = 'relative'
+        const container = G6.Util.createDom(`<div class="node-text">${nodeModel.text}</div>`)
+        el.parentNode.appendChild(container)
+        G6.Util.modifyCSS(container, {
+          position: 'absolute',
+          visibility: 'visible'
+        })
+        // this.width = canvas.get('width')
+        // this.height = canvas.get('height')
+        // this.container = container
+        // return container
+        _t.graph.paint()
+      },
+      edit () {}
+    },
+    edgeText: {}
   }
 }
