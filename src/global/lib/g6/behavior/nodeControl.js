@@ -11,6 +11,12 @@ import utils from '../utils/index'
 export default {
   name: 'node-control',
   options: {
+    getDefaultCfg () {
+      return {
+        // 是否在拖拽节点时更新所有与之相连的边
+        updateEdge: true
+      }
+    },
     getEvents () {
       return {
         'editor:addnode': 'startAddNode',
@@ -303,8 +309,10 @@ export default {
           }, group)
           // 更新节点
           _t.graph.updateItem(_t.info.node, attrs)
-          // 更新线条
-          utils.updateLine(_t.info.node, _t.graph)
+          if (_t.updateEdge) {
+            // 更新线条
+            utils.updateLine(_t.info.node, _t.graph)
+          }
         }
       },
       stop (event) {
@@ -411,8 +419,10 @@ export default {
             }
             // 更新节点
             _t.graph.updateItem(_t.info.node, attrs)
-            // 更新线条
-            utils.updateLine(_t.info.node, _t.graph)
+            if (_t.updateEdge) {
+              // 更新线条
+              utils.updateLine(_t.info.node, _t.graph)
+            }
           }
         }
       },

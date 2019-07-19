@@ -94,58 +94,9 @@
                   return model.label
                 }
               },
-              'node-control'
-              // ,
-              // 'drag-node-to-editor'
-              // ,
-              // 'activate-relations'
-            ],
-            'node-control': [
-              'node-control'
-            ],
-            // 自定义交互：拖拽节点到编辑器
-            'drag-node-to-editor': [
-              'zoom-canvas',
-              'drag-canvas',
-              'drag-node',
-              'click-select',
-              'tooltip',
-              'edge-tooltip',
-              // 'activate-relations',
-              'drag-node-to-editor'
-            ],
-            // 图形控制
-            'shape-control': [
-              'zoom-canvas',
-              'drag-canvas',
-              // 'drag-node',
-              'click-select',
-              'tooltip',
-              'edge-tooltip',
-              // 'activate-relations',
-              'shape-control'
-            ],
-            // 自定义交互：画线
-            'draw-line': [
-              'zoom-canvas',
-              'drag-canvas',
-              'drag-node',
-              'click-select',
-              'tooltip',
-              'edge-tooltip',
-              // 'activate-relations',
-              // 'draw-line',
               {
-                type: 'draw-line',
-                shouldBegin () {
-                  console.log('shouldBegin............')
-                  return true
-                },
-                shouldEnd () {
-                  console.log('shouldEnd............')
-                  // _t.editor.setMode('edit')
-                  return true
-                }
+                type: 'node-control',
+                updateEdge: true
               }
             ],
             // 只读，
@@ -232,19 +183,6 @@
         if (!event.item.hasState('active')) {
           _t.editor.setItemState(event.item, 'active', true)
         }
-        // let target = event.target
-        // console.log('target._attrs.name', target._attrs.name, target._cfg.index)
-        // if (target && target._attrs.name) {
-        //   switch (target._attrs.name) {
-        //     case 'anchor':
-        //       // 设置编辑器模式
-        //       _t.editor.setMode('draw-line')
-        //       break
-        //   }
-        // } else {
-        //   _t.editor.setMode('shape-control')
-        // }
-        // _t.editor.setMode('node-control')
       },
       _nodeHover (event) {
         let _t = this
@@ -319,10 +257,7 @@
           // 定义shapeControl
           shapeControl: info.shapeControl
         }
-        // 设置编辑器模式
-        // _t.editor.setMode('drag-node-to-editor')
-        // _t.editor.addBehaviors('drag-node-to-editor', 'edit')
-        // 广播事件，通过自定义交互 drag-node-to-editor 添加节点
+        // 广播事件，通过自定义交互 node-control 添加节点
         _t.editor.emit('editor:addnode', node)
       },
       handleToolTrigger (info) {
