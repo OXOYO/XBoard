@@ -14,7 +14,11 @@ export default {
     getDefaultCfg () {
       return {
         // 是否在拖拽节点时更新所有与之相连的边
-        updateEdge: true
+        updateEdge: true,
+        // 是否支持在节点上添加文本
+        enableNodeLabel: true,
+        // 是否支持在边上添加文本
+        enableEdgeLabel: true
       }
     },
     getEvents () {
@@ -26,6 +30,7 @@ export default {
         'canvas:mouseenter': 'onCanvasMouseenter',
         'canvas:mouseleave': 'onCanvasMouseleave',
         'edge:mouseup': 'onEdgeMouseup',
+        'edge:dblclick': 'onEdgeDblclick',
         'mousemove': 'onMousemove',
         'mouseup': 'onMouseup'
       }
@@ -72,8 +77,9 @@ export default {
     },
     onNodeDblclick (event) {
       let _t = this
-      console.log('onNodeDblclick', event.item)
-      _t.nodeText.create.call(_t, event)
+      if (_t.enableNodeLabel) {
+        _t.nodeLabel.create.call(_t, event)
+      }
     },
     onCanvasMouseenter (event) {
       let _t = this
@@ -91,6 +97,12 @@ export default {
       let _t = this
       if (_t.info && _t.info.type === 'drawLine') {
         _t[_t.info.type].stop.call(_t, event)
+      }
+    },
+    onEdgeDblclick (event) {
+      let _t = this
+      if (_t.enableEdgeLabel) {
+        _t.edgeLabel.create.call(_t, event)
       }
     },
     onMousemove (event) {
@@ -298,7 +310,11 @@ export default {
               }
             }
           }
-          _t.info.attrs = attrs
+          _t.info.attrs = {
+            ...attrs,
+            width: attrs.size[0],
+            height: attrs.size[1]
+          }
           // 当前节点容器
           let group = _t.info.node.getContainer()
           // 更新锚点
@@ -387,18 +403,6 @@ export default {
           _t.graph.paint()
         }
       },
-      updateNode (event) {
-        let _t = this
-        if (_t.info.node) {
-          let node = {
-            x: event.x,
-            y: event.y
-          }
-          _t.info.node.updatePosition(node)
-          _t.dragNode.clear.call(_t)
-          _t.graph.paint()
-        }
-      },
       start (event) {
         let _t = this
         _t.dragNode.createDottedNode.call(_t, event)
@@ -447,29 +451,107 @@ export default {
         _t.info = null
       }
     },
-    nodeText: {
-      // TODO 节点文本创建
+    nodeLabel: {
+      // 节点文本创建
       create (event) {
         let _t = this
         let canvas = _t.graph.get('canvas')
         let node = event.item
-        let nodeModel = node.getModel()
+        let { id, label, x, y, width, height } = node.getModel()
         const el = canvas.get('el')
-        el.style.position = 'relative'
-        const container = G6.Util.createDom(`<div class="node-text">${nodeModel.text}</div>`)
-        el.parentNode.appendChild(container)
-        G6.Util.modifyCSS(container, {
-          position: 'absolute',
-          visibility: 'visible'
-        })
-        // this.width = canvas.get('width')
-        // this.height = canvas.get('height')
-        // this.container = container
-        // return container
-        _t.graph.paint()
-      },
-      edit () {}
+        const html = G6.Util.createDom(`<input id="${id}" class="node-text" autofocus value="${label}"></input>`)
+        if (html) {
+          // 插入输入框dom
+          el.parentNode.appendChild(html)
+          if (html.focus) {
+            html.focus()
+          }
+          // 更新输入框样式
+          G6.Util.modifyCSS(html, {
+            display: 'inline-block',
+            position: 'absolute',
+            left: x - width / 2 + 'px',
+            top: y - height / 2 + 'px',
+            width: width + 'px',
+            height: height + 'px',
+            lineHeight: height + 'px',
+            textAlign: 'center',
+            overflow: 'hidden',
+            fontSize: '14px'
+          })
+          html.addEventListener('blur', function () {
+            // 更新节点
+            _t.graph.updateItem(node, {
+              label: html.value
+            })
+            // 删除输入框dom
+            el.parentNode.removeChild(html)
+          })
+        }
+      }
     },
-    edgeText: {}
+    edgeLabel: {
+      // 节点文本创建
+      create (event) {
+        let _t = this
+        let canvas = _t.graph.get('canvas')
+        let edge = event.item
+        let { id, label, source, target } = edge.getModel()
+        let left
+        let top
+        let minWidth = 40
+        let maxWidth = 100
+        let width = 40
+        let height = 20
+        let distance = Math.abs(target.x - source.x)
+        if (distance < minWidth) {
+          width = minWidth
+        }
+        if (distance > maxWidth) {
+          width = maxWidth
+        }
+        // 计算输入框位置
+        if (source.x < target.x) {
+          left = source.x + distance / 2 - width / 2 + 'px'
+        } else {
+          left = target.x + distance / 2 - width / 2 + 'px'
+        }
+        if (source.y < target.y) {
+          top = source.y + Math.abs(target.y - source.y) / 2 - height / 2 + 'px'
+        } else {
+          top = target.y + Math.abs(target.y - source.y) / 2 - height / 2 + 'px'
+        }
+        const el = canvas.get('el')
+        const html = G6.Util.createDom(`<input id="${id}" class="edge-text" autofocus value="${label}"></input>`)
+        if (html) {
+          // 插入输入框dom
+          el.parentNode.appendChild(html)
+          if (html.focus) {
+            html.focus()
+          }
+          // 更新输入框样式
+          G6.Util.modifyCSS(html, {
+            display: 'inline-block',
+            position: 'absolute',
+            left: left,
+            top: top,
+            width: width + 'px',
+            height: height + 'px',
+            lineHeight: height + 'px',
+            textAlign: 'center',
+            overflow: 'hidden',
+            fontSize: '14px'
+          })
+          html.addEventListener('blur', function () {
+            // 更新节点
+            _t.graph.updateItem(edge, {
+              label: html.value
+            })
+            // 删除输入框dom
+            el.parentNode.removeChild(html)
+          })
+        }
+      }
+    }
   }
 }

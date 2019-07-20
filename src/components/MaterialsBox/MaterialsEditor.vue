@@ -88,7 +88,9 @@
               'click-select',
               {
                 type: 'node-control',
-                updateEdge: true
+                updateEdge: true,
+                enableNodeLabel: true,
+                enableEdgeLabel: true
               }
             ],
             // 只读，
@@ -241,8 +243,12 @@
         let node = {
           id: G6.Util.uniqueId(),
           shape: info.shape,
-          // label: info.shape,
-          text: info.shape,
+          label: '',
+          labelCfg: {
+            style: {
+              fontSize: 14
+            }
+          },
           width: info.width,
           height: info.height,
           // FIXME 定义锚点坐标
