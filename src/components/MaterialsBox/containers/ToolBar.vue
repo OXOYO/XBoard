@@ -49,14 +49,49 @@
     <template v-for="(type, typeIndex) in Object.keys(toolMap)">
       <ToolBox :key="typeIndex" :class="type">
         <template v-for="(item, index) in toolMap[type].filter(target => target.enable)">
+          <!-- 颜色 -->
           <ToolItem
-            v-if="item.children"
+            v-if="['fill', 'lineColor'].includes(item.name)"
             :key="'tool_' + type + '_item_' + index"
             :active="item.active"
             :disabled="item.disabled"
           >
             <template v-slot:label>
-              <Dropdown @on-click="(name) => handleDropdownClick(item, type, name)">
+              <template v-if="item.disabled">
+                <div>
+                  <XIcon
+                    :type="item.icon"
+                    :title="$t(item.lang)"
+                    style="vertical-align: middle;"
+                  >
+                  </XIcon>
+                  <Icon type="ios-arrow-down"></Icon>
+                </div>
+              </template>
+              <template v-else>
+                <Dropdown trigger="click" @on-click="(name) => handleDropdownClick(item, type, name)">
+                  <div>
+                    <XIcon
+                      :type="item.icon"
+                      :title="$t(item.lang)"
+                      style="vertical-align: middle;"
+                    >
+                    </XIcon>
+                    <Icon type="ios-arrow-down"></Icon>
+                  </div>
+                  <SketchPicker slot="list" :value="formData[item.name]" @input="(val) => handleToolClick(item, type, val)"></SketchPicker>
+                </Dropdown>
+              </template>
+            </template>
+          </ToolItem>
+          <ToolItem
+            v-else-if="item.children"
+            :key="'tool_' + type + '_item_' + index"
+            :active="item.active"
+            :disabled="item.disabled"
+          >
+            <template v-slot:label>
+              <template v-if="item.disabled">
                 <div>
                   <XIcon
                     :type="item.children[item.selected].icon"
@@ -66,19 +101,37 @@
                   </XIcon>
                   <Icon type="ios-arrow-down"></Icon>
                 </div>
-                <DropdownMenu slot="list">
-                  <DropdownItem
-                    v-for="(child, childIndex) in item.children"
-                    :key="childIndex"
-                    :name="childIndex"
-                    :disabled="child.disabled"
-                    :divided="child.divided"
-                    :selected="item.selected === childIndex"
-                  >
-                    <XIcon :type="child.icon" :title="$t(child.lang)"></XIcon>
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
+              </template>
+              <template v-else>
+                <Dropdown trigger="click" @on-click="(name) => handleDropdownClick(item, type, name)">
+                  <div>
+                    <XIcon
+                      :type="item.children[item.selected].icon || item.icon"
+                      :title="$t(item.children[item.selected].lang)"
+                      style="vertical-align: middle;"
+                    >
+                    </XIcon>
+                    <Icon type="ios-arrow-down"></Icon>
+                  </div>
+                  <DropdownMenu slot="list">
+                    <DropdownItem
+                      v-for="(child, childIndex) in item.children"
+                      :key="childIndex"
+                      :name="childIndex"
+                      :disabled="child.disabled"
+                      :divided="child.divided"
+                      :selected="item.selected === childIndex"
+                    >
+                      <template v-if="child.icon">
+                        <XIcon :type="child.icon" :title="$t(child.lang)"></XIcon>
+                      </template>
+                      <template v-else>
+                        <span>{{ child.lang ? $t(child.lang) : child.label }}</span>
+                      </template>
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              </template>
             </template>
           </ToolItem>
           <ToolItem
@@ -102,6 +155,7 @@
 <script>
   import ToolBox from '../../ToolBox/Index'
   import ToolItem from '../../ToolBox/ToolItem'
+  import config from '../config/index'
 
   export default {
     name: 'ToolBar',
@@ -113,8 +167,14 @@
       return {
         // 模式
         mode: 'edit',
-        // 选中的线
-        selectedLine: 0
+        // 选中的值
+        selected: {
+          lineWidth: 0,
+          lineType: 0
+        },
+        formData: {
+          ...config.$X
+        }
       }
     },
     computed: {
@@ -219,7 +279,7 @@
               lang: '',
               icon: 'fill',
               enable: true,
-              disabled: false,
+              disabled: _t.mode === 'preview',
               divider: false
             },
             {
@@ -228,7 +288,7 @@
               lang: '',
               icon: 'line-color',
               enable: true,
-              disabled: false,
+              disabled: _t.mode === 'preview',
               divider: false
             },
             {
@@ -237,8 +297,103 @@
               lang: '',
               icon: 'line-width',
               enable: true,
-              disabled: false,
-              divider: false
+              disabled: _t.mode === 'preview',
+              divider: false,
+              // 默认选中项index
+              selected: _t.selected.lineWidth,
+              // 子节点
+              children: [
+                {
+                  name: 1,
+                  label: '1px',
+                  lang: '',
+                  icon: '',
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 2,
+                  label: '2px',
+                  lang: '',
+                  icon: '',
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 3,
+                  label: '3px',
+                  lang: '',
+                  icon: '',
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 4,
+                  label: '4px',
+                  lang: '',
+                  icon: '',
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 5,
+                  label: '5px',
+                  lang: '',
+                  icon: '',
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 6,
+                  label: '6px',
+                  lang: '',
+                  icon: '',
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 7,
+                  label: '7px',
+                  lang: '',
+                  icon: '',
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 8,
+                  label: '8px',
+                  lang: '',
+                  icon: '',
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 9,
+                  label: '9px',
+                  lang: '',
+                  icon: '',
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 10,
+                  label: '10px',
+                  lang: '',
+                  icon: '',
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                }
+              ]
             },
             {
               name: 'lineStyle',
@@ -246,7 +401,7 @@
               lang: '',
               icon: 'line-style',
               enable: true,
-              disabled: false,
+              disabled: _t.mode === 'preview',
               divider: true
             },
             {
@@ -258,7 +413,7 @@
               disabled: _t.mode === 'preview',
               divider: true,
               // 默认选中项index
-              selected: _t.selectedLine,
+              selected: _t.selected.lineType,
               // 子节点
               children: [
                 {
@@ -380,9 +535,11 @@
         let _t = this
         console.log('item', item, type, name)
         switch (item.name) {
+          case 'lineWidth':
           case 'lineType':
-            _t.selectedLine = name
+            _t.selected[item.name] = name
             let child = item.children[name]
+            _t.formData[item.name] = child.name
             _t.$X.utils.bus.$emit('board/materials/editor/tool/trigger', {
               name: item.name,
               data: child.name
@@ -390,13 +547,14 @@
             break
         }
       },
-      handleToolClick (item, type) {
+      handleToolClick (item, type, val) {
         let _t = this
         if (item.disabled) {
           return
         }
-        console.log('MaterialsEditor tool click', item.name)
+        console.log('MaterialsEditor tool click', item.name, type, val)
         if (type === 'center') {
+          let data = {}
           switch (item.name) {
             case 'edit':
               _t.mode = 'edit'
@@ -404,10 +562,16 @@
             case 'preview':
               _t.mode = 'preview'
               break
+            case 'fill':
+            case 'lineColor':
+              let color = val.hex8
+              _t.formData[item.name] = color
+              data = color
+              break
           }
           _t.$X.utils.bus.$emit('board/materials/editor/tool/trigger', {
             name: item.name,
-            data: {}
+            data: data
           })
         } else {
           switch (item.name) {

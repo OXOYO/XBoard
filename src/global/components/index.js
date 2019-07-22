@@ -20,6 +20,8 @@ import {
   Input
 } from 'iview'
 
+import { Sketch } from 'vue-color'
+
 import XIcon from './Icon/Index'
 import XTooltip from './Tooltip/Index'
 
@@ -38,6 +40,8 @@ const obj = {
   Message,
   Modal,
   Input,
+  // 颜色选择器
+  SketchPicker: Sketch,
   // 自定义组件
   XIcon,
   XTooltip

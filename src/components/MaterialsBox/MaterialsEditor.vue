@@ -32,6 +32,7 @@
   import G6 from '@/global/lib/g6/index'
   import Minimap from '@antv/g6/build/minimap'
   import Grid from '@antv/g6/build/grid'
+  import config from './config/index'
 
   export default {
     name: 'MaterialsEditor',
@@ -104,7 +105,6 @@
               fillOpacity: 1,
               stroke: '#000000',
               strokeOpacity: 1,
-              lineWidth: 2,
               cursor: 'move'
             },
             // active 状态下的样式
@@ -118,7 +118,6 @@
             default: {
               stroke: '#000000',
               strokeOpacity: 1,
-              lineWidth: 2,
               // 扩展响应范围
               lineAppendWidth: 10,
               cursor: 'pointer'
@@ -127,15 +126,7 @@
         })
         // 挂载全局命名空间
         _t.editor.$X = {
-          lineType: 'x-line',
-          startArrow: false,
-          endArrow: false,
-          nodeControl: {
-            drawLine: {
-              isDrawing: false,
-              currentLine: null
-            }
-          }
+          ...config.$X
         }
         // 设置模式为编辑
         _t.editor.setMode('edit')
@@ -275,6 +266,62 @@
             break
           case 'edit':
             _t.editor.setMode('edit')
+            break
+          case 'fill':
+            _t.editor.$X.fill = info.data
+            _t.editor.getNodes().forEach(node => {
+              if (node.hasState('active')) {
+                _t.editor.updateItem(node, {
+                  style: {
+                    fill: info.data
+                  }
+                })
+              }
+            })
+            break
+          case 'lineColor':
+            _t.editor.$X.lineColor = info.data
+            _t.editor.getEdges().forEach(edge => {
+              if (edge.hasState('active')) {
+                _t.editor.updateItem(edge, {
+                  style: {
+                    stroke: info.data
+                  }
+                })
+              }
+            })
+            _t.editor.getNodes().forEach(node => {
+              if (node.hasState('active')) {
+                console.log('node', node.getCurrentStatesStyle('active'))
+                _t.editor.updateItem(node, {
+                  style: {
+                    stroke: info.data
+                  }
+                })
+              }
+            })
+            break
+          case 'lineWidth':
+            console.log('lineWidth', info)
+            _t.editor.$X.lineWidth = info.data
+            _t.editor.getEdges().forEach(edge => {
+              if (edge.hasState('active')) {
+                _t.editor.updateItem(edge, {
+                  style: {
+                    lineWidth: info.data
+                  }
+                })
+              }
+            })
+            _t.editor.getNodes().forEach(node => {
+              if (node.hasState('active')) {
+                _t.editor.updateItem(node, {
+                  style: {
+                    lineWidth: info.data
+                  }
+                })
+              }
+            })
             break
           case 'lineType':
             console.log('lineType', info)

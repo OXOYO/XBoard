@@ -145,6 +145,10 @@ export default {
           // FIXME label 需支持双击编辑
           label: '',
           attrs: {},
+          style: {
+            stroke: _t.graph.$X.lineColor,
+            lineWidth: _t.graph.$X.lineWidth
+          },
           // FIXME 边的形式需要与工具栏联动
           shape: _t.graph.$X.lineType || 'line',
           startArrow: _t.graph.$X.startArrow || false,
@@ -396,7 +400,12 @@ export default {
             id: G6.Util.uniqueId(),
             x: event.x,
             y: event.y,
-            size: [width, height]
+            size: [width, height],
+            style: {
+              fill: _t.graph.$X.fill,
+              stroke: _t.graph.$X.lineColor,
+              lineWidth: _t.graph.$X.lineWidth
+            }
           }
           _t.graph.addItem('node', node)
           _t.dragNode.clear.call(_t)
@@ -424,8 +433,11 @@ export default {
             let attrs = {
               x: event.x,
               y: event.y,
-              // 拖拽时样式
-              style: {}
+              style: {
+                fill: _t.graph.$X.fill,
+                stroke: _t.graph.$X.lineColor,
+                lineWidth: _t.graph.$X.lineWidth
+              }
             }
             // 更新节点
             _t.graph.updateItem(_t.info.node, attrs)
