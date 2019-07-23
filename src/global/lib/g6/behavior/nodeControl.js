@@ -430,14 +430,17 @@ export default {
           }
         } else if (_t.dragNode.status === 'dragNode') {
           if (_t.info.node) {
+            // let { style } = _t.info.node.getModel()
             let attrs = {
               x: event.x,
-              y: event.y,
-              style: {
-                fill: _t.graph.$X.fill,
-                stroke: _t.graph.$X.lineColor,
-                lineWidth: _t.graph.$X.lineWidth
-              }
+              y: event.y
+              // ,
+              // style: {
+              //   ...style,
+              //   fill: _t.graph.$X.fill,
+              //   stroke: _t.graph.$X.lineColor,
+              //   lineWidth: _t.graph.$X.lineWidth
+              // }
             }
             // 更新节点
             _t.graph.updateItem(_t.info.node, attrs)

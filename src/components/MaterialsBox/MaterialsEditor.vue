@@ -141,7 +141,7 @@
         _t.editor.on('node:mouseover', _t._nodeHover)
         _t.editor.on('node:mouseout', _t._nodeOut)
         // _t.editor.on('node:contextmenu', _t._nodeContextmenu)
-        _t.editor.on('edge:click', _t._edgeClick)
+        _t.editor.on('edge:mousedown', _t._edgeMousedown)
       },
       _canvasMousedown () {
         let _t = this
@@ -163,6 +163,7 @@
       },
       _nodeMousedown (event) {
         let _t = this
+        _t.doClearAllStates()
         // console.log('_nodeClick', event)
         // console.log('hasState1', event.item.hasState('shape-control'))
         if (!event.item.hasState('active')) {
@@ -182,9 +183,10 @@
       _nodeContextmenu (event) {
         console.log('_nodeContextmenu', event)
       },
-      _edgeClick (event) {
+      _edgeMousedown (event) {
         let _t = this
-        console.log('_edgeClick', event)
+        _t.doClearAllStates()
+        console.log('_edgeMousedown', event)
         if (event.item && !event.item.destroyed) {
           _t.editor.setItemState(event.item, 'active', !event.item.hasState('active'))
         }
@@ -271,8 +273,10 @@
             _t.editor.$X.fill = info.data
             _t.editor.getNodes().forEach(node => {
               if (node.hasState('active')) {
+                let { style } = node.getModel()
                 _t.editor.updateItem(node, {
                   style: {
+                    ...style,
                     fill: info.data
                   }
                 })
@@ -283,8 +287,10 @@
             _t.editor.$X.lineColor = info.data
             _t.editor.getEdges().forEach(edge => {
               if (edge.hasState('active')) {
+                let { style } = edge.getModel()
                 _t.editor.updateItem(edge, {
                   style: {
+                    ...style,
                     stroke: info.data
                   }
                 })
@@ -292,9 +298,10 @@
             })
             _t.editor.getNodes().forEach(node => {
               if (node.hasState('active')) {
-                console.log('node', node.getCurrentStatesStyle('active'))
+                let { style } = node.getModel()
                 _t.editor.updateItem(node, {
                   style: {
+                    ...style,
                     stroke: info.data
                   }
                 })
@@ -302,12 +309,13 @@
             })
             break
           case 'lineWidth':
-            console.log('lineWidth', info)
             _t.editor.$X.lineWidth = info.data
             _t.editor.getEdges().forEach(edge => {
               if (edge.hasState('active')) {
+                let { style } = edge.getModel()
                 _t.editor.updateItem(edge, {
                   style: {
+                    ...style,
                     lineWidth: info.data
                   }
                 })
@@ -315,8 +323,10 @@
             })
             _t.editor.getNodes().forEach(node => {
               if (node.hasState('active')) {
+                let { style } = node.getModel()
                 _t.editor.updateItem(node, {
                   style: {
+                    ...style,
                     lineWidth: info.data
                   }
                 })
