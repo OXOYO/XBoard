@@ -5,6 +5,8 @@
  */
 
 import config from '../config/index'
+import drawLineAnimate from './drawLineAnimate'
+import destroyLineAnimate from './destroyLineAnimate'
 
 export default function (name, value, item) {
   if (name === 'active') {
@@ -15,8 +17,12 @@ export default function (name, value, item) {
     if (line) {
       if (value) {
         line.attr(config.line.style.active)
+        // 绘制线条动画
+        drawLineAnimate(item.getModel(), item.getContainer())
       } else {
         line.attr(config.line.style.inactive)
+        // 销毁线条动画
+        destroyLineAnimate(item.getModel(), item.getContainer())
       }
     }
   }

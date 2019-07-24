@@ -13,9 +13,10 @@ import drawShapeControl from './drawShapeControl'
 import setShapeControlActive from './setShapeControlActive'
 import updateShapeControl from './updateShapeControl'
 // 线条
-import drawLineAnimate from './drawLineAnimate'
 import setLineActive from './setLineActive'
 import updateLine from './updateLine'
+import drawLineAnimate from './drawLineAnimate'
+import destroyLineAnimate from './destroyLineAnimate'
 
 export default {
   drawAnchor,
@@ -24,7 +25,8 @@ export default {
   drawShapeControl,
   setShapeControlActive,
   updateShapeControl,
-  drawLineAnimate,
   setLineActive,
-  updateLine
+  updateLine,
+  drawLineAnimate,
+  destroyLineAnimate
 }

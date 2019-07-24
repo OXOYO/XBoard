@@ -13,12 +13,19 @@ export default {
   options: {
     getDefaultCfg () {
       return {
-        // 是否在拖拽节点时更新所有与之相连的边
-        updateEdge: true,
-        // 是否支持在节点上添加文本
-        enableNodeLabel: true,
-        // 是否支持在边上添加文本
-        enableEdgeLabel: true
+        config: {
+          // 是否在拖拽节点时更新所有与之相连的边
+          updateEdge: true,
+          // 是否支持在节点上添加文本
+          nodeLabel: true,
+          // 是否支持在边上添加文本
+          edgeLabel: true,
+          // tooltip 是否启用
+          tooltip: {
+            shapeControl: true,
+            dragNode: true
+          }
+        }
       }
     },
     getEvents () {
@@ -77,7 +84,7 @@ export default {
     },
     onNodeDblclick (event) {
       let _t = this
-      if (_t.enableNodeLabel) {
+      if (_t.config.nodeLabel) {
         _t.nodeLabel.create.call(_t, event)
       }
     },
@@ -101,7 +108,7 @@ export default {
     },
     onEdgeDblclick (event) {
       let _t = this
-      if (_t.enableEdgeLabel) {
+      if (_t.config.edgeLabel) {
         _t.edgeLabel.create.call(_t, event)
       }
     },
@@ -147,7 +154,8 @@ export default {
           attrs: {},
           style: {
             stroke: _t.graph.$X.lineColor,
-            lineWidth: _t.graph.$X.lineWidth
+            lineWidth: _t.graph.$X.lineWidth,
+            ...config.line.type[_t.graph.$X.lineStyle]
           },
           // FIXME 边的形式需要与工具栏联动
           shape: _t.graph.$X.lineType || 'line',
@@ -214,6 +222,12 @@ export default {
           size: model.size || []
         }
         _t.shapeControl.isMoving = true
+        if (_t.config.tooltip.shapeControl) {
+          _t.toolTip.create.call(_t, {
+            left: model.x,
+            top: model.y + model.height / 2
+          }, `X: ${model.x.toFixed(2)} Y: ${model.y.toFixed(2)}<br>W: ${model.size[0].toFixed(2)} H: ${model.size[1].toFixed(2)}`)
+        }
       },
       move (event) {
         let _t = this
@@ -319,6 +333,12 @@ export default {
             width: attrs.size[0],
             height: attrs.size[1]
           }
+          if (_t.config.tooltip.shapeControl) {
+            _t.toolTip.update.call(_t, {
+              left: attrs.x,
+              top: attrs.y + attrs.size[1] / 2
+            }, `X: ${attrs.x.toFixed(2)} Y: ${attrs.y.toFixed(2)}<br>W: ${attrs.size[0].toFixed(2)} H: ${attrs.size[1].toFixed(2)}`)
+          }
           // 当前节点容器
           let group = _t.info.node.getContainer()
           // 更新锚点
@@ -335,7 +355,7 @@ export default {
           }, group)
           // 更新节点
           _t.graph.updateItem(_t.info.node, attrs)
-          if (_t.updateEdge) {
+          if (_t.config.updateEdge) {
             // 更新线条
             utils.updateLine(_t.info.node, _t.graph)
           }
@@ -361,6 +381,9 @@ export default {
           }, group)
           // 更新节点
           _t.graph.updateItem(_t.info.node, attrs)
+        }
+        if (_t.config.tooltip.shapeControl) {
+          _t.toolTip.destroy.call(_t)
         }
         _t.shapeControl.startPoint = null
         _t.shapeControl.isMoving = false
@@ -389,6 +412,12 @@ export default {
             }
           })
           _t.graph.paint()
+          if (_t.config.tooltip.dragNode) {
+            _t.toolTip.create.call(_t, {
+              left: event.x,
+              top: event.y
+            }, `X: ${event.x.toFixed(2)} Y: ${event.y.toFixed(2)}<br>W: ${width.toFixed(2)} H: ${height.toFixed(2)}`)
+          }
         }
       },
       createNode (event) {
@@ -404,17 +433,28 @@ export default {
             style: {
               fill: _t.graph.$X.fill,
               stroke: _t.graph.$X.lineColor,
-              lineWidth: _t.graph.$X.lineWidth
+              lineWidth: _t.graph.$X.lineWidth,
+              ...config.line.type[_t.graph.$X.lineStyle]
             }
           }
           _t.graph.addItem('node', node)
           _t.dragNode.clear.call(_t)
+          if (_t.config.tooltip.dragNode) {
+            _t.toolTip.destroy.call(_t)
+          }
           _t.graph.paint()
         }
       },
       start (event) {
         let _t = this
-        _t.dragNode.createDottedNode.call(_t, event)
+        // _t.dragNode.createDottedNode.call(_t, event)
+        if (_t.config.tooltip.dragNode) {
+          let { width, height } = _t.info.node.getModel()
+          _t.toolTip.create.call(_t, {
+            left: event.x,
+            top: event.y + height / 2
+          }, `X: ${event.x.toFixed(2)} Y: ${event.y.toFixed(2)}<br>W: ${width.toFixed(2)} H: ${height.toFixed(2)}`)
+        }
         _t.dragNode.status = 'dragNode'
       },
       move (event) {
@@ -427,6 +467,12 @@ export default {
               y: event.y - height / 2
             })
             _t.graph.paint()
+            if (_t.config.tooltip.dragNode) {
+              _t.toolTip.update.call(_t, {
+                left: event.x,
+                top: event.y + height / 2
+              }, `X: ${event.x.toFixed(2)} Y: ${event.y.toFixed(2)}<br>W: ${width.toFixed(2)} H: ${height.toFixed(2)}`)
+            }
           }
         } else if (_t.dragNode.status === 'dragNode') {
           if (_t.info.node) {
@@ -444,9 +490,16 @@ export default {
             }
             // 更新节点
             _t.graph.updateItem(_t.info.node, attrs)
-            if (_t.updateEdge) {
+            if (_t.config.updateEdge) {
               // 更新线条
               utils.updateLine(_t.info.node, _t.graph)
+            }
+            if (_t.config.tooltip.dragNode) {
+              let { width, height } = _t.info.node.getModel()
+              _t.toolTip.update.call(_t, {
+                left: event.x,
+                top: event.y + height / 2
+              }, `X: ${event.x.toFixed(2)} Y: ${event.y.toFixed(2)}<br>W: ${width.toFixed(2)} H: ${height.toFixed(2)}`)
             }
           }
         }
@@ -454,6 +507,9 @@ export default {
       stop (event) {
         let _t = this
         _t.dragNode.clear.call(_t)
+        if (_t.config.tooltip.dragNode) {
+          _t.toolTip.destroy.call(_t)
+        }
         _t.graph.paint()
       },
       clear () {
@@ -474,7 +530,7 @@ export default {
         let node = event.item
         let { id, label, x, y, width, height } = node.getModel()
         const el = canvas.get('el')
-        const html = G6.Util.createDom(`<input id="${id}" class="node-text" autofocus value="${label}"></input>`)
+        const html = G6.Util.createDom(`<input id="${id}" class="node-label" autofocus value="${label}"></input>`)
         if (html) {
           // 插入输入框dom
           el.parentNode.appendChild(html)
@@ -537,7 +593,7 @@ export default {
           top = target.y + Math.abs(target.y - source.y) / 2 - height / 2 + 'px'
         }
         const el = canvas.get('el')
-        const html = G6.Util.createDom(`<input id="${id}" class="edge-text" autofocus value="${label}"></input>`)
+        const html = G6.Util.createDom(`<input id="${id}" class="edge-label" autofocus value="${label}"></input>`)
         if (html) {
           // 插入输入框dom
           el.parentNode.appendChild(html)
@@ -565,6 +621,62 @@ export default {
             // 删除输入框dom
             el.parentNode.removeChild(html)
           })
+        }
+      }
+    },
+    toolTip: {
+      currentTip: null,
+      create (position, content) {
+        let _t = this
+        if (_t.toolTip.currentTip) {
+          console.warn('Editor Warn:: can\'t creat tootip when currentTip not null!')
+          return
+        }
+        let canvas = _t.graph.get('canvas')
+        const el = canvas.get('el')
+        _t.toolTip.currentTip = G6.Util.createDom(`<div class="tooltip">${content}</div>`)
+        if (_t.toolTip.currentTip) {
+          // 插入输入框dom
+          el.parentNode.appendChild(_t.toolTip.currentTip)
+          // 更新输入框样式
+          G6.Util.modifyCSS(_t.toolTip.currentTip, {
+            display: 'inline-block',
+            position: 'absolute',
+            left: position.left + 'px',
+            top: position.top + 'px',
+            padding: '5px 10px',
+            width: '160px',
+            marginTop: '10px',
+            marginLeft: '-80px',
+            background: '#F2F2F2',
+            color: '#444444',
+            border: '1px solid #D1D1D1',
+            textAlign: 'center',
+            overflow: 'hidden',
+            fontSize: '14px'
+          })
+        }
+      },
+      update (position, content) {
+        let _t = this
+        if (_t.toolTip.currentTip) {
+          // 更新文本
+          _t.toolTip.currentTip.innerHTML = content
+          // 更新输入框样式
+          G6.Util.modifyCSS(_t.toolTip.currentTip, {
+            left: position.left + 'px',
+            top: position.top + 'px'
+          })
+        }
+      },
+      destroy () {
+        let _t = this
+        if (_t.toolTip.currentTip) {
+          let canvas = _t.graph.get('canvas')
+          const el = canvas.get('el')
+          // 删除输入框dom
+          el.parentNode.removeChild(_t.toolTip.currentTip)
+          _t.toolTip.currentTip = null
         }
       }
     }

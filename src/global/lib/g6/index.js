@@ -9,6 +9,11 @@ import registerBehavior from './behavior/index'
 import registerEdge from './edge/index'
 import registerNode from './node/index'
 
+import config from './config/index'
+
+// 挂载config
+G6.$C = config
+
 // 注册交互
 registerBehavior(G6)
 // 注册边

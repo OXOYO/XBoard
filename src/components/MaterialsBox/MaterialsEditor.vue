@@ -128,9 +128,10 @@
         _t.editor.$X = {
           ...config.$X
         }
+        // 挂载G6配置
+        _t.editor.$C = G6.$C
         // 设置模式为编辑
         _t.editor.setMode('edit')
-        console.log('_t.editor', _t.editor)
         // 绑定事件
         _t.editor.on('canvas:mousedown', _t._canvasMousedown)
         // 绑定事件
@@ -333,9 +334,41 @@
               }
             })
             break
+          case 'lineStyle':
+            let lineConfig = _t.editor.$C.line
+            _t.editor.$X.lineStyle = info.data
+            _t.editor.getEdges().forEach(edge => {
+              if (edge.hasState('active')) {
+                let { style } = edge.getModel()
+                _t.editor.updateItem(edge, {
+                  style: {
+                    ...style,
+                    ...lineConfig.type[info.data]
+                  }
+                })
+              }
+            })
+            _t.editor.getNodes().forEach(node => {
+              if (node.hasState('active')) {
+                let { style } = node.getModel()
+                _t.editor.updateItem(node, {
+                  style: {
+                    ...style,
+                    ...lineConfig.type[info.data]
+                  }
+                })
+              }
+            })
+            break
           case 'lineType':
-            console.log('lineType', info)
             _t.editor.$X.lineType = info.data
+            _t.editor.getEdges().forEach(edge => {
+              if (edge.hasState('active')) {
+                _t.editor.updateItem(edge, {
+                  shape: info.data
+                })
+              }
+            })
             break
           case 'clear':
             _t.$Modal.confirm({

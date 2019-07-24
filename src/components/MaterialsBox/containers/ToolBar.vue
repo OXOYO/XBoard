@@ -58,7 +58,7 @@
           >
             <template v-slot:label>
               <template v-if="item.disabled">
-                <div>
+                <div style="margin: 0 3px;">
                   <XIcon
                     :type="item.icon"
                     :title="$t(item.lang)"
@@ -70,7 +70,7 @@
               </template>
               <template v-else>
                 <Dropdown trigger="click" @on-click="(name) => handleDropdownClick(item, type, name)">
-                  <div>
+                  <div style="margin: 0 3px;">
                     <XIcon
                       :type="item.icon"
                       :title="$t(item.lang)"
@@ -84,6 +84,7 @@
               </template>
             </template>
           </ToolItem>
+          <!-- 下拉 -->
           <ToolItem
             v-else-if="item.children"
             :key="'tool_' + type + '_item_' + index"
@@ -92,7 +93,7 @@
           >
             <template v-slot:label>
               <template v-if="item.disabled">
-                <div>
+                <div style="margin: 0 3px;">
                   <XIcon
                     :type="item.children[item.selected].icon"
                     :title="$t(item.children[item.selected].lang)"
@@ -104,7 +105,7 @@
               </template>
               <template v-else>
                 <Dropdown trigger="click" @on-click="(name) => handleDropdownClick(item, type, name)">
-                  <div>
+                  <div style="margin: 0 3px;">
                     <XIcon
                       :type="item.children[item.selected].icon || item.icon"
                       :title="$t(item.children[item.selected].lang)"
@@ -170,7 +171,8 @@
         // 选中的值
         selected: {
           lineWidth: 0,
-          lineType: 0
+          lineType: 0,
+          lineStyle: 0
         },
         formData: {
           ...config.$X
@@ -402,7 +404,39 @@
               icon: 'line-style',
               enable: true,
               disabled: _t.mode === 'preview',
-              divider: true
+              divider: true,
+              // 默认选中项index
+              selected: _t.selected.lineStyle,
+              // 子节点
+              children: [
+                {
+                  name: 'solid',
+                  label: 'solid',
+                  lang: '',
+                  icon: 'solid',
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 'dashed',
+                  label: 'dashed',
+                  lang: '',
+                  icon: 'dashed',
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 'dot',
+                  label: 'dot',
+                  lang: '',
+                  icon: 'dot',
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                }
+              ]
             },
             {
               name: 'lineType',
@@ -537,6 +571,7 @@
         switch (item.name) {
           case 'lineWidth':
           case 'lineType':
+          case 'lineStyle':
             _t.selected[item.name] = name
             let child = item.children[name]
             _t.formData[item.name] = child.name

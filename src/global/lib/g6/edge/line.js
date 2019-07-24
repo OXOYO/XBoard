@@ -15,7 +15,6 @@ export default {
       utils.setLineActive(name, value, item)
     },
     afterDraw (cfg, group) {
-      console.log('afterLineDraw')
       // 绘制线条动画
       // utils.drawLineAnimate(cfg, group)
     }

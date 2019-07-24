@@ -19,5 +19,16 @@ export default {
     inactive: {
       shadowColor: ''
     }
+  },
+  type: {
+    solid: {
+      lineDash: []
+    },
+    dashed: {
+      lineDash: [ 5, 5 ]
+    },
+    dot: {
+      lineDash: [ 2, 2 ]
+    }
   }
 }

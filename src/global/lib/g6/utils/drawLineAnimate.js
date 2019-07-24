@@ -1,7 +1,7 @@
 /**
  * Created by OXOYO on 2019/7/11.
  *
- * 绘制线动画
+ * 绘制线条动画
  */
 
 import config from '../config/index'
@@ -14,6 +14,8 @@ export default function (cfg, group) {
   }
   // 添加红色圆点
   let circle = group.addShape('circle', {
+    id: cfg.id + '_edge_animate_point_',
+    name: 'edgeAnimatePoint',
     attrs: {
       x: startPoint.x,
       y: startPoint.y,
