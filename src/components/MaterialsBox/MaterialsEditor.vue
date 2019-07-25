@@ -143,6 +143,10 @@
         _t.editor.on('node:mouseout', _t._nodeOut)
         // _t.editor.on('node:contextmenu', _t._nodeContextmenu)
         _t.editor.on('edge:mousedown', _t._edgeMousedown)
+        _t.editor.on('editor:getItem', function (data) {
+          console.log('editor:getItem', data)
+          _t.$store.commit('board/materials/editor/currentItem/update', data)
+        })
       },
       _canvasMousedown () {
         let _t = this

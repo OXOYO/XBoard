@@ -54,6 +54,10 @@ export default {
     },
     onNodeMousedown (event) {
       let _t = this
+      _t.graph.emit('editor:getItem', {
+        type: 'node',
+        model: event.item.getModel()
+      })
       // 初始化数据
       _t.info = {
         type: null,
@@ -553,7 +557,13 @@ export default {
           html.addEventListener('blur', function () {
             // 更新节点
             _t.graph.updateItem(node, {
-              label: html.value
+              label: html.value,
+              labelCfg: {
+                style: {
+                  fontSize: 16,
+                  stroke: '#000000'
+                }
+              }
             })
             // 删除输入框dom
             el.parentNode.removeChild(html)
@@ -616,7 +626,13 @@ export default {
           html.addEventListener('blur', function () {
             // 更新节点
             _t.graph.updateItem(edge, {
-              label: html.value
+              label: html.value,
+              labelCfg: {
+                style: {
+                  fontSize: 16,
+                  stroke: '#000000'
+                }
+              }
             })
             // 删除输入框dom
             el.parentNode.removeChild(html)
