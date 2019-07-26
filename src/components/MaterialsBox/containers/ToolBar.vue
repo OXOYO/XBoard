@@ -98,6 +98,7 @@
                     :type="item.children[item.selected].icon"
                     :title="$t(item.children[item.selected].lang)"
                     style="vertical-align: middle;"
+                    :style="item.children[item.selected].style"
                   >
                   </XIcon>
                   <Icon type="ios-arrow-down"></Icon>
@@ -110,6 +111,7 @@
                       :type="item.children[item.selected].icon || item.icon"
                       :title="$t(item.children[item.selected].lang)"
                       style="vertical-align: middle;"
+                      :style="item.children[item.selected].style"
                     >
                     </XIcon>
                     <Icon type="ios-arrow-down"></Icon>
@@ -124,7 +126,7 @@
                       :selected="item.selected === childIndex"
                     >
                       <template v-if="child.icon">
-                        <XIcon :type="child.icon" :title="$t(child.lang)"></XIcon>
+                        <XIcon :type="child.icon" :title="$t(child.lang)" :style="child.style"></XIcon>
                       </template>
                       <template v-else>
                         <span>{{ child.lang ? $t(child.lang) : child.label }}</span>
@@ -172,7 +174,9 @@
         selected: {
           lineWidth: 0,
           lineType: 0,
-          lineStyle: 0
+          lineStyle: 0,
+          startArrow: 0,
+          endArrow: 0
         },
         formData: {
           ...config.$X
@@ -480,6 +484,123 @@
               ]
             },
             {
+              name: 'startArrow',
+              label: 'start arrow',
+              lang: '',
+              icon: '',
+              enable: true,
+              disabled: _t.mode === 'preview',
+              divider: true,
+              // 默认选中项index
+              selected: _t.selected.startArrow,
+              // 子节点
+              children: [
+                {
+                  name: 'none',
+                  label: 'none',
+                  lang: '',
+                  icon: 'solid',
+                  style: {},
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 'solidArrow',
+                  label: 'solid arrow',
+                  lang: '',
+                  icon: 'solid-arrow',
+                  style: {},
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 'normalArrow',
+                  label: 'normal arrow',
+                  lang: '',
+                  icon: 'normal-arrow',
+                  style: {},
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 'asynchArrow',
+                  label: 'asynch arrow',
+                  lang: '',
+                  icon: 'asynch-arraw',
+                  style: {},
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                }
+              ]
+            },
+            {
+              name: 'endArrow',
+              label: 'end arrow',
+              lang: '',
+              icon: '',
+              enable: true,
+              disabled: _t.mode === 'preview',
+              divider: true,
+              // 默认选中项index
+              selected: _t.selected.endArrow,
+              // 子节点
+              children: [
+                {
+                  name: 'none',
+                  label: 'none',
+                  lang: '',
+                  icon: 'solid',
+                  style: {},
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 'solidArrow',
+                  label: 'solid arrow',
+                  lang: '',
+                  icon: 'solid-arrow',
+                  style: {
+                    display: 'inline-block',
+                    transform: 'rotate(180deg)'
+                  },
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 'normalArrow',
+                  label: 'normal arrow',
+                  lang: '',
+                  icon: 'normal-arrow',
+                  style: {
+                    display: 'inline-block',
+                    transform: 'rotate(180deg)'
+                  },
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                },
+                {
+                  name: 'asynchArrow',
+                  label: 'asynch arrow',
+                  lang: '',
+                  icon: 'asynch-arraw',
+                  style: {
+                    display: 'inline-block',
+                    transform: 'rotate(180deg)'
+                  },
+                  enable: true,
+                  disabled: false,
+                  divider: false
+                }
+              ]
+            },
+            {
               name: 'toBack',
               label: 'To Back',
               lang: '',
@@ -572,6 +693,8 @@
           case 'lineWidth':
           case 'lineType':
           case 'lineStyle':
+          case 'startArrow':
+          case 'endArrow':
             _t.selected[item.name] = name
             let child = item.children[name]
             _t.formData[item.name] = child.name

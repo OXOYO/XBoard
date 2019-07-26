@@ -370,6 +370,19 @@
               }
             })
             break
+          case 'startArrow':
+          case 'endArrow':
+            _t.editor.$X[info.name] = info.data === 'none' ? false : info.data
+            // TODO 根据端点类型更新边
+            // _t.editor.getEdges().forEach(edge => {
+            //   if (edge.hasState('active')) {
+            //     _t.editor.updateItem(edge, {
+            //       [info.name]: info.data
+            //     })
+            //   }
+            // })
+            console.log('xxxxxxxxxxxx startArrow', info)
+            break
           case 'clear':
             _t.$Modal.confirm({
               title: '提示',
