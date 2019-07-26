@@ -45,7 +45,13 @@ export default new Vuex.Store({
   state: {
     activeBoardIndex: null,
     defBoard: defBoard,
-    boardList: []
+    boardList: [],
+    materialsEditor: {
+      currentItem: {
+        type: null,
+        model: null
+      }
+    }
   },
   mutations: {
     'board/activeBoardIndex/update': (state, data) => {
@@ -79,6 +85,9 @@ export default new Vuex.Store({
     },
     'board/signaturePad/undoHistory/update': (state, { index, data }) => {
       state.boardList[index].signaturePad.undoHistory = data
+    },
+    'board/materials/editor/currentItem/update': (state, data) => {
+      state.materialsEditor.currentItem = data
     }
   },
   actions: {
@@ -87,6 +96,7 @@ export default new Vuex.Store({
   getters: {
     activeBoardIndex: (state) => state.activeBoardIndex,
     boardList: (state) => state.boardList,
-    defBoard: (state) => state.defBoard
+    defBoard: (state) => state.defBoard,
+    currentItem: (state) => state.materialsEditor.currentItem
   }
 })
