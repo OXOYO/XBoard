@@ -16,13 +16,21 @@
     .header {
       display: inline-block;
       width: 100%;
+      position: relative;
 
       .title {
         width: 100%;
-        padding: 0 10px;
         height: 25px;
         line-height: 25px;
         border-bottom: 1px solid rgba(0, 0, 0, .1);
+        text-indent: 10px;
+      }
+
+      .handler {
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 10;
       }
     }
     .body {
@@ -34,10 +42,14 @@
 
 <template>
   <div class="card-item">
-    <div class="header">
+    <div class="header" @click="handleToggle">
       <div class="title" v-if="title">{{ title }}</div>
+      <div class="handler">
+        <Icon type="ios-arrow-up" v-show="enableFold && !isFolded"></Icon>
+        <Icon type="ios-arrow-down" v-show="enableFold && isFolded"></Icon>
+      </div>
     </div>
-    <div class="body">
+    <div class="body" v-show="!isFolded">
       <slot></slot>
     </div>
   </div>
@@ -47,7 +59,39 @@
   export default {
     name: 'CardItem',
     props: {
-      title: String
+      title: String,
+      enableFold: {
+        type: Boolean,
+        default: false
+      },
+      fold: {
+        type: Boolean,
+        default: false
+      }
+    },
+    data () {
+      return {
+        // 是否已折叠
+        isFolded: false
+      }
+    },
+    watch: {
+      fold: function (val, newVal) {
+        let _t = this
+        if (_t.enableFold) {
+          _t.isFolded = newVal
+        }
+      }
+    },
+    methods: {
+      handleToggle: function () {
+        let _t = this
+        if (!_t.enableFold) {
+          return
+        }
+        // 处理面板折叠
+        _t.isFolded = !_t.isFolded
+      }
     }
   }
 </script>

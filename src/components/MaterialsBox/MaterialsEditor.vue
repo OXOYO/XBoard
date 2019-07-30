@@ -144,8 +144,16 @@
         // _t.editor.on('node:contextmenu', _t._nodeContextmenu)
         _t.editor.on('edge:mousedown', _t._edgeMousedown)
         _t.editor.on('editor:getItem', function (data) {
-          console.log('editor:getItem', data)
+          console.log('editor:getItem', JSON.stringify(data))
           _t.$store.commit('board/materials/editor/currentItem/update', data)
+        })
+        _t.editor.on('editor:setItem', function (data) {
+          console.log('editor:setItem', JSON.stringify(data))
+          let item = _t.editor.findById(data.id)
+          if (item) {
+            _t.editor.updateItem(item, data.model)
+            _t.editor.paint()
+          }
         })
       },
       _canvasMousedown () {
@@ -243,6 +251,7 @@
           shape: info.shape,
           label: '',
           labelCfg: {
+            position: 'center',
             style: {
               fontSize: 14
             }
@@ -376,15 +385,15 @@
             break
           case 'startArrow':
           case 'endArrow':
-            _t.editor.$X[info.name] = info.data === 'none' ? false : info.data
+            _t.editor.$X[info.name] = info.data
             // TODO 根据端点类型更新边
-            // _t.editor.getEdges().forEach(edge => {
-            //   if (edge.hasState('active')) {
-            //     _t.editor.updateItem(edge, {
-            //       [info.name]: info.data
-            //     })
-            //   }
-            // })
+            _t.editor.getEdges().forEach(edge => {
+              if (edge.hasState('active')) {
+                _t.editor.updateItem(edge, {
+                  [info.name]: info.data
+                })
+              }
+            })
             console.log('xxxxxxxxxxxx startArrow', info)
             break
           case 'clear':
@@ -429,6 +438,9 @@
       })
       _t.$X.utils.bus.$on('board/materials/editor/add/node', _t.doAddNode)
       _t.$X.utils.bus.$on('board/materials/editor/tool/trigger', _t.handleToolTrigger)
+      _t.$X.utils.bus.$on('board/materials/editor/currentItem/update', function (data) {
+        _t.editor.emit('editor:setItem', data)
+      })
     }
   }
 </script>

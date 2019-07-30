@@ -19,7 +19,10 @@ import {
   Modal,
   Input,
   Form,
-  FormItem
+  FormItem,
+  Slider,
+  Select,
+  Option
 } from 'iview'
 
 import { Sketch } from 'vue-color'
@@ -44,6 +47,9 @@ const obj = {
   Input,
   Form,
   FormItem,
+  Slider,
+  Select,
+  Option,
   // 颜色选择器
   SketchPicker: Sketch,
   // 自定义组件

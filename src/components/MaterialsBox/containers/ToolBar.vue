@@ -501,6 +501,7 @@
                   lang: '',
                   icon: 'solid',
                   style: {},
+                  data: false,
                   enable: true,
                   disabled: false,
                   divider: false
@@ -511,6 +512,10 @@
                   lang: '',
                   icon: 'solid-arrow',
                   style: {},
+                  data: {
+                    path: 'M 10,0 L -10,-10 L -10,10 Z',
+                    d: 10
+                  },
                   enable: true,
                   disabled: false,
                   divider: false
@@ -521,6 +526,7 @@
                   lang: '',
                   icon: 'normal-arrow',
                   style: {},
+                  data: false,
                   enable: true,
                   disabled: false,
                   divider: false
@@ -531,6 +537,7 @@
                   lang: '',
                   icon: 'asynch-arraw',
                   style: {},
+                  data: false,
                   enable: true,
                   disabled: false,
                   divider: false
@@ -555,6 +562,7 @@
                   lang: '',
                   icon: 'solid',
                   style: {},
+                  data: false,
                   enable: true,
                   disabled: false,
                   divider: false
@@ -567,6 +575,10 @@
                   style: {
                     display: 'inline-block',
                     transform: 'rotate(180deg)'
+                  },
+                  data: {
+                    path: 'M 10,0 L -10,-10 L -10,10 Z',
+                    d: 10
                   },
                   enable: true,
                   disabled: false,
@@ -581,6 +593,7 @@
                     display: 'inline-block',
                     transform: 'rotate(180deg)'
                   },
+                  data: false,
                   enable: true,
                   disabled: false,
                   divider: false
@@ -594,6 +607,7 @@
                     display: 'inline-block',
                     transform: 'rotate(180deg)'
                   },
+                  data: false,
                   enable: true,
                   disabled: false,
                   divider: false
@@ -689,20 +703,29 @@
       handleDropdownClick (item, type, name) {
         let _t = this
         console.log('item', item, type, name)
+        _t.selected[item.name] = name
+        let child = item.children[name]
+        _t.formData[item.name] = child.name
+        let payload = null
         switch (item.name) {
           case 'lineWidth':
           case 'lineType':
           case 'lineStyle':
-          case 'startArrow':
-          case 'endArrow':
-            _t.selected[item.name] = name
-            let child = item.children[name]
-            _t.formData[item.name] = child.name
-            _t.$X.utils.bus.$emit('board/materials/editor/tool/trigger', {
+            payload = {
               name: item.name,
               data: child.name
-            })
+            }
             break
+          case 'startArrow':
+          case 'endArrow':
+            payload = {
+              name: item.name,
+              data: child.data
+            }
+            break
+        }
+        if (payload) {
+          _t.$X.utils.bus.$emit('board/materials/editor/tool/trigger', payload)
         }
       },
       handleToolClick (item, type, val) {

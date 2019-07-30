@@ -628,6 +628,7 @@ export default {
             _t.graph.updateItem(edge, {
               label: html.value,
               labelCfg: {
+                position: 'center',
                 style: {
                   fontSize: 16,
                   stroke: '#000000'
