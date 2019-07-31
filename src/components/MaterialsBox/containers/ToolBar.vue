@@ -527,7 +527,7 @@
                   icon: 'normal-arrow',
                   style: {},
                   data: {
-                    path: 'M 10,0 L -10,-10 L -12,-8 L -1,0 L -12,8 L -10,10 Z',
+                    path: 'M 10,0 L -10,-10 L -11,-9 L 9,0 L-11,9 L -10,10 Z',
                     d: 10
                   },
                   enable: true,
@@ -540,7 +540,10 @@
                   lang: '',
                   icon: 'asynch-arraw',
                   style: {},
-                  data: false,
+                  data: {
+                    path: 'M 10,0 L -10,-10 L -11,-9 L 9,0 Z',
+                    d: 10
+                  },
                   enable: true,
                   disabled: false,
                   divider: false
@@ -596,7 +599,10 @@
                     display: 'inline-block',
                     transform: 'rotate(180deg)'
                   },
-                  data: false,
+                  data: {
+                    path: 'M 10,0 L -10,-10 L -11,-9 L 9,0 L-11,9 L -10,10 Z',
+                    d: 10
+                  },
                   enable: true,
                   disabled: false,
                   divider: false
@@ -610,7 +616,10 @@
                     display: 'inline-block',
                     transform: 'rotate(180deg)'
                   },
-                  data: false,
+                  data:  {
+                    path: 'M 10,0 L -10,-10 L -11,-9 L 9,0 Z',
+                    d: 10
+                  },
                   enable: true,
                   disabled: false,
                   divider: false
