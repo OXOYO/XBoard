@@ -12,25 +12,17 @@ export default {
   options: {
     draw (cfg, group) {
       const { startPoint, endPoint } = cfg
-      const shape = group.addShape('path', {
+      const keyShape = group.addShape('path', {
+        className: 'edge-shape',
         attrs: {
+          ...cfg,
           path: [
             [ 'M', startPoint.x, startPoint.y ],
             [ 'L', endPoint.x, endPoint.y ]
-          ],
-          stroke: '#00F',
-          lineWidth: 1,
-          startArrow: {
-            path: 'M 10,0 L -10,-10 L -10,10 Z',
-            d: 10
-          },
-          endArrow: {
-            path: 'M 10,0 L -10,-10 L -10,10 Z',
-            d: 10
-          }
+          ]
         }
       })
-      return shape
+      return keyShape
     },
     setState (name, value, item) {
       // 设置线条激活

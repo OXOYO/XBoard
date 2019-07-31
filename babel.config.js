@@ -10,5 +10,6 @@ module.exports = {
         libraryDirectory: 'src/components'
       }
     ]
-  ]
+  ],
+  sourceType: 'unambiguous'
 }

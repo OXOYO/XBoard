@@ -526,7 +526,10 @@
                   lang: '',
                   icon: 'normal-arrow',
                   style: {},
-                  data: false,
+                  data: {
+                    path: 'M 10,0 L -10,-10 L -12,-8 L -1,0 L -12,8 L -10,10 Z',
+                    d: 10
+                  },
                   enable: true,
                   disabled: false,
                   divider: false

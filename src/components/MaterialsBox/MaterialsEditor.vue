@@ -389,12 +389,15 @@
             // TODO 根据端点类型更新边
             _t.editor.getEdges().forEach(edge => {
               if (edge.hasState('active')) {
+                let { style } = edge.getModel()
                 _t.editor.updateItem(edge, {
-                  [info.name]: info.data
+                  style: {
+                    ...style,
+                    [info.name]: info.data
+                  }
                 })
               }
             })
-            console.log('xxxxxxxxxxxx startArrow', info)
             break
           case 'clear':
             _t.$Modal.confirm({

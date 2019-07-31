@@ -978,7 +978,6 @@ export default {
           })
           break
         case 'materials':
-          console.log('materials show...')
           if (_t.materialsBox && _t.materialsBox.doToggle) {
             _t.materialsBox.doToggle('selector')
           }
