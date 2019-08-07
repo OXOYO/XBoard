@@ -6,10 +6,12 @@
 
 import line from './line'
 import cubic from './cubic'
+import broken from './broken'
 
 const obj = {
   line,
-  cubic
+  cubic,
+  broken
 }
 
 export default function (G6) {

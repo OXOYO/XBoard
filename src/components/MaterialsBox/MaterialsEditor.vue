@@ -390,6 +390,7 @@
             _t.editor.getEdges().forEach(edge => {
               if (edge.hasState('active')) {
                 let { style } = edge.getModel()
+                console.log('update')
                 _t.editor.updateItem(edge, {
                   style: {
                     ...style,
