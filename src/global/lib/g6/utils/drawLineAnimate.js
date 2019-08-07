@@ -12,16 +12,21 @@ export default function (cfg, group) {
   if (!startPoint) {
     return
   }
-  // 添加红色圆点
-  let circle = group.addShape('circle', {
-    id: cfg.id + '_edge_animate_point_',
-    name: 'edgeAnimatePoint',
-    attrs: {
-      x: startPoint.x,
-      y: startPoint.y,
-      ...config.lineAnimate.style.default
-    }
-  })
+  let circleName = 'edgeAnimatePoint'
+  // 查找已有圆点
+  let circle = group.find(item => item.name === circleName)
+  if (!circle) {
+    // 添加红色圆点
+    circle = group.addShape('circle', {
+      id: cfg.id + '_edge_animate_point_',
+      name: circleName,
+      attrs: {
+        x: startPoint.x,
+        y: startPoint.y,
+        ...config.lineAnimate.style.default
+      }
+    })
+  }
 
   // 对红色圆点添加动画
   circle.animate({
