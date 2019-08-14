@@ -616,7 +616,7 @@
                     display: 'inline-block',
                     transform: 'rotate(180deg)'
                   },
-                  data:  {
+                  data: {
                     path: 'M 10,0 L -10,-10 L -11,-9 L 9,0 Z',
                     d: 10
                   },

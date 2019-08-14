@@ -1,136 +1,27 @@
 /**
- * Created by OXOYO on 2019/7/11.
+ * Created by OXOYO on 2019/8/14.
  *
- * 折线
+ *
  */
-
-import base from './base'
-
-const defConfig = {
-  margin: 80,
-  maxDistance: 100
-}
+// import base from './base'
+import { polylineFinding } from './brokenLine'
 
 export default {
   name: 'x-broken',
-  extendName: 'line',
+  extendName: 'polyline',
   options: {
-    ...base,
+    // ...base,
     draw (cfg, group) {
       const { startPoint, endPoint } = cfg
-      // 路径规划
-      let path = []
-      if (startPoint && startPoint.x !== null && startPoint.y !== null) {
-        // 起点
-        path.push([ 'M', startPoint.x, startPoint.y ])
+      const controlPoints = this.getControlPoints(cfg)
+      let points = [startPoint]
+      if (controlPoints) {
+        console.log('controlPoints', controlPoints)
+        points.push(controlPoints)
       }
-      if (endPoint && endPoint.hasOwnProperty('x') && endPoint.hasOwnProperty('y')) {
-        // 根据端点类型求第一个拐点
-        let turnOne = {}
-        // 根据鼠标位置求第二拐点
-        let turnTwo = {}
-        switch (startPoint.anchorIndex) {
-          // top
-          case 0:
-            turnOne = {
-              x: startPoint.x,
-              y: startPoint.y - Math.abs(startPoint.y - endPoint.y) / 2
-            }
-            turnTwo = {
-              x: endPoint.x,
-              y: turnOne.y
-            }
-            break
-          // right
-          case 3:
-            turnOne = {
-              x: startPoint.x + Math.abs(endPoint.x - startPoint.x) / 2,
-              y: startPoint.y
-            }
-            turnTwo = {
-              x: turnOne.x,
-              y: endPoint.y
-            }
-            break
-          // bottom
-          case 1:
-            turnOne = {
-              x: startPoint.x,
-              y: startPoint.y + Math.abs(endPoint.y - startPoint.y) / 2
-            }
-            turnTwo = {
-              x: endPoint.x,
-              y: turnOne.y
-            }
-            break
-          // left
-          case 2:
-            turnOne = {
-              x: startPoint.x - Math.abs(startPoint.x - endPoint.x) / 2,
-              y: startPoint.y
-            }
-            turnTwo = {
-              x: turnOne.x,
-              y: endPoint.y
-            }
-            break
-        }
-        // FIXME ??? 如果循环计算拐点会如何
-        let turnPointArr = [
-          turnOne,
-          turnTwo
-        ]
-        let getTurnPoint = function () {
-          let latPoint
-          let nextPoint = {
-            ...endPoint
-          }
-          let flag = false
-          if (turnPointArr.length) {
-            latPoint = turnPointArr[turnPointArr.length - 1]
-          } else {
-            latPoint = turnTwo
-          }
-          // 根据鼠标与最后一个拐点的位置计算下一个拐点
-          if (nextPoint.x - latPoint.x > defConfig.maxDistance) {
-            nextPoint = {
-              ...nextPoint,
-              x: latPoint.x + defConfig.maxDistance
-            }
-            flag = true
-          } else if (latPoint.x - nextPoint.x > defConfig.maxDistance) {
-            nextPoint = {
-              ...nextPoint,
-              x: latPoint.x - defConfig.maxDistance
-            }
-            flag = true
-          }
-          if (nextPoint.y - latPoint.y > defConfig.maxDistance) {
-            nextPoint = {
-              ...nextPoint,
-              y: latPoint.y + defConfig.maxDistance
-            }
-            flag = true
-          } else if (latPoint.y - nextPoint.y > defConfig.maxDistance) {
-            nextPoint = {
-              ...nextPoint,
-              y: latPoint.y - defConfig.maxDistance
-            }
-            flag = true
-          }
-          // 计算完插入下一个节点
-          if (flag) {
-            turnPointArr.push(nextPoint)
-            getTurnPoint()
-          }
-        }
-        getTurnPoint()
-        turnPointArr.push(endPoint)
-        for (let i = 0, len = turnPointArr.length, item; i < len; i++) {
-          item = turnPointArr[i]
-          path.push([ 'L', item.x, item.y ])
-        }
-      }
+      points.push(endPoint)
+      let path = this.getPath(points)
+      console.log('path', path)
       const keyShape = group.addShape('path', {
         className: 'edge-shape',
         attrs: {
@@ -140,134 +31,73 @@ export default {
       })
       return keyShape
     },
-    getControlPoints (cfg) {
-      const { startPoint, endPoint } = cfg
-      // 路径规划
-      let path = []
-      if (startPoint && startPoint.x !== null && startPoint.y !== null) {
-        // 起点
-        path.push({ x: startPoint.x, y: startPoint.y })
+    getShapeStyle (cfg) {
+      const startPoint = cfg.startPoint
+      const endPoint = cfg.endPoint
+      const controlPoints = this.getControlPoints(cfg)
+      let points = [ startPoint ]
+      if (controlPoints) {
+        points = points.concat(controlPoints)
       }
-      if (endPoint && endPoint.hasOwnProperty('x') && endPoint.hasOwnProperty('y')) {
-        // 根据端点类型求第一个拐点
-        let turnOne = {}
-        // 根据鼠标位置求第二拐点
-        let turnTwo = {}
-        switch (startPoint.anchorIndex) {
-          // top
-          case 0:
-            turnOne = {
-              x: startPoint.x,
-              y: startPoint.y - Math.abs(startPoint.y - endPoint.y) / 2
+      points.push(endPoint)
+      const path = this.getPath(points)
+      // let style = editorStyle.edgeStyle
+      let style = { stroke: '#A3B1BF', strokeOpacity: 0.92, lineWidth: 1, lineAppendWidth: 8, endArrow: true }
+      if (cfg.reverse) {
+        style = { ...style, lineDash: [1, 3] }
+      } else {
+        style = { ...style, lineDash: null }
+      }
+
+      return {
+        path,
+        ...style
+        // ,
+        // endArrow: {
+        //   path: 'M 0,0 L -10,-4 S -8 0,-10 4 Z'
+        // }
+      }
+    },
+    getPath (points) {
+      const path = []
+      for (let i = 0; i < points.length; i++) {
+        const point = points[i]
+        if (i === 0) {
+          path.push([ 'M', point.x, point.y ])
+        } else if (i === points.length - 1) {
+          path.push([ 'L', point.x, point.y ])
+        } else {
+          const prevPoint = points[i - 1]
+          let nextPoint = points[i + 1]
+          let cornerLen = 5
+          if (Math.abs(point.y - prevPoint.y) > cornerLen || Math.abs(point.x - prevPoint.x) > cornerLen) {
+            if (prevPoint.x === point.x) {
+              path.push(['L', point.x, point.y > prevPoint.y ? point.y - cornerLen : point.y + cornerLen])
+            } else if (prevPoint.y === point.y) {
+              path.push(['L', point.x > prevPoint.x ? point.x - cornerLen : point.x + cornerLen, point.y])
             }
-            turnTwo = {
-              x: endPoint.x,
-              y: turnOne.y
-            }
-            break
-          // right
-          case 3:
-            turnOne = {
-              x: startPoint.x + Math.abs(endPoint.x - startPoint.x) / 2,
-              y: startPoint.y
-            }
-            turnTwo = {
-              x: turnOne.x,
-              y: endPoint.y
-            }
-            break
-          // bottom
-          case 1:
-            turnOne = {
-              x: startPoint.x,
-              y: startPoint.y + Math.abs(endPoint.y - startPoint.y) / 2
-            }
-            turnTwo = {
-              x: endPoint.x,
-              y: turnOne.y
-            }
-            break
-          // left
-          case 2:
-            turnOne = {
-              x: startPoint.x - Math.abs(startPoint.x - endPoint.x) / 2,
-              y: startPoint.y
-            }
-            turnTwo = {
-              x: turnOne.x,
-              y: endPoint.y
-            }
-            break
-        }
-        // FIXME ??? 如果循环计算拐点会如何
-        let turnPointArr = [
-          turnOne,
-          turnTwo
-        ]
-        let getTurnPoint = function () {
-          let latPoint
-          let nextPoint = {
-            ...endPoint
           }
-          let flag = false
-          if (turnPointArr.length) {
-            latPoint = turnPointArr[turnPointArr.length - 1]
-          } else {
-            latPoint = turnTwo
+          const yLen = Math.abs(point.y - nextPoint.y)
+          const xLen = Math.abs(point.x - nextPoint.x)
+          if (yLen > 0 && yLen < cornerLen) {
+            cornerLen = yLen
+          } else if (xLen > 0 && xLen < cornerLen) {
+            cornerLen = xLen
           }
-          // 根据鼠标与最后一个拐点的位置计算下一个拐点
-          if (nextPoint.x - latPoint.x > defConfig.maxDistance) {
-            nextPoint = {
-              ...nextPoint,
-              x: latPoint.x + defConfig.maxDistance
-            }
-            flag = true
-          } else if (latPoint.x - nextPoint.x > defConfig.maxDistance) {
-            nextPoint = {
-              ...nextPoint,
-              x: latPoint.x - defConfig.maxDistance
-            }
-            flag = true
+          if (prevPoint.x !== nextPoint.x && nextPoint.x === point.x) {
+            path.push(['Q', point.x, point.y, point.x, point.y > nextPoint.y ? point.y - cornerLen : point.y + cornerLen])
+          } else if (prevPoint.y !== nextPoint.y && nextPoint.y === point.y) {
+            path.push(['Q', point.x, point.y, point.x > nextPoint.x ? point.x - cornerLen : point.x + cornerLen, point.y])
           }
-          if (nextPoint.y - latPoint.y > defConfig.maxDistance) {
-            nextPoint = {
-              ...nextPoint,
-              y: latPoint.y + defConfig.maxDistance
-            }
-            flag = true
-          } else if (latPoint.y - nextPoint.y > defConfig.maxDistance) {
-            nextPoint = {
-              ...nextPoint,
-              y: latPoint.y - defConfig.maxDistance
-            }
-            flag = true
-          }
-          // 计算完插入下一个节点
-          if (flag) {
-            turnPointArr.push(nextPoint)
-            getTurnPoint()
-          }
-        }
-        getTurnPoint()
-        turnPointArr.push(endPoint)
-        for (let i = 0, len = turnPointArr.length, item; i < len; i++) {
-          item = turnPointArr[i]
-          path.push({ x: item.x, y: item.y })
         }
       }
       return path
     },
-    getPath (points) {
-      const path = []
-      points.forEach((point, index) => {
-        if (!index) {
-          path.push([ 'M', point.x, point.y ])
-        } else {
-          path.push([ 'L', point.x, point.y ])
-        }
-      })
-      console.log('path', path)
-      return path
+    getControlPoints (cfg) {
+      // if (!cfg.sourceNode) {
+      //   return cfg.controlPoints
+      // }
+      return polylineFinding(cfg.sourceNode, cfg.targetNode, cfg.startPoint, cfg.endPoint, 15)
     }
   }
 }
