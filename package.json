@@ -10,7 +10,7 @@
   "dependencies": {
     "@antv/g6": "^3.0.4",
     "core-js": "^2.6.5",
-    "highlight.js": "^9.15.8",
+    "highlight.js": "^10.4.1",
     "html2canvas": "^1.0.0-rc.3",
     "iview": "^3.4.2",
     "js-cookie": "^2.2.0",
