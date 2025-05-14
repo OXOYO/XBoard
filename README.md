@@ -2,6 +2,8 @@
 
 Online whiteboard
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/OXOYO/XBoard)
+
 ## [Online](http://oxoyo.co/XBoard/)
 
 ## START
